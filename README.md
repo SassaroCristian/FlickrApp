@@ -2,7 +2,6 @@ FlickrApp (.NET MAUI)
 
 Una semplice applicazione mobile cross-platform realizzata con .NET MAUI per cercare e sfogliare foto da Flickr.
 
-**(TODO: Aggiungere uno screenshot)**
 
 ## 📝 Descrizione
 
