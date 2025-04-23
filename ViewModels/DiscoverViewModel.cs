@@ -9,7 +9,12 @@ public partial class DiscoverViewModel : ObservableObject
 {
     private Flickr.Net.Flickr _flickr;
 
-    [ObservableProperty] private ObservableCollection<Photo> _photos = [];
+    [ObservableProperty] private string _title = "Discover";
+    [ObservableProperty] private ObservableCollection<Photo> _photos;
+
+    public DiscoverViewModel()
+    {
+    }
 
     public DiscoverViewModel(Flickr.Net.Flickr flickr)
     {
