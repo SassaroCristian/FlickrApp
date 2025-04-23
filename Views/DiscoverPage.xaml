@@ -3,40 +3,42 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:FlickrApp.ViewModels"
-             x:Class="FlickrApp.Views.DiscoverPage"
-             x:DataType="viewModels:DiscoverViewModel">
+             x:Class="FlickrApp.Views.DiscoverPage">
+
+    <ContentPage.BindingContext>
+        <viewModels:DiscoverViewModel />
+    </ContentPage.BindingContext>
 
     <Grid
+        RowDefinitions=".2*,.8*"
         Margin="10">
+        <Label
+            Grid.Row="0"
+            Text="{Binding Title}"
+            TextColor="Black"
+            FontSize="20"
+            VerticalTextAlignment="Center"
+            HorizontalTextAlignment="Start"
+            Margin="20,0,0,0" />
         <CollectionView
+            Grid.Row="1"
             ItemsSource="{Binding Photos}">
             <CollectionView.ItemsLayout>
-                <GridItemsLayout
+                <LinearItemsLayout
                     Orientation="Vertical"
-                    Span="2"
-                    HorizontalItemSpacing="10"
-                    VerticalItemSpacing="10" />
+                    ItemSpacing="20" />
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Border
+                        StrokeShape="RoundRectangle 25,25,25,25"
                         StrokeThickness="0"
-                        WidthRequest="100"
-                        HeightRequest="100">
-                        <VerticalStackLayout
-                            BackgroundColor="Aquamarine">
-                            <Label
-                                Text="{Binding Title}"
-                                TextColor="Black"
-                                FontSize="12" />
-                            <Image
-                                VerticalOptions="Fill"
-                                HorizontalOptions="Fill"
-                                Source="{Binding MediumUrl}"
-                                HeightRequest="100"
-                                WidthRequest="100"
-                                Aspect="AspectFill" />
-                        </VerticalStackLayout>
+                        HeightRequest="350"
+                        WidthRequest="300"
+                        BackgroundColor="Aquamarine">
+                        <Image
+                            Source="{Binding MediumUrl}"
+                            Aspect="AspectFill" />
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

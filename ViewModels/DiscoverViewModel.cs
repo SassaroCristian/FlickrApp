@@ -9,7 +9,12 @@ public partial class DiscoverViewModel : ObservableObject
 {
     private Flickr _flickr;
 
-    [ObservableProperty] private ObservableCollection<Photo> _photos = [];
+    [ObservableProperty] private string _title = "Discover";
+    [ObservableProperty] private ObservableCollection<Photo> _photos;
+
+    public DiscoverViewModel()
+    {
+    }
 
     public DiscoverViewModel(Flickr flickr)
     {
@@ -21,10 +26,5 @@ public partial class DiscoverViewModel : ObservableObject
     {
         var recentPhotos = await _flickr.PhotosGetRecentAsync(0, 10);
         Photos = new ObservableCollection<Photo>(recentPhotos);
-        foreach (var photo in Photos)
-        {
-            Debug.WriteLine(photo.Title);
-            Debug.WriteLine(photo.MediumUrl);
-        }
     }
 }
