@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
-using FlickrNet;
+using Flickr.Net;
 
 namespace FlickrApp.ViewModels;
 
