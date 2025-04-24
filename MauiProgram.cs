@@ -12,6 +12,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiMaps()
             .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
@@ -28,6 +29,7 @@ public static class MauiProgram
         // TRANSIENT
         builder.Services.AddTransient<DiscoverViewModel>();
         builder.Services.AddTransient<PhotoDetailsViewModel>();
+        builder.Services.AddTransient<MapsViewModel>();
 
 #if DEBUG
         builder.Logging.AddDebug();

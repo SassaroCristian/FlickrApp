@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <Shell
     x:Class="FlickrApp.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -11,5 +12,10 @@
         Title="Explore"
         ContentTemplate="{DataTemplate views:DiscoverPage}"
         Route="MainPage" />
+
+    <ShellContent
+        Title="Maps"
+        ContentTemplate="{DataTemplate views:MapsPage}"
+        Route="MapsPage" />
 
 </Shell>
