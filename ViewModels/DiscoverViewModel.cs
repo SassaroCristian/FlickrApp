@@ -1,30 +1,65 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
-using FlickrNet;
+using CommunityToolkit.Mvvm.Input;
+using FlickrApp.Models;
+using FlickrApp.Services;
 
 namespace FlickrApp.ViewModels;
 
 public partial class DiscoverViewModel : ObservableObject
 {
-    private Flickr _flickr;
+    private readonly INavigationService _navigation;
+    private readonly IFlickrApiService _flickr;
+
+    private int page = 1;
 
     [ObservableProperty] private string _title = "Discover";
-    [ObservableProperty] private ObservableCollection<Photo> _photos;
+    [ObservableProperty] private ObservableCollection<FlickrPhoto> _photos = [];
 
     public DiscoverViewModel()
     {
     }
 
-    public DiscoverViewModel(Flickr flickr)
+    public DiscoverViewModel(INavigationService navigation, IFlickrApiService flickr)
     {
+        _navigation = navigation;
         _flickr = flickr;
-        Task.Run(FillData);
+        Task.Run(LoadItems);
     }
 
-    private async Task FillData()
+    private async Task LoadItems()
     {
-        var recentPhotos = await _flickr.PhotosGetRecentAsync(0, 10);
-        Photos = new ObservableCollection<Photo>(recentPhotos);
+        try
+        {
+            var recentPhotos = await _flickr.GetRecentAsync(1, 10);
+            Photos = new ObservableCollection<FlickrPhoto>(recentPhotos);
+            page = 2;
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e.Message);
+        }
+    }
+
+    [RelayCommand]
+    private async Task LoadMoreItems()
+    {
+        try
+        {
+            var recentPhotos = await _flickr.GetMoreRecentAsync(page, 10);
+            recentPhotos.ForEach(element => Photos.Add(element));
+            page++;
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e.Message);
+        }
+    }
+
+    [RelayCommand]
+    private async Task GoToPhotoDetails(FlickrPhoto photo)
+    {
+        await _navigation.GoToAsync("PhotoDetailsPage", new Dictionary<string, object>() { { "PhotoId", photo.Id } });
     }
 }

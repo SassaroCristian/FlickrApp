@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
+             xmlns:model="clr-namespace:FlickrApp.Models"
+             x:Class="FlickrApp.Views.Shared.PhotoListView">
+
+    <CollectionView
+        ItemsSource="{Binding 
+            Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, 
+            Path=ItemsSource}"
+        RemainingItemsThreshold="3"
+        RemainingItemsThresholdReachedCommand="{Binding 
+            Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, 
+            Path=LoadMoreItemsCommand}">
+        <CollectionView.ItemsLayout>
+            <LinearItemsLayout
+                Orientation="Vertical"
+                ItemSpacing="10" />
+        </CollectionView.ItemsLayout>
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="model:FlickrPhoto">
+                <Border
+                    StrokeShape="RoundRectangle 25,25,25,25"
+                    StrokeThickness="0"
+                    HeightRequest="350"
+                    WidthRequest="300"
+                    BackgroundColor="Aquamarine">
+                    <ImageButton
+                        Source="{Binding MediumUrl}"
+                        Aspect="AspectFill"
+                        Command="{Binding 
+                            Source={RelativeSource AncestorType={x:Type shared:PhotoListView}},
+                            Path=ItemTappedCommand}"
+                        CommandParameter="{Binding .}" />
+                </Border>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+
+</ContentView>

@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using FlickrApp.Services;
 using FlickrApp.ViewModels;
-using FlickrNet;
 using Microsoft.Extensions.Logging;
 
 namespace FlickrApp;
@@ -21,12 +20,14 @@ public static class MauiProgram
             });
 
         // SINGLETON
+        builder.Services.AddSingleton<HttpClient>();
         builder.Services.AddSingleton<INavigationService, NavigationService>();
         builder.Services.AddSingleton<ITokenService, TokenService>();
-        builder.Services.AddSingleton<Flickr>(sp => new Flickr("255ac8fdac4726aa339fa1c2161b9e5b"));
+        builder.Services.AddSingleton<IFlickrApiService, FlickrApiService>();
 
         // TRANSIENT
         builder.Services.AddTransient<DiscoverViewModel>();
+        builder.Services.AddTransient<PhotoDetailsViewModel>();
 
 #if DEBUG
         builder.Logging.AddDebug();
