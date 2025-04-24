@@ -80,17 +80,38 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
         return finalResponse != null ? [..finalResponse.Photos.List] : [];
     }
 
-    public Task<List<FlickrPhoto>> GetForLocationAsync(double latitude, double longitude, int accuracy = 1,
-        int page = 1,
+    public async Task<List<FlickrPhoto>> GetForLocationAsync(double latitude, double longitude, int page = 1,
         int perPage = 10)
     {
-        throw new NotImplementedException();
+        _getForLocationMaxUploadDate = DateTime.UtcNow;
+        return await GetMoreForLocationAsync(latitude, longitude, page, perPage);
     }
 
-    public Task<List<FlickrPhoto>> GetMoreForLocationAsync(double latitude, double longitude, int accuracy = 1,
-        int page = 1, int perPage = 10)
+    public async Task<List<FlickrPhoto>> GetMoreForLocationAsync(double latitude, double longitude, int page = 1,
+        int perPage = 10)
     {
-        throw new NotImplementedException();
+        var queryParams = new Dictionary<string, string>()
+        {
+            { "method", "flickr.photos.search" },
+            { "format", "json" },
+            { "nojsoncallback", "1" },
+            { "api_key", apiKey },
+            { "page", page.ToString() },
+            { "per_page", perPage.ToString() },
+            { "lat", latitude.ToString(CultureInfo.InvariantCulture) },
+            { "lon", longitude.ToString(CultureInfo.InvariantCulture) },
+            { "max_upload_date", _getForLocationMaxUploadDate.ToString(CultureInfo.InvariantCulture) }
+        };
+
+        var requestUrl = QueryHelpers.AddQueryString(baseUrl, queryParams);
+
+        var response = await httpClient.GetAsync(requestUrl);
+        response.EnsureSuccessStatusCode();
+
+        var json = await response.Content.ReadAsStringAsync();
+        var finalResponse = JsonSerializer.Deserialize<FlickrApiResponses.Search>(json);
+
+        return finalResponse != null ? [..finalResponse.Photos.List] : [];
     }
 
     public async Task<FlickrDetails?> GetDetailsAsync(string photoId)
