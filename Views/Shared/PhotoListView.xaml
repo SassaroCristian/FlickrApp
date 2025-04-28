@@ -24,13 +24,11 @@
                 <Border
                     StrokeShape="RoundRectangle 25,25,25,25"
                     StrokeThickness="0"
-                    HeightRequest="350"
-                    WidthRequest="300"
-                    BackgroundColor="Aquamarine">
+                    HeightRequest="220"  WidthRequest="363"   BackgroundColor="Aquamarine">
                     <ImageButton
                         Source="{Binding MediumUrl}"
                         Aspect="AspectFill"
-                        Command="{Binding 
+                        Command="{Binding
                             Source={RelativeSource AncestorType={x:Type shared:PhotoListView}},
                             Path=ItemTappedCommand}"
                         CommandParameter="{Binding .}" />

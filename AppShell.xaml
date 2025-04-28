@@ -7,9 +7,9 @@
     xmlns:views="clr-namespace:FlickrApp.Views"
     Shell.FlyoutBehavior="Flyout"
     Title="FlickrApp">
-
+    
     <ShellContent
-        Title="Explore"
+        Title="Discover"
         ContentTemplate="{DataTemplate views:DiscoverPage}"
         Route="MainPage" />
 
