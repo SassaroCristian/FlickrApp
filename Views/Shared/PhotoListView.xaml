@@ -22,11 +22,7 @@
         <CollectionView.ItemTemplate>
             <DataTemplate x:DataType="model:FlickrPhoto">
                 <Border
-                    StrokeShape="RoundRectangle 25,25,25,25"
-                    StrokeThickness="0"
-                    HeightRequest="350"
-                    WidthRequest="300"
-                    BackgroundColor="Aquamarine">
+                    Style="{StaticResource BorderFlickrAppPhotoCard}">
                     <ImageButton
                         Source="{Binding MediumUrl}"
                         Aspect="AspectFill"

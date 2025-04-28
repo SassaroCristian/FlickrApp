@@ -10,6 +10,10 @@
         <GradientStop Color="{StaticResource BackgroundGradientEnd}" Offset="1.0" />
     </LinearGradientBrush>
 
+    <Style TargetType="Grid" x:Key="GridFlickrAppContainer">
+        <Setter Property="Padding" Value="10"></Setter>
+    </Style>
+
     <Style TargetType="Label" x:Key="LabelFlickrAppTitle">
         <Setter Property="FontFamily" Value="RobotoBold" />
         <Setter Property="FontSize" Value="28" />
@@ -509,7 +513,7 @@
                 Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray200}}" />
         <Setter Property="Shell.FlyoutBackground"
                 Value="{AppThemeBinding Light={StaticResource BackgroundGradientEnd}, Dark={StaticResource BackgroundGradientEnd}}" />
-        
+
     </Style>
 
     <Style TargetType="NavigationPage">

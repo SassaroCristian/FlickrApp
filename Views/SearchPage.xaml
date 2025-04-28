@@ -12,12 +12,18 @@
     </ContentPage.BindingContext>
 
     <Grid
-        RowDefinitions=".2*,.8*">
+        RowDefinitions=".2*,.8*"
+        Style="{StaticResource GridFlickrAppContainer}">
 
-        <SearchBar
+        <Border
             Grid.Row="0"
-            Text="{Binding SearchText}"
-            SearchCommand="{Binding SearchCommand}" />
+            Style="{StaticResource BorderFlickrAppSearchBar}">
+            <SearchBar
+                StyleClass=""
+                Text="{Binding SearchText}"
+                SearchCommand="{Binding SearchCommand}" />
+        </Border>
+
 
         <shared:PhotoListView
             Grid.Row="1"
