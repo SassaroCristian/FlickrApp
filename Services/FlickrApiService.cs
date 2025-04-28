@@ -80,14 +80,14 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
         return finalResponse != null ? [..finalResponse.Photos.List] : [];
     }
 
-    public async Task<List<FlickrPhoto>> GetForLocationAsync(double latitude, double longitude, int page = 1,
+    public async Task<List<FlickrPhoto>> GetForLocationAsync(string latitude, string longitude, int page = 1,
         int perPage = 10)
     {
         _getForLocationMaxUploadDate = DateTime.UtcNow;
         return await GetMoreForLocationAsync(latitude, longitude, page, perPage);
     }
 
-    public async Task<List<FlickrPhoto>> GetMoreForLocationAsync(double latitude, double longitude, int page = 1,
+    public async Task<List<FlickrPhoto>> GetMoreForLocationAsync(string latitude, string longitude, int page = 1,
         int perPage = 10)
     {
         var queryParams = new Dictionary<string, string>()
@@ -98,8 +98,8 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
             { "api_key", apiKey },
             { "page", page.ToString() },
             { "per_page", perPage.ToString() },
-            { "lat", latitude.ToString(CultureInfo.InvariantCulture) },
-            { "lon", longitude.ToString(CultureInfo.InvariantCulture) },
+            { "lat", latitude },
+            { "lon", longitude },
             { "max_upload_date", _getForLocationMaxUploadDate.ToString(CultureInfo.InvariantCulture) }
         };
 

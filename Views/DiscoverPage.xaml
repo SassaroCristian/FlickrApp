@@ -8,7 +8,7 @@
              Title="Discover">
     <Grid RowDefinitions="Auto, Auto, *" Margin="10">
         <HorizontalStackLayout Grid.Row="0" Margin="0,10,0,10" Spacing="10">
-            <Button Text="Top" WidthRequest="50" HeightRequest="30" CornerRadius="15" FontSize="12"/>
+            <Button Text="Top" WidthRequest="50" HeightRequest="30" CornerRadius="15" FontSize="12" />
         </HorizontalStackLayout>
 
 
