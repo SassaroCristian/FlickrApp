@@ -10,10 +10,64 @@
         <viewModels:MapsViewModel />
     </ContentPage.BindingContext>
 
-    <Grid>
+    <Grid
+        RowDefinitions="*">
+
         <maps:Map
-            x:Name="myMap"
+            Grid.Row="0"
+            x:Name="MyMap"
             MapClicked="OnMapClicked" />
+
+        <Border
+            IsVisible="{Binding IsPinned}"
+            Grid.Row="0"
+            StrokeShape="RoundRectangle 10,10,10,10"
+            StrokeThickness="0"
+            HeightRequest="75"
+            WidthRequest="225"
+            Margin="15"
+            VerticalOptions="End"
+            HorizontalOptions="End"
+            BackgroundColor="White"
+            Padding="10">
+            <Grid
+                RowDefinitions=".2*,.8*"
+                ColumnDefinitions=".8*,.2*">
+                <Label
+                    Grid.Row="0" Grid.Column="0"
+                    Text="{Binding Location}"
+                    VerticalTextAlignment="Center" />
+                <CollectionView
+                    Grid.Row="1" Grid.Column="0"
+                    ItemsSource="{Binding Photos}"
+                    HorizontalOptions="Center">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout
+                            Orientation="Horizontal"
+                            ItemSpacing="5" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                StrokeShape="RoundRectangle 10,10,10,10"
+                                StrokeThickness="0"
+                                HeightRequest="35"
+                                WidthRequest="35">
+                                <Image
+                                    Source="{Binding SmallUrl}"
+                                    Aspect="AspectFill" />
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <Label
+                    Grid.Row="1" Grid.Column="1"
+                    Text="More..."
+                    FontSize="10"
+                    VerticalTextAlignment="Center" />
+            </Grid>
+        </Border>
+
     </Grid>
 
 </ContentPage>

@@ -11,10 +11,12 @@ namespace FlickrApp.Views;
 
 public partial class MapsPage : ContentPage
 {
+    private MapsViewModel _vm;
+
     public MapsPage(MapsViewModel vm)
     {
         InitializeComponent();
-        BindingContext = vm;
+        BindingContext = _vm = vm;
     }
 
     private void OnMapClicked(object? sender, MapClickedEventArgs e)
@@ -29,9 +31,11 @@ public partial class MapsPage : ContentPage
             Type = PinType.Place
         };
 
-        myMap.Pins.Clear();
-        myMap.Pins.Add(pin);
+        MyMap.Pins.Clear();
+        MyMap.Pins.Add(pin);
 
         Debug.WriteLine($"Added pin at [Lat: {tappedLocation.Latitude:F5}, Lon: {tappedLocation.Longitude:F5}]");
+
+        _ = _vm.AddPinToMap(tappedLocation.Latitude, tappedLocation.Longitude);
     }
 }
