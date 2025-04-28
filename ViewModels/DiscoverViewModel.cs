@@ -13,15 +13,15 @@ public partial class DiscoverViewModel : ObservableObject
     private readonly IFlickrApiService _flickr;
 
     private int _currentPage = 1;
-    private const int _pageSize = 15;
+    private const int perPage = 15;
 
 
-    [ObservableProperty] private string _title = "Discover";
+    //[ObservableProperty] private string _title = "Discover";
     [ObservableProperty] private ObservableCollection<FlickrPhoto> _photos = [];
-
-    // public DiscoverViewModel()
-    // {
-    // }
+    
+    public DiscoverViewModel()
+    {
+    }
 
     [ObservableProperty] private bool _isLoading = false;
 
@@ -32,15 +32,14 @@ public partial class DiscoverViewModel : ObservableObject
         _navigation = navigation;
         _flickr = flickr;
         // Task.Run(LoadItems);
-        InitializeViewModelCommand = new AsyncRelayCommand(InitializeViewModel); // comando per l'inizializzazione
+        InitializeViewModelCommand = new AsyncRelayCommand(InitializeViewModel); 
         InitializeViewModelCommand.Execute(null);
     }
 
-    public IAsyncRelayCommand InitializeViewModelCommand { get; }
+    private IAsyncRelayCommand InitializeViewModelCommand { get; }
 
     private async Task InitializeViewModel()
     {
-        // Carica i dati iniziali (popolari/recenti)
         await FetchPhotosAsync(page: 1, isNewSearchOrFilter: true, tag: string.Empty);
     }
 
@@ -74,15 +73,15 @@ public partial class DiscoverViewModel : ObservableObject
         await FetchPhotosAsync(page: _currentPage + 1, isNewSearchOrFilter: false, tag: CurrentTagFilter);
     }
 
-    private bool CanLoadMore() // Metodo che abilita/disabilita il comando
+    private bool CanLoadMore() 
     {
         return !IsLoading;
     }
 
     [RelayCommand]
-    private async Task GoToPhotoDetails(FlickrPhoto photo)
+    private async Task GoToPhotoDetails(FlickrPhoto? photo)
     {
-        if (photo == null) // Add this check
+        if (photo == null) 
         {
             Debug.WriteLine("GoToPhotoDetails called with null photo.");
             return;
@@ -92,16 +91,15 @@ public partial class DiscoverViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task FilterByTag(string tag) // Il comando riceve il tag come stringa
+    private async Task FilterByTag(string? tag) 
     {
-        await FetchPhotosAsync(page: 1, isNewSearchOrFilter: true, tag: tag ?? string.Empty);
+        await FetchPhotosAsync(1, true, tag ?? string.Empty);
     }
 
 
     private async Task FetchPhotosAsync(int page, bool isNewSearchOrFilter, string tag)
     {
-        if (IsLoading)
-            return;
+        if (IsLoading) return;
 
         IsLoading = true;
         LoadMoreItemsCommand.NotifyCanExecuteChanged();
@@ -124,10 +122,10 @@ public partial class DiscoverViewModel : ObservableObject
 
 
             var newPhotos = await _flickr.SearchAsync(
-                text: null,
+                text: string.Empty,
                 tags: CurrentTagFilter,
                 page: _currentPage,
-                perPage: _pageSize
+                perPage: perPage
             );
 
             if (newPhotos != null && newPhotos.Any())

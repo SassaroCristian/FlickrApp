@@ -7,7 +7,12 @@
              x:Class="FlickrApp.Views.DiscoverPage"
              Title="Discover">
     
-    <Grid RowDefinitions="Auto, Auto, *, Auto" Margin="10"> <ScrollView Orientation="Horizontal" Grid.Row="0" Padding="0,10,0,10">
+    <ContentPage.BindingContext>
+        <viewModels:DiscoverViewModel />
+    </ContentPage.BindingContext>
+    
+    <Grid RowDefinitions="Auto, Auto, *, Auto" Margin="10">
+         <ScrollView Orientation="Horizontal" Grid.Row="0" Padding="0,10,0,10">
             <HorizontalStackLayout Spacing="10">
                 <Button Text="Popular" Command="{Binding FilterByTagCommand}" CommandParameter="{x:Null}" /> <Button Text="Animals"
                     Command="{Binding FilterByTagCommand}"
@@ -36,7 +41,7 @@
         <shared:PhotoListView
             Grid.Row="2"
             ItemsSource="{Binding Photos}"
-            LoadMoreItemsCommand="{Binding LoadMoreCommand}" ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" /> <ActivityIndicator Grid.Row="0" Grid.RowSpan="4" HorizontalOptions="Center" VerticalOptions="Center"
+            LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}" ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" /> <ActivityIndicator Grid.Row="0" Grid.RowSpan="4" HorizontalOptions="Center" VerticalOptions="Center"
             IsRunning="{Binding IsLoading}"
             IsVisible="{Binding IsLoading}"
             Color="Orange" />
