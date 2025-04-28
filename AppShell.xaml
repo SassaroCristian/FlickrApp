@@ -14,6 +14,11 @@
         Route="MainPage" />
 
     <ShellContent
+        Title="Search"
+        ContentTemplate="{DataTemplate views:SearchPage}"
+        Route="SearchPage" />
+
+    <ShellContent
         Title="Maps"
         ContentTemplate="{DataTemplate views:MapsPage}"
         Route="MapsPage" />

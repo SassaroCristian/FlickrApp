@@ -1,40 +1,41 @@
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlickrApp.Models;
 using FlickrApp.Services;
+using Debug = System.Diagnostics.Debug;
 
 namespace FlickrApp.ViewModels;
 
-public partial class DiscoverViewModel : ObservableObject
+public partial class SearchViewModel : ObservableObject
 {
     private readonly INavigationService _navigation;
     private readonly IFlickrApiService _flickr;
 
     private int _page = 1;
+    private const int perPage = 10;
 
-    [ObservableProperty] private string _title = "Discover";
+    [ObservableProperty] private string _searchText = string.Empty;
     [ObservableProperty] private ObservableCollection<FlickrPhoto> _photos = [];
 
-    public DiscoverViewModel()
+    public SearchViewModel()
     {
     }
 
-    public DiscoverViewModel(INavigationService navigation, IFlickrApiService flickr)
+    public SearchViewModel(INavigationService navigation, IFlickrApiService flickr)
     {
         _navigation = navigation;
         _flickr = flickr;
-        Task.Run(LoadItems);
     }
 
-    private async Task LoadItems()
+    [RelayCommand]
+    private async Task Search()
     {
         try
         {
             _page = 1;
-            var recentPhotos = await _flickr.GetRecentAsync(_page, 10);
-            Photos = new ObservableCollection<FlickrPhoto>(recentPhotos);
+            var response = await _flickr.SearchAsync(SearchText, string.Empty, _page, perPage);
+            Photos = new ObservableCollection<FlickrPhoto>(response);
         }
         catch (Exception e)
         {
@@ -48,8 +49,9 @@ public partial class DiscoverViewModel : ObservableObject
         try
         {
             _page++;
-            var recentPhotos = await _flickr.GetMoreRecentAsync(_page, 10);
-            recentPhotos.ForEach(element => Photos.Add(element));
+            var response = await _flickr.SearchMoreAsync(SearchText, string.Empty, _page, perPage);
+            foreach (var photo in response)
+                Photos.Add(photo);
         }
         catch (Exception e)
         {
