@@ -11,7 +11,7 @@
     </LinearGradientBrush>
 
     <Style TargetType="Grid" x:Key="GridFlickrAppContainer">
-        <Setter Property="Padding" Value="10"></Setter>
+        <Setter Property="Padding" Value="10" />
     </Style>
 
     <Style TargetType="Label" x:Key="LabelFlickrAppTitle">
@@ -67,12 +67,17 @@
     </Style>
 
     <Style TargetType="Border" x:Key="BorderFlickrAppSearchBar">
-        <Setter Property="StrokeThickness" Value="1" />
-        <Setter Property="Stroke" Value="{StaticResource SearchBarBorderColor}" />
-        <Setter Property="BackgroundColor" Value="{StaticResource SearchBarBackgroundColor}" />
-        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="Padding" Value="0"></Setter>
         <Setter Property="HeightRequest" Value="44" />
         <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+
+    <Style TargetType="SearchBar" x:Key="SearchBarFlickrApp">
+        <Setter Property="BackgroundColor" Value="{StaticResource White}" />
+        <Setter Property="TextColor" Value="{StaticResource Black}" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource Black}" />
+        <Setter Property="CancelButtonColor" Value="{StaticResource Black}" />
     </Style>
 
     <Style TargetType="Border" x:Key="BorderFlickrAppPhotoCard">

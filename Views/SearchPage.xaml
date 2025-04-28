@@ -19,7 +19,7 @@
             Grid.Row="0"
             Style="{StaticResource BorderFlickrAppSearchBar}">
             <SearchBar
-                StyleClass=""
+                Style="{StaticResource SearchBarFlickrApp}"
                 Text="{Binding SearchText}"
                 SearchCommand="{Binding SearchCommand}" />
         </Border>
