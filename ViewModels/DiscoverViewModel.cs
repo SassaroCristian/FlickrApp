@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlickrApp.Models;
@@ -26,7 +27,26 @@ public partial class DiscoverViewModel : ObservableObject
     // }
 
     [ObservableProperty] private bool _isLoading = false;
-    [ObservableProperty] private string _currentTagFilter = string.Empty;
+
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(FilterDisplayTitle))]
+    private string _currentTagFilter = string.Empty;
+
+    public string FilterDisplayTitle
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(CurrentTagFilter))
+            {
+                return "Popular:";
+            }
+            else
+            {
+                // Capitalize the first letter of the tag for better display
+                TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+                return $"{textInfo.ToTitleCase(CurrentTagFilter)}:";
+            }
+        }
+    }
 
     public DiscoverViewModel(INavigationService navigation, IFlickrApiService flickr)
     {
@@ -105,6 +125,7 @@ public partial class DiscoverViewModel : ObservableObject
             return;
 
         IsLoading = true;
+        
         if (isNewSearchOrFilter)
         {
             moreItemsAvailable = true;
@@ -139,10 +160,10 @@ public partial class DiscoverViewModel : ObservableObject
 
             if (newPhotos != null && newPhotos.Any())
             {
-                int addedCount = 0; 
+                int addedCount = 0;
                 foreach (var photo in newPhotos)
                 {
-                    if (!Photos.Any(p => p.Id == photo.Id)) 
+                    if (!Photos.Any(p => p.Id == photo.Id))
                     {
                         Photos.Add(photo);
                         addedCount++;

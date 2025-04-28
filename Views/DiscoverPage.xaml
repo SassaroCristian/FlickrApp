@@ -31,7 +31,9 @@
 
         <Label
             Grid.Row="1"
-            Text="Popular:" TextColor="Black" FontSize="Medium" VerticalTextAlignment="Center"
+            Text="{Binding FilterDisplayTitle}" TextColor="Black"
+            FontSize="Medium"
+            VerticalTextAlignment="Center"
             HorizontalTextAlignment="Start"
             Margin="10,0,0,10" />
 
