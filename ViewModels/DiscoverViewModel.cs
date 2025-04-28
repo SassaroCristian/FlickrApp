@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlickrApp.Models;
 using FlickrApp.Services;
+using System.Linq;
 
 namespace FlickrApp.ViewModels;
 
@@ -13,18 +14,18 @@ public partial class DiscoverViewModel : ObservableObject
     private readonly IFlickrApiService _flickr;
 
     private int _currentPage = 1;
-    private const int perPage = 15;
+    private const int pageSize = 4;
+    private bool moreItemsAvailable = true;
 
 
-    //[ObservableProperty] private string _title = "Discover";
+    [ObservableProperty] private string _title = "Discover";
     [ObservableProperty] private ObservableCollection<FlickrPhoto> _photos = [];
-    
-    public DiscoverViewModel()
-    {
-    }
+
+    // public DiscoverViewModel()
+    // {
+    // }
 
     [ObservableProperty] private bool _isLoading = false;
-
     [ObservableProperty] private string _currentTagFilter = string.Empty;
 
     public DiscoverViewModel(INavigationService navigation, IFlickrApiService flickr)
@@ -32,14 +33,15 @@ public partial class DiscoverViewModel : ObservableObject
         _navigation = navigation;
         _flickr = flickr;
         // Task.Run(LoadItems);
-        InitializeViewModelCommand = new AsyncRelayCommand(InitializeViewModel); 
+        InitializeViewModelCommand = new AsyncRelayCommand(InitializeViewModel); // comando per l'inizializzazione
         InitializeViewModelCommand.Execute(null);
     }
 
-    private IAsyncRelayCommand InitializeViewModelCommand { get; }
+    public IAsyncRelayCommand InitializeViewModelCommand { get; }
 
     private async Task InitializeViewModel()
     {
+        // Carica i dati iniziali (popolari/recenti)
         await FetchPhotosAsync(page: 1, isNewSearchOrFilter: true, tag: string.Empty);
     }
 
@@ -73,15 +75,15 @@ public partial class DiscoverViewModel : ObservableObject
         await FetchPhotosAsync(page: _currentPage + 1, isNewSearchOrFilter: false, tag: CurrentTagFilter);
     }
 
-    private bool CanLoadMore() 
+    private bool CanLoadMore() // Metodo che abilita/disabilita il comando
     {
-        return !IsLoading;
+        return !IsLoading && moreItemsAvailable;
     }
 
     [RelayCommand]
-    private async Task GoToPhotoDetails(FlickrPhoto? photo)
+    private async Task GoToPhotoDetails(FlickrPhoto photo)
     {
-        if (photo == null) 
+        if (photo == null) // Add this check
         {
             Debug.WriteLine("GoToPhotoDetails called with null photo.");
             return;
@@ -91,17 +93,24 @@ public partial class DiscoverViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task FilterByTag(string? tag) 
+    private async Task FilterByTag(string tag) // Il comando riceve il tag come stringa
     {
-        await FetchPhotosAsync(1, true, tag ?? string.Empty);
+        await FetchPhotosAsync(page: 1, isNewSearchOrFilter: true, tag: tag ?? string.Empty);
     }
 
 
     private async Task FetchPhotosAsync(int page, bool isNewSearchOrFilter, string tag)
     {
-        if (IsLoading) return;
+        if (IsLoading || (!isNewSearchOrFilter && !moreItemsAvailable))
+            return;
 
         IsLoading = true;
+        if (isNewSearchOrFilter)
+        {
+            moreItemsAvailable = true;
+            Debug.WriteLine("---> Resetting moreItemsAvailable to true for new search/filter.");
+        }
+
         LoadMoreItemsCommand.NotifyCanExecuteChanged();
 
         try
@@ -122,37 +131,45 @@ public partial class DiscoverViewModel : ObservableObject
 
 
             var newPhotos = await _flickr.SearchAsync(
-                text: string.Empty,
+                text: null,
                 tags: CurrentTagFilter,
                 page: _currentPage,
-                perPage: perPage
+                perPage: pageSize
             );
 
             if (newPhotos != null && newPhotos.Any())
             {
+                int addedCount = 0; 
                 foreach (var photo in newPhotos)
                 {
-                    Photos.Add(photo);
+                    if (!Photos.Any(p => p.Id == photo.Id)) 
+                    {
+                        Photos.Add(photo);
+                        addedCount++;
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"---> Skipping duplicate photo ID: {photo.Id}");
+                    }
                 }
 
+                Debug.WriteLine($"---> Added {addedCount} NEW photos.");
+
+                if (newPhotos.Count < pageSize)
+                {
+                    moreItemsAvailable = false;
+                    Debug.WriteLine(
+                        "---> Received fewer photos than PageSize from API, assuming no more items available.");
+                }
             }
             else
             {
-                Debug.WriteLine("---> Nessuna foto trovata/restituita.");
-                if (!isNewSearchOrFilter)
-                {
-                    _currentPage--;
-                }
+                moreItemsAvailable = false;
             }
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"### ERRORE durante FetchPhotosAsync: {ex.Message}");
-
-            if (!isNewSearchOrFilter)
-            {
-                _currentPage--;
-            }
+            moreItemsAvailable = false;
         }
         finally
         {

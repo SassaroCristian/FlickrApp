@@ -6,17 +6,14 @@
              xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
              x:Class="FlickrApp.Views.DiscoverPage"
              Title="Discover">
-    
-    <ContentPage.BindingContext>
-        <viewModels:DiscoverViewModel />
-    </ContentPage.BindingContext>
-    
+
     <Grid RowDefinitions="Auto, Auto, *, Auto" Margin="10">
-         <ScrollView Orientation="Horizontal" Grid.Row="0" Padding="0,10,0,10">
+        <ScrollView Orientation="Horizontal" Grid.Row="0" Padding="0,10,0,10">
             <HorizontalStackLayout Spacing="10">
-                <Button Text="Popular" Command="{Binding FilterByTagCommand}" CommandParameter="{x:Null}" /> <Button Text="Animals"
-                    Command="{Binding FilterByTagCommand}"
-                    CommandParameter="animals" />
+                <Button Text="Popular" Command="{Binding FilterByTagCommand}" CommandParameter="{x:Null}" />
+                <Button Text="Animals"
+                        Command="{Binding FilterByTagCommand}"
+                        CommandParameter="animals" />
                 <Button Text="Nature"
                         Command="{Binding FilterByTagCommand}"
                         CommandParameter="nature" />
@@ -28,7 +25,7 @@
                         CommandParameter="people" />
                 <Button Text="Travel"
                         Command="{Binding FilterByTagCommand}"
-                        CommandParameter="travel"/>
+                        CommandParameter="travel" />
             </HorizontalStackLayout>
         </ScrollView>
 
@@ -41,10 +38,11 @@
         <shared:PhotoListView
             Grid.Row="2"
             ItemsSource="{Binding Photos}"
-            LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}" ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" /> <ActivityIndicator Grid.Row="0" Grid.RowSpan="4" HorizontalOptions="Center" VerticalOptions="Center"
-            IsRunning="{Binding IsLoading}"
-            IsVisible="{Binding IsLoading}"
-            Color="Orange" />
+            LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}" ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" />
+        <ActivityIndicator Grid.Row="0" Grid.RowSpan="4" HorizontalOptions="Center" VerticalOptions="Center"
+                           IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}"
+                           Color="Orange" />
 
     </Grid>
 </ContentPage>
