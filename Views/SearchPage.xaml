@@ -17,13 +17,14 @@
 
         <Border
             Grid.Row="0"
-            Style="{StaticResource BorderFlickrAppSearchBar}">
+            Style="{StaticResource BorderFlickrAppSearchBar}"
+            StrokeShape="RoundRectangle 10,10,10,10"
+            StrokeThickness="0">
             <SearchBar
                 Style="{StaticResource SearchBarFlickrApp}"
                 Text="{Binding SearchText}"
                 SearchCommand="{Binding SearchCommand}" />
         </Border>
-
 
         <shared:PhotoListView
             Grid.Row="1"

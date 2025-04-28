@@ -5,11 +5,6 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <LinearGradientBrush x:Key="AppBackgroundGradientBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="{StaticResource BackgroundGradientStart}" Offset="0.0" />
-        <GradientStop Color="{StaticResource BackgroundGradientEnd}" Offset="1.0" />
-    </LinearGradientBrush>
-
     <Style TargetType="Grid" x:Key="GridFlickrAppContainer">
         <Setter Property="Padding" Value="10" />
     </Style>
@@ -17,8 +12,7 @@
     <Style TargetType="Label" x:Key="LabelFlickrAppTitle">
         <Setter Property="FontFamily" Value="RobotoBold" />
         <Setter Property="FontSize" Value="28" />
-        <Setter Property="TextColor"
-                Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+        <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
         <Setter Property="Margin" Value="15,10,15,10" />
         <Setter Property="HorizontalTextAlignment" Value="Start" />
         <Setter Property="VerticalOptions" Value="Center" />
@@ -27,8 +21,7 @@
     <Style TargetType="Label" x:Key="LabelFlickrAppSubtitle">
         <Setter Property="FontFamily" Value="RobotoMedium" />
         <Setter Property="FontSize" Value="18" />
-        <Setter Property="TextColor"
-                Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" />
+        <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
         <Setter Property="Margin" Value="15,5,15,5" />
         <Setter Property="HorizontalTextAlignment" Value="Start" />
         <Setter Property="VerticalOptions" Value="Center" />
@@ -37,26 +30,23 @@
     <Style TargetType="Label" x:Key="LabelFlickrAppSectionHeader">
         <Setter Property="FontFamily" Value="RobotoMedium" />
         <Setter Property="FontSize" Value="16" />
-        <Setter Property="TextColor"
-                Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+        <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
         <Setter Property="Margin" Value="15, 20, 15, 10" />
         <Setter Property="HorizontalOptions" Value="Start" />
         <Setter Property="VerticalOptions" Value="Center" />
     </Style>
 
     <Style TargetType="Button" x:Key="ButtonFlickrAppPrimary">
-        <Setter Property="BackgroundColor"
-                Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-        <Setter Property="TextColor"
-                Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource ButtonBackgroundColor}" />
+        <Setter Property="TextColor" Value="{StaticResource ButtonTextColor}" />
         <Setter Property="FontFamily" Value="RobotoMedium" />
     </Style>
 
     <Style TargetType="Button" x:Key="ButtonFlickrAppTag">
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontFamily" Value="RobotoMedium" />
-        <Setter Property="TextColor" Value="{StaticResource TagTextColor}" />
-        <Setter Property="BackgroundColor" Value="{StaticResource TagBackgroundColor}" />
+        <!--Setter Property="TextColor" Value="{StaticResource TagTextColor}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource TagBackgroundColor}" /-->
         <Setter Property="Padding" Value="12,6" />
         <Setter Property="HeightRequest" Value="30" />
         <Setter Property="CornerRadius" Value="15" />
@@ -68,27 +58,27 @@
 
     <Style TargetType="Border" x:Key="BorderFlickrAppSearchBar">
         <Setter Property="StrokeThickness" Value="0" />
-        <Setter Property="Padding" Value="0"></Setter>
+        <Setter Property="Padding" Value="0" />
         <Setter Property="HeightRequest" Value="44" />
         <Setter Property="VerticalOptions" Value="Center" />
     </Style>
 
     <Style TargetType="SearchBar" x:Key="SearchBarFlickrApp">
-        <Setter Property="BackgroundColor" Value="{StaticResource White}" />
-        <Setter Property="TextColor" Value="{StaticResource Black}" />
-        <Setter Property="PlaceholderColor" Value="{StaticResource Black}" />
-        <Setter Property="CancelButtonColor" Value="{StaticResource Black}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
+        <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource PrimaryTextColor}" />
+        <Setter Property="CancelButtonColor" Value="{StaticResource PrimaryTextColor}" />
     </Style>
 
     <Style TargetType="Border" x:Key="BorderFlickrAppPhotoCard">
-        <Setter Property="BackgroundColor" Value="{StaticResource PhotoCardBackgroundColor}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
         <Setter Property="StrokeThickness" Value="0" />
         <Setter Property="Padding" Value="10" />
     </Style>
 
     <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Background" Value="{StaticResource AppBackgroundGradientBrush}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
     </Style>
 
     <Style TargetType="Label">
@@ -497,28 +487,17 @@
     </Style>
 
     <Style TargetType="Shell" ApplyToDerivedTypes="True">
-        <Setter Property="Shell.BackgroundColor"
-                Value="{AppThemeBinding Light={StaticResource BackgroundGradientStart}, Dark={StaticResource OffBlack}}" />
-        <Setter Property="Shell.ForegroundColor"
-                Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource SecondaryDarkText}}" />
-        <Setter Property="Shell.TitleColor"
-                Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource SecondaryDarkText}}" />
-        <Setter Property="Shell.DisabledColor"
-                Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray950}}" />
-        <Setter Property="Shell.UnselectedColor"
-                Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray200}}" />
+        <Setter Property="Shell.BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
+        <Setter Property="Shell.ForegroundColor" Value="{StaticResource PrimaryTextColor}" />
+        <Setter Property="Shell.TitleColor" Value="{StaticResource PrimaryTextColor}" />
+        <Setter Property="Shell.DisabledColor" Value="{StaticResource Gray200}" />
+        <Setter Property="Shell.UnselectedColor" Value="{StaticResource White}" />
         <Setter Property="Shell.NavBarHasShadow" Value="False" />
-        <Setter Property="Shell.TabBarBackgroundColor"
-                Value="{AppThemeBinding Light={StaticResource BackgroundGradientEnd}, Dark={StaticResource Black}}" />
-        <Setter Property="Shell.TabBarForegroundColor"
-                Value="{AppThemeBinding Light={StaticResource Magenta}, Dark={StaticResource White}}" />
-        <Setter Property="Shell.TabBarTitleColor"
-                Value="{AppThemeBinding Light={StaticResource Magenta}, Dark={StaticResource White}}" />
-        <Setter Property="Shell.TabBarUnselectedColor"
-                Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray200}}" />
-        <Setter Property="Shell.FlyoutBackground"
-                Value="{AppThemeBinding Light={StaticResource BackgroundGradientEnd}, Dark={StaticResource BackgroundGradientEnd}}" />
-
+        <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
+        <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource PrimaryTextColor}" />
+        <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource PrimaryTextColor}" />
+        <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource White}" />
+        <Setter Property="Shell.FlyoutBackground" Value="{StaticResource PrimaryBackgroundColor}" />
     </Style>
 
     <Style TargetType="NavigationPage">

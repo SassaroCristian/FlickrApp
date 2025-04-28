@@ -7,20 +7,22 @@
     xmlns:views="clr-namespace:FlickrApp.Views"
     Shell.FlyoutBehavior="Flyout"
     Title="FlickrApp">
-    
-    <ShellContent
-        Title="Discover"
-        ContentTemplate="{DataTemplate views:DiscoverPage}"
-        Route="MainPage" />
 
-    <ShellContent
-        Title="Search"
-        ContentTemplate="{DataTemplate views:SearchPage}"
-        Route="SearchPage" />
 
-    <ShellContent
-        Title="Maps"
-        ContentTemplate="{DataTemplate views:MapsPage}"
-        Route="MapsPage" />
+    <FlyoutItem Title="Explore">
+        <Tab>
+            <ShellContent ContentTemplate="{DataTemplate views:DiscoverPage}" />
+        </Tab>
+    </FlyoutItem>
+    <FlyoutItem Title="Search">
+        <Tab>
+            <ShellContent ContentTemplate="{DataTemplate views:SearchPage}" />
+        </Tab>
+    </FlyoutItem>
+    <FlyoutItem Title="Map">
+        <Tab>
+            <ShellContent ContentTemplate="{DataTemplate views:MapsPage}" />
+        </Tab>
+    </FlyoutItem>
 
 </Shell>

@@ -9,6 +9,7 @@ public partial class App : Application
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
+        Application.Current.UserAppTheme = AppTheme.Light;
         return new Window(new AppShell());
     }
 }
