@@ -33,10 +33,9 @@
                     StrokeShape="RoundRectangle 25,25,25,25"
                     StrokeThickness="0" HeightRequest="220"
                     WidthRequest="363"
-                    Padding="0, 5"> <Border.Shadow>
+                    Padding="0,10"> <Border.Shadow>
                         <Shadow Brush="Black"
-                                Offset="3,5"   Radius="10"    Opacity="0.4"/> </Border.Shadow>
-
+                                Offset="5,10"   Radius="10"    Opacity="0.6"/> </Border.Shadow>
                     <ImageButton
                         Source="{Binding MediumUrl}"
                         Aspect="AspectFill"

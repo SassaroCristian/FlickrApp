@@ -20,7 +20,7 @@
             <Style x:Key="TagButtonStyle" TargetType="Button">
                 <Setter Property="BackgroundColor" Value="{StaticResource ButtonBackgroundColor}"/> <Setter Property="TextColor" Value="{StaticResource ButtonTextColor}"/> <Setter Property="CornerRadius" Value="8"/> <Setter Property="FontSize" Value="Small"/>
                 <Setter Property="Padding" Value="10,5"/>
-                <Setter Property="MinimumHeightRequest" Value="30"/>
+                <Setter Property="MinimumHeightRequest" Value="40"/>
                 <Setter Property="MinimumWidthRequest" Value="70"/>
                 <Setter Property="BorderColor" Value="{StaticResource PrimaryPlaceholderColor}"/> <Setter Property="BorderWidth" Value="1"/>
             </Style>
@@ -50,6 +50,7 @@
         <Label Grid.Row="1"
                Text="{Binding FilterDisplayTitle}"
                Style="{StaticResource HeaderLabelStyle}"/> <shared:PhotoListView Grid.Row="2"
+                                                                   
                               ItemsSource="{Binding Photos}"
                               LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}"
                               ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" />
