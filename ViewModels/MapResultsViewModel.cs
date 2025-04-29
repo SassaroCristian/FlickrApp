@@ -20,6 +20,9 @@ public partial class MapResultsViewModel : ObservableObject
     private bool _isLatitudeSet = false;
     private bool _isLongitudeSet = false;
 
+    private int _page = 1;
+    private const int perPage = 10;
+
     [ObservableProperty] private ObservableCollection<FlickrPhoto> _photos = [];
 
     public MapResultsViewModel()
@@ -57,8 +60,9 @@ public partial class MapResultsViewModel : ObservableObject
         Debug.WriteLine("filling data");
         try
         {
+            _page = 1;
             Debug.WriteLine($"latitude: {Latitude}, longitude: {Longitude}");
-            var result = await _flickr.GetForLocationAsync(Latitude, Longitude, 1, 10);
+            var result = await _flickr.GetForLocationAsync(Latitude, Longitude, _page, perPage);
 
             Photos = new ObservableCollection<FlickrPhoto>(result);
         }
@@ -73,7 +77,8 @@ public partial class MapResultsViewModel : ObservableObject
     {
         try
         {
-            var result = await _flickr.GetMoreForLocationAsync(Latitude, Longitude, 1, 10);
+            _page++;
+            var result = await _flickr.GetMoreForLocationAsync(Latitude, Longitude, _page, perPage);
             foreach (var photo in result)
             {
                 Photos.Add(photo);
