@@ -44,13 +44,13 @@
     <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}" />
     <SolidColorBrush x:Key="Gray950Brush" Color="{StaticResource Gray950}" />
 
-    <Color x:Key="BackgroundGradientStart">#FF7B00</Color> 
-    <Color x:Key="BackgroundGradientEnd">#3C00FF</Color>
-    <Color x:Key="TagTextColor">#FFFFFF</Color>                 
-    <Color x:Key="TagBackgroundColor">#8A2BE2</Color>
-    <Color x:Key="SearchBarBorderColor">#CCCCCC</Color>
-    <Color x:Key="SearchBarBackgroundColor">#3C00FF</Color>
-    <Color x:Key="PhotoCardBackgroundColor">#FAFAFA</Color>
-
+    <!-- COLORS -->
+    <Color x:Key="PrimaryBackgroundColor">White</Color>
+    <Color x:Key="SecondaryBackgroundColor">#FF8200</Color>
+    <Color x:Key="PrimaryTextColor">Black</Color>
+    <Color x:Key="SecondaryTextColor">White</Color>
+    <Color x:Key="PrimaryPlaceholderColor">#333333</Color>
+    <Color x:Key="ButtonBackgroundColor">#FF8200</Color>
+    <Color x:Key="ButtonTextColor">White</Color>
 
 </ResourceDictionary>

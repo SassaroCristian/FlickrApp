@@ -35,6 +35,7 @@ public static class MauiProgram
         builder.Services.AddTransient<DiscoverViewModel>();
         builder.Services.AddTransient<PhotoDetailsViewModel>();
         builder.Services.AddTransient<MapsViewModel>();
+        builder.Services.AddTransient<MapResultsViewModel>();
         builder.Services.AddTransient<SearchViewModel>();
 
 #if DEBUG
