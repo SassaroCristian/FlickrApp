@@ -2,11 +2,103 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="FlickrApp.Views.PhotoDetailsPage">
+             xmlns:vm="clr-namespace:FlickrApp.ViewModels"
+             xmlns:model="clr-namespace:FlickrApp.Models"
+             xmlns:converters="clr-namespace:FlickrApp.Converters"
+             x:Class="FlickrApp.Views.PhotoDetailsPage"
+             x:DataType="vm:PhotoDetailsViewModel"
+             Title="{Binding Details.Title.Content, StringFormat='Details: {0}', TargetNullValue='Photo Details'}">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:NullOrEmptyToNaConverter x:Key="naConverter" />
+            <converters:TagListToStringConverter x:Key="tagListConverter" />
 
-    <Grid
-        BackgroundColor="Beige">
+            <Style x:Key="TagBorderStyle" TargetType="Border">
+                <Setter Property="StrokeShape" Value="RoundRectangle 8"/> <Setter Property="StrokeThickness" Value="1"/>
+                <Setter Property="Stroke" Value="LightGray"/>
+                <Setter Property="Padding" Value="8,4"/>
+                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="HorizontalOptions" Value="Start"/>
+            </Style>
+            <Style x:Key="CommentBorderStyle" TargetType="Border">
+                <Setter Property="StrokeShape" Value="RoundRectangle 15"/> <Setter Property="StrokeThickness" Value="0"/>
+                <Setter Property="Padding" Value="10"/>
+                <Setter Property="BackgroundColor" Value="#EEEEEE"/>
+                <Setter Property="Margin" Value="0,0,0,5"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto, *" ColumnDefinitions="*" BackgroundColor="WhiteSmoke" VerticalOptions="FillAndExpand">
+
+        <VerticalStackLayout Grid.Row="0" Spacing="8" Padding="10">
+
+            <Border StrokeShape="RoundRectangle 15" StrokeThickness="0"> <Image Aspect="AspectFit"
+                                                                                 MaximumHeightRequest="350" Source="{Binding Details.LargeImageUrl}" />
+            </Border> 
+
+            <HorizontalStackLayout Spacing="10" HorizontalOptions="Start" Padding="0,5,0,0">
+            <Border Style="{StaticResource TagBorderStyle}">
+                     <Label Text="{Binding Details.Views, StringFormat='Views: {0}', TargetNullValue='Views: N/A'}"
+                           FontSize="Caption" TextColor="DarkSlateGray"/>
+                </Border>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+        <ScrollView Grid.Row="1" VerticalOptions="FillAndExpand">
+            <VerticalStackLayout Spacing="15" Padding="15">
+
+                <Label Text="{Binding Details.Title.Content, Converter={StaticResource naConverter}}"
+                       FontSize="Large" FontAttributes="Bold" TextColor="Black"/>
+
+                <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto, Auto, Auto" RowSpacing="8" ColumnSpacing="5">
+                    <Label Grid.Row="0" Grid.Column="0" Text="Author:" FontAttributes="Bold" TextColor="DarkSlateGray"/>
+                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding Details.Owner.Username, Converter={StaticResource naConverter}}" TextColor="Black"/>
+
+                    <Label Grid.Row="1" Grid.Column="0" Text="Date:" FontAttributes="Bold" TextColor="DarkSlateGray"/>
+                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding Details.Dates.Taken, Converter={StaticResource naConverter}}" TextColor="Black"/>
+
+                    <Label Grid.Row="2" Grid.Column="0" Text="Description:" FontAttributes="Bold" TextColor="DarkSlateGray"/>
+                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding Details.Description.Content, Converter={StaticResource naConverter}}" TextColor="Black" LineBreakMode="WordWrap"/>
+
+                    <Label Grid.Row="3" Grid.Column="0" Text="Tags:" FontAttributes="Bold" TextColor="DarkSlateGray"/>
+                    <Label Grid.Row="3" Grid.Column="1" Text="{Binding Details.Tags.Tag, Converter={StaticResource tagListConverter}}" TextColor="Black" LineBreakMode="WordWrap"/>
+
+                    <Label Grid.Row="4" Grid.Column="0" Text="License:" FontAttributes="Bold" TextColor="DarkSlateGray"/>
+                    <Label Grid.Row="4" Grid.Column="1" Text="{Binding Details.License, Converter={StaticResource naConverter}}" TextColor="Black"/>
+                </Grid>
+                <BoxView HeightRequest="1" Color="LightGray" HorizontalOptions="FillAndExpand"/>
+
+                <Border Style="{StaticResource TagBorderStyle}" BackgroundColor="#DDDDDD">
+                    <Label Text="{Binding CommentsHeaderTitle}"
+                           FontSize="Small" FontAttributes="Bold" TextColor="Black"/>
+                 </Border>
+
+                <CollectionView ItemsSource="{Binding Comments}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:FlickrComment">
+                            <Border Style="{StaticResource CommentBorderStyle}">
+                                <VerticalStackLayout Spacing="5">
+                                    <Label FontSize="Small" FontAttributes="Bold" TextColor="DarkSlateBlue">
+                                         <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding Authorname, Converter={StaticResource naConverter}}"/>
+                                                <Span Text=":"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                    <Label Text="{Binding Content, Converter={StaticResource naConverter}}"
+                                           FontSize="Small" TextColor="Black" LineBreakMode="WordWrap"/>
+                                    </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
     </Grid>
 
 </ContentPage>

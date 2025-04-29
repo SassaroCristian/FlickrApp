@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using FlickrApp.Models;
 using FlickrApp.Services;
 using Debug = System.Diagnostics.Debug;
+using System.Linq;
 
 namespace FlickrApp.ViewModels;
 
@@ -13,7 +14,11 @@ public partial class PhotoDetailsViewModel : ObservableObject
 
     [ObservableProperty] private string _photoId = string.Empty;
     [ObservableProperty] private FlickrDetails? _details = null;
-    [ObservableProperty] private ObservableCollection<FlickrComment> _comments = [];
+
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(CommentsHeaderTitle))]
+    private ObservableCollection<FlickrComment> _comments = [];
+
+    public string CommentsHeaderTitle => $"Comments ({Comments?.Count ?? 0})";
 
     public PhotoDetailsViewModel()
     {
@@ -22,6 +27,8 @@ public partial class PhotoDetailsViewModel : ObservableObject
     public PhotoDetailsViewModel(IFlickrApiService flickr)
     {
         _flickr = flickr;
+        if (_comments == null)
+            _comments = new ObservableCollection<FlickrComment>();
     }
 
     partial void OnPhotoIdChanged(string value)
@@ -32,6 +39,8 @@ public partial class PhotoDetailsViewModel : ObservableObject
 
     private async Task FillData()
     {
+        Details = null;
+        Comments.Clear();
         try
         {
             Debug.WriteLine("Getting details");
@@ -45,22 +54,24 @@ public partial class PhotoDetailsViewModel : ObservableObject
 
         try
         {
-            Debug.WriteLine("Getting comments");
+            Debug.WriteLine("Getting comments for PhotoId: " + PhotoId);
             var comments = await _flickr.GetCommentsAsync(PhotoId);
-            if (comments.Count == 0)
+            if (comments == null || comments.Count == 0)
             {
-                Debug.WriteLine("no comments");
-                return;
+                Debug.WriteLine("No comments found.");
+                OnPropertyChanged(nameof(CommentsHeaderTitle));
             }
+            else
+            {
+                Debug.WriteLine($"Received {comments.Count} comments.");
 
-            Comments = new ObservableCollection<FlickrComment>(comments);
-
-            Debug.WriteLine("Comments:\n");
-            foreach (var comment in Comments) Debug.WriteLine(comment.Content);
+                var tempComments = new ObservableCollection<FlickrComment>(comments);
+                Comments = tempComments;
+            }
         }
         catch (Exception e)
         {
-            Debug.WriteLine(e.Message);
+            Debug.WriteLine($"Error getting comments: {e.Message}");
         }
     }
 }
