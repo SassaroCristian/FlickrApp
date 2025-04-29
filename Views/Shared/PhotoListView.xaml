@@ -6,13 +6,21 @@
              xmlns:model="clr-namespace:FlickrApp.Models"
              x:Class="FlickrApp.Views.Shared.PhotoListView">
 
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentView.Resources>
+
     <CollectionView
-        ItemsSource="{Binding 
-            Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, 
+        ItemsSource="{Binding
+            Source={RelativeSource AncestorType={x:Type shared:PhotoListView}},
             Path=ItemsSource}"
         RemainingItemsThreshold="3"
-        RemainingItemsThresholdReachedCommand="{Binding 
-            Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, 
+        RemainingItemsThresholdReachedCommand="{Binding
+            Source={RelativeSource AncestorType={x:Type shared:PhotoListView}},
             Path=LoadMoreItemsCommand}">
         <CollectionView.ItemsLayout>
             <LinearItemsLayout
@@ -23,17 +31,20 @@
             <DataTemplate x:DataType="model:FlickrPhoto">
                 <Border
                     StrokeShape="RoundRectangle 25,25,25,25"
-                    StrokeThickness="0"
-                    HeightRequest="220" WidthRequest="363" BackgroundColor="Aquamarine">
+                    StrokeThickness="0" HeightRequest="220"
+                    WidthRequest="363"
+                    Padding="0,10"> <Border.Shadow>
+                        <Shadow Brush="Black"
+                                Offset="5,10"   Radius="10"    Opacity="0.6"/> </Border.Shadow>
                     <ImageButton
                         Source="{Binding MediumUrl}"
                         Aspect="AspectFill"
                         Command="{Binding
                             Source={RelativeSource AncestorType={x:Type shared:PhotoListView}},
                             Path=ItemTappedCommand}"
-                        CommandParameter="{Binding .}" />
-                </Border>
-            </DataTemplate>
+                        CommandParameter="{Binding .}"
+                        CornerRadius="25"/> </Border>
+                </DataTemplate>
         </CollectionView.ItemTemplate>
         <CollectionView.EmptyView>
             <Border
