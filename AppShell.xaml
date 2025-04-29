@@ -26,6 +26,33 @@
         </Grid>
     </Shell.FlyoutHeader>
 
+    <Shell.FlyoutFooter>
+        <Grid
+            HeightRequest="150">
+            <VerticalStackLayout
+                Spacing="1">
+                <StackLayout
+                    HeightRequest="1"
+                    BackgroundColor="LightGray" />
+                <VerticalStackLayout
+                    HorizontalOptions="Center"
+                    Margin="0,20,0,0"
+                    Spacing="15">
+                    <Label
+                        Text="Powered by:"
+                        FontFamily="RobotoRegular"
+                        FontSize="12"
+                        HorizontalOptions="Center" />
+                    <Image
+                        Source="overit"
+                        HeightRequest="35"
+                        Aspect="AspectFit"
+                        HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </Grid>
+    </Shell.FlyoutFooter>
+
     <Shell.ItemTemplate>
         <DataTemplate>
             <Grid

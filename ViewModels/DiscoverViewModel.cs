@@ -15,7 +15,7 @@ public partial class DiscoverViewModel : ObservableObject
     private readonly IFlickrApiService _flickr;
 
     private int _currentPage = 1;
-    private const int pageSize = 4;
+    private const int pageSize = 15;
     private bool moreItemsAvailable = true;
 
 
