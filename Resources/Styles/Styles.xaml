@@ -45,8 +45,8 @@
     <Style TargetType="Button" x:Key="ButtonFlickrAppTag">
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontFamily" Value="RobotoMedium" />
-        <!--Setter Property="TextColor" Value="{StaticResource TagTextColor}" />
-        <Setter Property="BackgroundColor" Value="{StaticResource TagBackgroundColor}" /-->
+        <Setter Property="TextColor" Value="{StaticResource ButtonTextColor}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource ButtonBackgroundColor}" />
         <Setter Property="Padding" Value="12,6" />
         <Setter Property="HeightRequest" Value="30" />
         <Setter Property="CornerRadius" Value="15" />

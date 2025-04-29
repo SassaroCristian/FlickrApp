@@ -10,22 +10,36 @@
     <Grid RowDefinitions="Auto, Auto, *, Auto" Margin="10">
         <ScrollView Orientation="Horizontal" Grid.Row="0" Padding="0,10,0,10">
             <HorizontalStackLayout Spacing="10">
-                <Button Text="Popular" Command="{Binding FilterByTagCommand}" CommandParameter="{x:Null}" />
-                <Button Text="Animals"
-                        Command="{Binding FilterByTagCommand}"
-                        CommandParameter="animals" />
-                <Button Text="Nature"
-                        Command="{Binding FilterByTagCommand}"
-                        CommandParameter="nature" />
-                <Button Text="Architecture"
-                        Command="{Binding FilterByTagCommand}"
-                        CommandParameter="architecture" />
-                <Button Text="People"
-                        Command="{Binding FilterByTagCommand}"
-                        CommandParameter="people" />
-                <Button Text="Travel"
-                        Command="{Binding FilterByTagCommand}"
-                        CommandParameter="travel" />
+                <Button
+                    Text="Popular"
+                    Style="{StaticResource ButtonFlickrAppTag}"
+                    Command="{Binding FilterByTagCommand}"
+                    CommandParameter="{x:Null}" />
+                <Button
+                    Text="Animals"
+                    Style="{StaticResource ButtonFlickrAppTag}"
+                    Command="{Binding FilterByTagCommand}"
+                    CommandParameter="animals" />
+                <Button
+                    Text="Nature"
+                    Style="{StaticResource ButtonFlickrAppTag}"
+                    Command="{Binding FilterByTagCommand}"
+                    CommandParameter="nature" />
+                <Button
+                    Text="Architecture"
+                    Style="{StaticResource ButtonFlickrAppTag}"
+                    Command="{Binding FilterByTagCommand}"
+                    CommandParameter="architecture" />
+                <Button
+                    Text="People"
+                    Style="{StaticResource ButtonFlickrAppTag}"
+                    Command="{Binding FilterByTagCommand}"
+                    CommandParameter="people" />
+                <Button
+                    Text="Travel"
+                    Style="{StaticResource ButtonFlickrAppTag}"
+                    Command="{Binding FilterByTagCommand}"
+                    CommandParameter="travel" />
             </HorizontalStackLayout>
         </ScrollView>
 
