@@ -10,21 +10,20 @@
         <viewModels:MapResultsViewModel />
     </ContentPage.BindingContext>
 
-    <Grid
-        RowDefinitions=".2*,.8*"
-        Style="{StaticResource GridFlickrAppContainer}">
+    <VerticalStackLayout
+        Style="{StaticResource GridFlickrAppContainer}"
+        Spacing="10">
 
-        <VerticalStackLayout
-            Grid.Row="0">
-            <Label Text="Map Results" />
-        </VerticalStackLayout>
+        <Label
+            FontSize="20"
+            FontAttributes="Bold"
+            Text="Map Results:" />
 
         <shared:PhotoListView
-            Grid.Row="1"
             ItemsSource="{Binding Photos}"
             LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}"
             ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" />
 
-    </Grid>
+    </VerticalStackLayout>
 
 </ContentPage>
