@@ -9,20 +9,74 @@
     Title="FlickrApp">
 
 
-    <FlyoutItem Title="Explore">
-        <Tab>
-            <ShellContent ContentTemplate="{DataTemplate views:DiscoverPage}" />
-        </Tab>
-    </FlyoutItem>
-    <FlyoutItem Title="Search">
-        <Tab>
-            <ShellContent ContentTemplate="{DataTemplate views:SearchPage}" />
-        </Tab>
-    </FlyoutItem>
-    <FlyoutItem Title="Map">
-        <Tab>
-            <ShellContent ContentTemplate="{DataTemplate views:MapsPage}" />
-        </Tab>
-    </FlyoutItem>
+    <Shell.FlyoutHeader>
+        <Grid
+            HeightRequest="150"
+            BackgroundColor="{StaticResource SecondaryBackgroundColor}">
+            <Image
+                Source="flyout_header.jpg"
+                Aspect="AspectFill"
+                Opacity=".6" />
+            <Label
+                Text="FlickrApp"
+                TextColor="{StaticResource SecondaryTextColor}"
+                FontAttributes="Bold"
+                Style="{StaticResource LabelFlickrAppTitle}"
+                HorizontalOptions="Center" />
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid
+                ColumnDefinitions="0.2*,0.8*"
+                Padding="10, 15">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter
+                                        Property="BackgroundColor"
+                                        Value="Transparent" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Selected">
+                                <VisualState.Setters>
+                                    <Setter
+                                        Property="BackgroundColor"
+                                        Value="{StaticResource SecondaryBackgroundColor}" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </VisualStateManager.VisualStateGroups>
+                <Image
+                    Grid.Column="0"
+                    Source="{Binding FlyoutIcon}"
+                    HeightRequest="25" />
+                <Label
+                    Grid.Column="1"
+                    Text="{Binding Title}"
+                    VerticalTextAlignment="Center"
+                    FontFamily="RobotoRegular" />
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+
+    <ShellContent
+        Icon="world"
+        Title="Explore"
+        ContentTemplate="{DataTemplate views:DiscoverPage}" />
+
+    <ShellContent
+        Icon="issue_loupe"
+        Title="Search"
+        ContentTemplate="{DataTemplate views:SearchPage}" />
+
+    <ShellContent
+        Icon="land_layer_location"
+        Title="Map"
+        ContentTemplate="{DataTemplate views:MapsPage}" />
 
 </Shell>
