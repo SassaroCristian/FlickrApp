@@ -14,11 +14,13 @@ public partial class MapsViewModel : ObservableObject
     private readonly IFlickrApiService _flickr;
 
     [ObservableProperty] private bool _isPinned = false;
+    [ObservableProperty] private bool _isListFull = false;
     [ObservableProperty] private string? _location = string.Empty;
     [ObservableProperty] private ObservableCollection<FlickrPhoto> _photos = [];
 
     private double _longitude = 0;
     private double _latitude = 0;
+
 
     public MapsViewModel()
     {
@@ -32,6 +34,7 @@ public partial class MapsViewModel : ObservableObject
 
     public async Task AddPinToMap(double latitude, double longitude)
     {
+        IsListFull = false;
         IsPinned = true;
 
         _latitude = latitude;
@@ -41,6 +44,7 @@ public partial class MapsViewModel : ObservableObject
         Location = locations.FirstOrDefault()?.CountryName;
 
         await LoadItemsAsync(latitude, longitude);
+        if (Photos.Count > 0) IsListFull = true;
     }
 
     private async Task LoadItemsAsync(double latitude, double longitude)

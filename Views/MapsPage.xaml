@@ -64,6 +64,8 @@
                     Grid.Row="1" Grid.Column="1"
                     Text="More..."
                     FontSize="10"
+                    IsVisible="{Binding IsListFull}"
+                    Padding="0" Margin="0"
                     BackgroundColor="{StaticResource PrimaryBackgroundColor}"
                     TextColor="{StaticResource PrimaryTextColor}"
                     Command="{Binding GoToMapResultsCommand}" />

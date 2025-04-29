@@ -20,6 +20,7 @@
         </VerticalStackLayout>
 
         <shared:PhotoListView
+            Grid.Row="1"
             ItemsSource="{Binding Photos}"
             LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}"
             ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" />
