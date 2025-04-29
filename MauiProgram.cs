@@ -35,11 +35,12 @@ public static class MauiProgram
         builder.Services.AddTransient<DiscoverViewModel>();
         builder.Services.AddTransient<PhotoDetailsViewModel>();
         builder.Services.AddTransient<MapsViewModel>();
+        builder.Services.AddTransient<SearchViewModel>();
 
 #if DEBUG
-		builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 #endif
 
-		return builder.Build();
-	}
+        return builder.Build();
+    }
 }

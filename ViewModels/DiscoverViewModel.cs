@@ -22,9 +22,9 @@ public partial class DiscoverViewModel : ObservableObject
     [ObservableProperty] private string _title = "Discover";
     [ObservableProperty] private ObservableCollection<FlickrPhoto> _photos = [];
 
-    // public DiscoverViewModel()
-    // {
-    // }
+     public DiscoverViewModel()
+     {
+     }
 
     [ObservableProperty] private bool _isLoading = false;
 
