@@ -24,7 +24,7 @@
                 <Border
                     StrokeShape="RoundRectangle 25,25,25,25"
                     StrokeThickness="0"
-                    HeightRequest="220"  WidthRequest="363"   BackgroundColor="Aquamarine">
+                    HeightRequest="220" WidthRequest="363" BackgroundColor="Aquamarine">
                     <ImageButton
                         Source="{Binding MediumUrl}"
                         Aspect="AspectFill"
@@ -35,6 +35,18 @@
                 </Border>
             </DataTemplate>
         </CollectionView.ItemTemplate>
+        <CollectionView.EmptyView>
+            <Border
+                StrokeThickness="0"
+                Padding="20">
+                <Image
+                    Source="photo_list_empty"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Aspect="AspectFit">
+                </Image>
+            </Border>
+        </CollectionView.EmptyView>
     </CollectionView>
 
 </ContentView>
