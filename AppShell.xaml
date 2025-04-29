@@ -1,15 +1,21 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <Shell
     x:Class="FlickrApp.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:FlickrApp"
+    xmlns:views="clr-namespace:FlickrApp.Views"
     Shell.FlyoutBehavior="Flyout"
     Title="FlickrApp">
+    
+    <ShellContent
+        Title="Discover"
+        ContentTemplate="{DataTemplate views:DiscoverPage}"
+        Route="MainPage" />
 
     <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        Title="Maps"
+        ContentTemplate="{DataTemplate views:MapsPage}"
+        Route="MapsPage" />
 
 </Shell>

@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using FlickrApp.Services;
+using FlickrApp.ViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace FlickrApp;
 
@@ -9,6 +12,8 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiMaps()
+            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -20,10 +25,21 @@ public static class MauiProgram
                 fonts.AddFont("Roboto-BoldItalic.ttf", "RobotoItalicBold");
             });
 
+        // SINGLETON
+        builder.Services.AddSingleton<HttpClient>();
+        builder.Services.AddSingleton<INavigationService, NavigationService>();
+        builder.Services.AddSingleton<ITokenService, TokenService>();
+        builder.Services.AddSingleton<IFlickrApiService, FlickrApiService>();
+
+        // TRANSIENT
+        builder.Services.AddTransient<DiscoverViewModel>();
+        builder.Services.AddTransient<PhotoDetailsViewModel>();
+        builder.Services.AddTransient<MapsViewModel>();
+
 #if DEBUG
-        builder.Logging.AddDebug();
+		builder.Logging.AddDebug();
 #endif
 
-        return builder.Build();
-    }
+		return builder.Build();
+	}
 }
