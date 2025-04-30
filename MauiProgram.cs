@@ -32,6 +32,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<IFlickrApiService, FlickrApiService>();
 
         // TRANSIENT
+        builder.Services.AddTransient<AppShell>();
+        builder.Services.AddTransient<AppShellViewModel>();
         builder.Services.AddTransient<DiscoverViewModel>();
         builder.Services.AddTransient<PhotoDetailsViewModel>();
         builder.Services.AddTransient<MapsViewModel>();
