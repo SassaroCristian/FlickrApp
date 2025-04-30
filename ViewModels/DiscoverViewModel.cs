@@ -19,6 +19,8 @@ public partial class DiscoverViewModel : ObservableObject
     private bool moreItemsAvailable = true;
 
 
+    private const string ExcludedTags = "-naked,-Naked";
+    
     [ObservableProperty] private string _title = "Discover";
     [ObservableProperty] private ObservableCollection<FlickrPhoto> _photos = [];
 
@@ -41,7 +43,7 @@ public partial class DiscoverViewModel : ObservableObject
             }
             else
             {
-                // Capitalize the first letter of the tag for better display
+                
                 TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
                 return $"{textInfo.ToTitleCase(CurrentTagFilter)}:";
             }
@@ -52,8 +54,7 @@ public partial class DiscoverViewModel : ObservableObject
     {
         _navigation = navigation;
         _flickr = flickr;
-        // Task.Run(LoadItems);
-        InitializeViewModelCommand = new AsyncRelayCommand(InitializeViewModel); // comando per l'inizializzazione
+        InitializeViewModelCommand = new AsyncRelayCommand(InitializeViewModel); 
         InitializeViewModelCommand.Execute(null);
     }
 
@@ -61,7 +62,7 @@ public partial class DiscoverViewModel : ObservableObject
 
     private async Task InitializeViewModel()
     {
-        // Carica i dati iniziali (popolari/recenti)
+        
         await FetchPhotosAsync(page: 1, isNewSearchOrFilter: true, tag: string.Empty);
     }
 
@@ -95,7 +96,7 @@ public partial class DiscoverViewModel : ObservableObject
         await FetchPhotosAsync(page: _currentPage + 1, isNewSearchOrFilter: false, tag: CurrentTagFilter);
     }
 
-    private bool CanLoadMore() // Metodo che abilita/disabilita il comando
+    private bool CanLoadMore() 
     {
         return !IsLoading && moreItemsAvailable;
     }
@@ -103,7 +104,7 @@ public partial class DiscoverViewModel : ObservableObject
     [RelayCommand]
     private async Task GoToPhotoDetails(FlickrPhoto photo)
     {
-        if (photo == null) // Add this check
+        if (photo == null) 
         {
             Debug.WriteLine("GoToPhotoDetails called with null photo.");
             return;
@@ -113,7 +114,7 @@ public partial class DiscoverViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task FilterByTag(string tag) // Il comando riceve il tag come stringa
+    private async Task FilterByTag(string tag) 
     {
         await FetchPhotosAsync(page: 1, isNewSearchOrFilter: true, tag: tag ?? string.Empty);
     }
@@ -122,16 +123,18 @@ public partial class DiscoverViewModel : ObservableObject
     private async Task FetchPhotosAsync(int page, bool isNewSearchOrFilter, string tag)
     {
         if (IsLoading || (!isNewSearchOrFilter && !moreItemsAvailable))
+        {
+             Debug.WriteLine($"---> Fetch skipped. IsLoading: {IsLoading}, MoreItemsAvailable: {moreItemsAvailable}");
             return;
+        }
 
         IsLoading = true;
-        
+
         if (isNewSearchOrFilter)
         {
             moreItemsAvailable = true;
             Debug.WriteLine("---> Resetting moreItemsAvailable to true for new search/filter.");
         }
-
         LoadMoreItemsCommand.NotifyCanExecuteChanged();
 
         try
@@ -142,18 +145,33 @@ public partial class DiscoverViewModel : ObservableObject
                 _currentPage = 1;
                 Photos.Clear();
                 Debug.WriteLine(
-                    $"---> Nuova Ricerca/Filtro. Tag: '{CurrentTagFilter}'. Pagina resettata a {_currentPage}.");
+                    $"---> New Search/Filter. Tag: '{CurrentTagFilter}'. Page reset to {_currentPage}.");
             }
             else
             {
                 _currentPage = page;
-                Debug.WriteLine($"---> Carica Altro. Tag: '{CurrentTagFilter}'. Pagina: {_currentPage}.");
+                Debug.WriteLine($"---> Load More. Tag: '{CurrentTagFilter}'. Requesting page: {_currentPage}.");
             }
 
+            
+            string finalTagsParameter;
+            if (!string.IsNullOrEmpty(CurrentTagFilter))
+            {
+                
+                finalTagsParameter = $"{CurrentTagFilter},{ExcludedTags}";
+            }
+            else
+            {
+                
+                finalTagsParameter = ExcludedTags;
+            }
+            Debug.WriteLine($"---> Using final tags parameter for API: '{finalTagsParameter}'");
+            
 
+            
             var newPhotos = await _flickr.SearchAsync(
                 text: null,
-                tags: CurrentTagFilter,
+                tags: finalTagsParameter, 
                 page: _currentPage,
                 perPage: pageSize
             );
@@ -173,7 +191,6 @@ public partial class DiscoverViewModel : ObservableObject
                         Debug.WriteLine($"---> Skipping duplicate photo ID: {photo.Id}");
                     }
                 }
-
                 Debug.WriteLine($"---> Added {addedCount} NEW photos.");
 
                 if (newPhotos.Count < pageSize)
@@ -185,11 +202,13 @@ public partial class DiscoverViewModel : ObservableObject
             }
             else
             {
+                 Debug.WriteLine("---> No photos received from API.");
                 moreItemsAvailable = false;
             }
         }
         catch (Exception ex)
         {
+             Debug.WriteLine($"### ERROR during FetchPhotosAsync: {ex.Message}");
             moreItemsAvailable = false;
         }
         finally

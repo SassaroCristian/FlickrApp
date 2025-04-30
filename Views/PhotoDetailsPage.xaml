@@ -86,7 +86,7 @@
                     <Label Grid.Row="0" Grid.Column="1" Text="{Binding Details.Owner.Username, Converter={StaticResource naConverter}}" Style="{StaticResource DetailValueStyle}"/>
 
                     <Label Grid.Row="1" Grid.Column="0" Text="Date Uploaded:" Style="{StaticResource DetailLabelStyle}"/>
-                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding Details.Dates.Posted, Converter={StaticResource naConverter}}" Style="{StaticResource DetailValueStyle}"/>
+                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding Details.Dates.Taken, Converter={StaticResource naConverter}}" Style="{StaticResource DetailValueStyle}"/>
 
                     <Label Grid.Row="2" Grid.Column="0" Text="Description:" Style="{StaticResource DetailLabelStyle}"/>
                     <Label Grid.Row="2" Grid.Column="1" Text="{Binding Details.Description.Content, Converter={StaticResource naConverter}}" Style="{StaticResource DetailValueStyle}"/>
