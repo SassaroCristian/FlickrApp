@@ -13,8 +13,8 @@ public partial class AppShellViewModel : ObservableObject
     private int _lastIndex = -1;
     private List<FlickrPhoto> _photos = [];
 
-    [ObservableProperty] private bool _isFlyoutOpen = false;
-    [ObservableProperty] private string _headerBackgroundSource;
+    [ObservableProperty] private bool _isFlyoutOpen;
+    [ObservableProperty] private string _headerBackgroundSource = "flyout_header.jpg";
 
     public AppShellViewModel()
     {
