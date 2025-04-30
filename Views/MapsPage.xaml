@@ -39,13 +39,25 @@
                     VerticalTextAlignment="Center" />
                 <CollectionView
                     Grid.Row="1" Grid.Column="0"
-                    ItemsSource="{Binding Photos}"
-                    HorizontalOptions="Center">
+                    ItemsSource="{Binding Photos}">
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout
                             Orientation="Horizontal"
                             ItemSpacing="5" />
                     </CollectionView.ItemsLayout>
+                    <CollectionView.EmptyView>
+                        <Border
+                            StrokeThickness="0">
+                            <Label
+                                Text="No Results..."
+                                FontFamily="RobotoRegular"
+                                FontSize="12"
+                                Margin="5,0,0,0"
+                                VerticalTextAlignment="Center"
+                                HorizontalTextAlignment="Start"
+                                TextColor="{StaticResource Gray400}" />
+                        </Border>
+                    </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Border
@@ -64,6 +76,7 @@
                     Grid.Row="1" Grid.Column="1"
                     Text="More..."
                     FontSize="10"
+                    FontFamily="RobotoRegular"
                     IsVisible="{Binding IsListFull}"
                     Padding="0" Margin="0"
                     BackgroundColor="{StaticResource PrimaryBackgroundColor}"
