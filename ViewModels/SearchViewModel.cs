@@ -3,65 +3,54 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlickrApp.Models;
 using FlickrApp.Services;
-using Debug = System.Diagnostics.Debug;
 
 namespace FlickrApp.ViewModels;
 
-public partial class SearchViewModel : ObservableObject
+public partial class SearchViewModel(INavigationService navigation, IFlickrApiService flickr) : BaseViewModel
 {
     private const int perPage = 10;
-    private readonly IFlickrApiService _flickr;
-    private readonly INavigationService _navigation;
 
+    private bool _moreItemsAvailable = true;
     private int _page = 1;
+    
     [ObservableProperty] private ObservableCollection<FlickrPhoto> _photos = [];
-
     [ObservableProperty] private string _searchText = string.Empty;
 
-    public SearchViewModel()
-    {
-    }
-
-    public SearchViewModel(INavigationService navigation, IFlickrApiService flickr)
-    {
-        _navigation = navigation;
-        _flickr = flickr;
-    }
-
     [RelayCommand]
-    private async Task Search()
+    private void Search()
     {
-        try
+        _ = ExecuteSafelyAsync(async () =>
         {
             _page = 1;
-            var response = await _flickr.SearchAsync(SearchText, string.Empty, _page);
+            _moreItemsAvailable = true;
+
+            var response = await flickr.SearchAsync(SearchText, string.Empty, _page);
             Photos = new ObservableCollection<FlickrPhoto>(response);
-        }
-        catch (Exception e)
-        {
-            Debug.WriteLine(e.Message);
-        }
+
+            if (response.Count < perPage) _moreItemsAvailable = false;
+        });
     }
 
     [RelayCommand]
-    private async Task LoadMoreItems()
+    private void LoadMoreItems()
     {
-        try
+        if (!_moreItemsAvailable) return;
+
+        _ = ExecuteSafelyAsync(async () =>
         {
             _page++;
-            var response = await _flickr.SearchMoreAsync(SearchText, string.Empty, _page);
+
+            var response = await flickr.SearchMoreAsync(SearchText, string.Empty, _page);
             foreach (var photo in response)
                 Photos.Add(photo);
-        }
-        catch (Exception e)
-        {
-            Debug.WriteLine(e.Message);
-        }
+
+            if (response.Count < perPage) _moreItemsAvailable = false;
+        });
     }
 
     [RelayCommand]
     private async Task GoToPhotoDetails(FlickrPhoto photo)
     {
-        await _navigation.GoToAsync("PhotoDetailsPage", new Dictionary<string, object> { { "PhotoId", photo.Id } });
+        await navigation.GoToAsync("PhotoDetailsPage", new Dictionary<string, object> { { "PhotoId", photo.Id } });
     }
 }

@@ -33,13 +33,10 @@ public partial class DiscoverViewModel : ObservableObject
         get
         {
             if (string.IsNullOrEmpty(CurrentTagFilter))
-            {
                 return "Popular:";
-            }
             else
             {
-                
-                TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+                var textInfo = CultureInfo.CurrentCulture.TextInfo;
                 return $"{textInfo.ToTitleCase(CurrentTagFilter)}:";
             }
         }
@@ -61,33 +58,9 @@ public partial class DiscoverViewModel : ObservableObject
         await FetchPhotosAsync(page: 1, isNewSearchOrFilter: true, tag: string.Empty);
     }
 
-    // private async Task LoadItems()
-    // {
-    //     try
-    //     {
-    //         var recentPhotos = await _flickr.GetRecentAsync(1, 10);
-    //         Photos = new ObservableCollection<FlickrPhoto>(recentPhotos);
-    //         page = 2;
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Debug.WriteLine(e.Message);
-    //     }
-    // }
-
     [RelayCommand(CanExecute = nameof(CanLoadMore))]
     private async Task LoadMoreItems()
     {
-        // try
-        // {
-        //     var recentPhotos = await _flickr.GetMoreRecentAsync(page, 10);
-        //     recentPhotos.ForEach(element => Photos.Add(element));
-        //     page++;
-        // }
-        // catch (Exception e)
-        // {
-        //     Debug.WriteLine(e.Message);
-        // }
         await FetchPhotosAsync(page: _currentPage + 1, isNewSearchOrFilter: false, tag: CurrentTagFilter);
     }
 
@@ -97,7 +70,7 @@ public partial class DiscoverViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task GoToPhotoDetails(FlickrPhoto photo)
+    private async Task GoToPhotoDetails(FlickrPhoto? photo)
     {
         if (photo == null) 
         {
@@ -169,9 +142,9 @@ public partial class DiscoverViewModel : ObservableObject
                 perPage: pageSize
             );
 
-            if (newPhotos != null && newPhotos.Any())
+            if (newPhotos.Count != 0)
             {
-                int addedCount = 0;
+                var addedCount = 0;
                 foreach (var photo in newPhotos)
                 {
                     if (!Photos.Any(p => p.Id == photo.Id))
