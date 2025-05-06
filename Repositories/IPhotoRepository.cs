@@ -4,7 +4,6 @@ namespace FlickrApp.Repositories;
 
 public interface IPhotoRepository
 {
-    public List<Photo> GetPhotos();
     Task<List<Photo>> GetAllPhotosAsync(); 
     Task<Photo> GetPhotoByIdAsync(string id); 
     Task<int> SavePhotoAsync(Photo photo); 
