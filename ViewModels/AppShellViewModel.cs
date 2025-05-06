@@ -14,10 +14,6 @@ public partial class AppShellViewModel : ObservableObject
     private int _lastIndex = -1;
     private List<FlickrPhoto> _photos = [];
 
-    public AppShellViewModel()
-    {
-    }
-
     public AppShellViewModel(IFlickrApiService flickr)
     {
         _flickr = flickr;

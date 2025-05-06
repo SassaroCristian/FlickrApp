@@ -5,7 +5,8 @@ namespace FlickrApp.ViewModels;
 
 public abstract partial class BaseViewModel : ObservableObject
 {
-    [ObservableProperty] private bool _isBusy;
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsNotBusy))]
+    private bool _isBusy;
     public bool IsNotBusy => !IsBusy;
 
     protected void ExecuteSafely(Action operation, Action<Exception>? onError = null, Action? onComplete = null)
