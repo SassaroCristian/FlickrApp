@@ -18,15 +18,11 @@ public partial class PhotoDetailsViewModel : ObservableObject
 
     [ObservableProperty] private string _photoId = string.Empty;
 
-    public PhotoDetailsViewModel()
-    {
-    }
-
     public PhotoDetailsViewModel(IFlickrApiService flickr)
     {
         _flickr = flickr;
-        if (_comments == null)
-            _comments = new ObservableCollection<FlickrComment>();
+
+        Debug.WriteLine("----------> PhotoDetailsViewModel constructor called");
     }
 
     public string CommentsHeaderTitle => $"Comments ({Comments?.Count ?? 0})";

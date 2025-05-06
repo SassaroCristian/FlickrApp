@@ -1,12 +1,9 @@
-using FlickrApp.ViewModels;
-
 namespace FlickrApp.Views;
 
 public partial class MapResultsPage : ContentPage
 {
-    public MapResultsPage(MapResultsViewModel vm)
+    public MapResultsPage()
     {
         InitializeComponent();
-        BindingContext = vm;
     }
 }

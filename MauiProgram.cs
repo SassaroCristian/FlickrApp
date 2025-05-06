@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Maui;
+using FlickrApp.Locators;
 using FlickrApp.Services;
 using FlickrApp.ViewModels;
+using FlickrApp.Views;
 using Microsoft.Extensions.Logging;
 
 namespace FlickrApp;
@@ -25,6 +27,10 @@ public static class MauiProgram
                 fonts.AddFont("Roboto-BoldItalic.ttf", "RobotoItalicBold");
             });
 
+#if DEBUG
+        builder.Logging.AddDebug();
+#endif
+
         // SINGLETON
         builder.Services.AddSingleton<HttpClient>();
         builder.Services.AddSingleton<INavigationService, NavigationService>();
@@ -34,16 +40,25 @@ public static class MauiProgram
         // TRANSIENT
         builder.Services.AddTransient<AppShell>();
         builder.Services.AddTransient<AppShellViewModel>();
+        // DiscoverPage
+        builder.Services.AddTransient<DiscoverPage>();
         builder.Services.AddTransient<DiscoverViewModel>();
+        // PhotoDetails
+        builder.Services.AddTransient<PhotoDetailsPage>();
         builder.Services.AddTransient<PhotoDetailsViewModel>();
+        // Maps
+        builder.Services.AddTransient<MapsPage>();
         builder.Services.AddTransient<MapsViewModel>();
+        // Map Result
+        builder.Services.AddTransient<MapResultsPage>();
         builder.Services.AddTransient<MapResultsViewModel>();
+        // Search
+        builder.Services.AddTransient<SearchPage>();
         builder.Services.AddTransient<SearchViewModel>();
 
-#if DEBUG
-        builder.Logging.AddDebug();
-#endif
+        var app = builder.Build();
+        ViewModelLocator.Initialize(app.Services);
 
-        return builder.Build();
+        return app;
     }
 }
