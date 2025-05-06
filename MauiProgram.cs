@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui;
+﻿using System.Diagnostics;
+using CommunityToolkit.Maui;
 using FlickrApp.Locators;
 using FlickrApp.Services;
 using FlickrApp.ViewModels;
@@ -31,6 +32,17 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
+        AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+        {
+            var ex = args.ExceptionObject as Exception;
+            Debug.WriteLine($"AppDomain Unhandled Exception: {ex}");
+        };
+        TaskScheduler.UnobservedTaskException += (sender, args) =>
+        {
+            Debug.WriteLine($"Unobserved Task Exception: {args.Exception}");
+            args.SetObserved();
+        };
+        
         // SINGLETON
         builder.Services.AddSingleton<HttpClient>();
         builder.Services.AddSingleton<INavigationService, NavigationService>();
