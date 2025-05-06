@@ -1,65 +1,53 @@
-using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FlickrApp.ViewModels;
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
-using System.ComponentModel; 
-using Sensors = Microsoft.Maui.Devices.Sensors;
 
 namespace FlickrApp.Views;
 
 public partial class MapsPage : ContentPage
 {
-    private MapsViewModel _vm;
-
+    private readonly MapsViewModel? _vm;
     
     public MapsPage(MapsViewModel vm)
     {
         InitializeComponent();
-        BindingContext = _vm = vm;
 
+        _vm = BindingContext as MapsViewModel;
+        if (_vm == null)
+            return;
         
         _vm.PropertyChanged += ViewModel_PropertyChanged;
     }
 
-    
-    private async void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e) 
+
+    private async void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        
-        if (e.PropertyName == nameof(MapsViewModel.SelectedWonder))
+        if (_vm == null) return;
+        if (e.PropertyName != nameof(MapsViewModel.SelectedWonder)) return;
+        if (_vm.SelectedWonder == null) return;
+
+        SetMapLocation(_vm.SelectedWonder.Location);
+
+        var wonderPin = new Pin
         {
-            
-            if (_vm.SelectedWonder != null)
-            {
-                
-                SetMapLocation(_vm.SelectedWonder.Location);
+            Label = _vm.SelectedWonder.Name,
+            Location = _vm.SelectedWonder.Location,
+            Type = PinType.Place
+        };
+        MyMap.Pins.Add(wonderPin);
 
-                var wonderPin = new Pin
-                {
-                    Label = _vm.SelectedWonder.Name, 
-                    Location = _vm.SelectedWonder.Location,
-                    Type = PinType.Place 
-                };
-                MyMap.Pins.Add(wonderPin);
-                
-                await _vm.AddPinToMap(_vm.SelectedWonder.Location.Latitude, _vm.SelectedWonder.Location.Longitude);
-
-                
-            }
-        }
+        await _vm.AddPinToMap(_vm.SelectedWonder.Location.Latitude, _vm.SelectedWonder.Location.Longitude);
     }
 
-    
-    private void SetMapLocation(Sensors.Location location) 
-    {
-        double latitudeDegrees = 0.1; 
-        double longitudeDegrees = 0.1; 
 
-        MapSpan span = new MapSpan(location, latitudeDegrees, longitudeDegrees);
+    private void SetMapLocation(Location location) 
+    {
+        const double latitudeDegrees = 0.1;
+        const double longitudeDegrees = 0.1;
+
+        var span = new MapSpan(location, latitudeDegrees, longitudeDegrees);
 
         MyMap.Pins.Clear();
         
@@ -73,23 +61,32 @@ public partial class MapsPage : ContentPage
 
     private async void OnMapClicked(object? sender, MapClickedEventArgs e)
     {
-        var tappedLocation = e.Location;
-
-        MyMap.Pins.Clear();
-
-        var pin = new Pin()
+        try
         {
-            Label = "Selected Location",
-            Location = tappedLocation,
-            Address = $"Lat: {tappedLocation.Latitude:F5}, Lon: {tappedLocation.Longitude:F5}",
-            Type = PinType.Place
-        };
+            if (_vm == null) return;
 
-        MyMap.Pins.Add(pin);
+            var tappedLocation = e.Location;
 
-        Debug.WriteLine($"Added pin at [Lat: {tappedLocation.Latitude:F5}, Lon: {tappedLocation.Longitude:F5}]");
+            MyMap.Pins.Clear();
 
-        await _vm.AddPinToMap(tappedLocation.Latitude, tappedLocation.Longitude);
+            var pin = new Pin
+            {
+                Label = "Selected Location",
+                Location = tappedLocation,
+                Address = $"Lat: {tappedLocation.Latitude:F5}, Lon: {tappedLocation.Longitude:F5}",
+                Type = PinType.Place
+            };
+
+            MyMap.Pins.Add(pin);
+
+            Debug.WriteLine($"Added pin at [Lat: {tappedLocation.Latitude:F5}, Lon: {tappedLocation.Longitude:F5}]");
+
+            await _vm.AddPinToMap(tappedLocation.Latitude, tappedLocation.Longitude);
+        }
+        catch (Exception exception)
+        {
+            Debug.WriteLine(exception.Message);
+        }
     }
 
     protected override void OnDisappearing()

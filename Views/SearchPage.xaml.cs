@@ -1,12 +1,9 @@
-using FlickrApp.ViewModels;
-
 namespace FlickrApp.Views;
 
 public partial class SearchPage : ContentPage
 {
-    public SearchPage(SearchViewModel vm)
+    public SearchPage()
     {
         InitializeComponent();
-        BindingContext = vm;
     }
 }

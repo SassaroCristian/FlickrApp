@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using FlickrApp.Models;
 using FlickrApp.Services;
 using Debug = System.Diagnostics.Debug;
-using System.Linq;
 
 namespace FlickrApp.ViewModels;
 
@@ -20,15 +19,11 @@ public partial class PhotoDetailsViewModel : ObservableObject
 
     public string CommentsHeaderTitle => $"Comments ({Comments?.Count ?? 0})";
 
-    public PhotoDetailsViewModel()
-    {
-    }
-
     public PhotoDetailsViewModel(IFlickrApiService flickr)
     {
         _flickr = flickr;
-        if (_comments == null)
-            _comments = new ObservableCollection<FlickrComment>();
+
+        Debug.WriteLine("----------> PhotoDetailsViewModel constructor called");
     }
 
     partial void OnPhotoIdChanged(string value)

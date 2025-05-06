@@ -2,13 +2,20 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:FlickrApp.ViewModels"
+
+             xmlns:locators="clr-namespace:FlickrApp.Locators"
+             xmlns:viewModels="clr-namespace:FlickrApp.ViewModels"
              xmlns:model="clr-namespace:FlickrApp.Models"
              xmlns:converters="clr-namespace:FlickrApp.Converters"
+
+             x:DataType="viewModels:PhotoDetailsViewModel"
+             BindingContext="{x:Static locators:ViewModelLocator.PhotoDetailsViewModel}"
+             
              x:Class="FlickrApp.Views.PhotoDetailsPage"
-             x:DataType="vm:PhotoDetailsViewModel"
              Title="{Binding Details.Title.Content, StringFormat='Details: {0}', TargetNullValue='Photo Details'}"
-             BackgroundColor="{StaticResource PrimaryBackgroundColor}"> <ContentPage.Resources>
+             BackgroundColor="{StaticResource PrimaryBackgroundColor}">
+
+    <ContentPage.Resources>
         <ResourceDictionary>
             <converters:NullOrEmptyToNaConverter x:Key="naConverter" />
             <converters:TagListToStringConverter x:Key="tagListConverter" />

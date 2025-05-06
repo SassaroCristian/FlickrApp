@@ -3,13 +3,15 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:maps="http://schemas.microsoft.com/dotnet/2021/maui/maps"
+             
              xmlns:viewModels="clr-namespace:FlickrApp.ViewModels"
+             xmlns:locators="clr-namespace:FlickrApp.Locators"
+
+             x:DataType="viewModels:MapsViewModel"
+             BindingContext="{x:Static locators:ViewModelLocator.MapsViewModel}"
+             
              x:Class="FlickrApp.Views.MapsPage"
              Title="Map">
-
-    <ContentPage.BindingContext>
-        <viewModels:MapsViewModel />
-    </ContentPage.BindingContext>
 
     <Grid RowDefinitions="Auto, Auto, *" Margin="0, 10">
 
