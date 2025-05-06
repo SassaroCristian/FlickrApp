@@ -9,7 +9,6 @@
     xmlns:viewModels="clr-namespace:FlickrApp.ViewModels"
     xmlns:locators="clr-namespace:FlickrApp.Locators"
 
-    x:DataType="viewModels:AppShellViewModel"
     BindingContext="{x:Static locators:ViewModelLocator.AppShellViewModel}"
     
     Shell.FlyoutBehavior="Flyout"

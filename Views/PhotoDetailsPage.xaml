@@ -4,11 +4,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 
              xmlns:locators="clr-namespace:FlickrApp.Locators"
-             xmlns:viewModels="clr-namespace:FlickrApp.ViewModels"
              xmlns:model="clr-namespace:FlickrApp.Models"
              xmlns:converters="clr-namespace:FlickrApp.Converters"
 
-             x:DataType="viewModels:PhotoDetailsViewModel"
              BindingContext="{x:Static locators:ViewModelLocator.PhotoDetailsViewModel}"
              
              x:Class="FlickrApp.Views.PhotoDetailsPage"
