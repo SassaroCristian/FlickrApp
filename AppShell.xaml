@@ -16,10 +16,6 @@
     
     Title="FlickrApp">
 
-    <ContentPage.BindingContext>
-        <viewModels:AppShellViewModel />
-    </ContentPage.BindingContext>
-
     <Shell.FlyoutHeader>
         <Grid
             HeightRequest="150"
