@@ -10,10 +10,10 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
 {
     private const string baseUrl = "https://www.flickr.com/services/rest/";
     private const string apiKey = "255ac8fdac4726aa339fa1c2161b9e5b";
+    private DateTime _getForLocationMaxUploadDate = DateTime.UtcNow;
 
     private DateTime _getRecentMaxUploadDate = DateTime.UtcNow;
     private DateTime _searchMaxUploadDate = DateTime.UtcNow;
-    private DateTime _getForLocationMaxUploadDate = DateTime.UtcNow;
 
     public async Task<List<FlickrPhoto>> GetRecentAsync(int page = 1, int perPage = 10)
     {
@@ -23,7 +23,7 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
 
     public async Task<List<FlickrPhoto>> GetMoreRecentAsync(int page = 1, int perPage = 10)
     {
-        var queryParams = new Dictionary<string, string>()
+        var queryParams = new Dictionary<string, string>
         {
             { "method", "flickr.photos.search" },
             { "format", "json" },
@@ -55,7 +55,7 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
 
     public async Task<List<FlickrPhoto>> SearchMoreAsync(string text, string tags, int page = 1, int perPage = 10)
     {
-        var queryParams = new Dictionary<string, string>()
+        var queryParams = new Dictionary<string, string>
         {
             { "method", "flickr.photos.search" },
             { "format", "json" },
@@ -90,7 +90,7 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
     public async Task<List<FlickrPhoto>> GetMoreForLocationAsync(string latitude, string longitude, int page = 1,
         int perPage = 10)
     {
-        var queryParams = new Dictionary<string, string>()
+        var queryParams = new Dictionary<string, string>
         {
             { "method", "flickr.photos.search" },
             { "format", "json" },
@@ -116,7 +116,7 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
 
     public async Task<FlickrDetails?> GetDetailsAsync(string photoId)
     {
-        var queryParams = new Dictionary<string, string>()
+        var queryParams = new Dictionary<string, string>
         {
             { "method", "flickr.photos.getInfo" },
             { "format", "json" },
@@ -138,7 +138,7 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
 
     public async Task<List<FlickrComment>> GetCommentsAsync(string photoId)
     {
-        var queryParams = new Dictionary<string, string>()
+        var queryParams = new Dictionary<string, string>
         {
             { "method", "flickr.photos.comments.getList" },
             { "format", "json" },

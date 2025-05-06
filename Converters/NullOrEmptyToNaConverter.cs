@@ -1,7 +1,6 @@
 using System.Globalization;
-using Microsoft.Maui.Controls;
 
-namespace FlickrApp.Converters; 
+namespace FlickrApp.Converters;
 
 public class NullOrEmptyToNaConverter : IValueConverter
 {
@@ -9,16 +8,10 @@ public class NullOrEmptyToNaConverter : IValueConverter
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value == null)
-        {
-            return NotAvailableText;
-        }
+        if (value == null) return NotAvailableText;
 
-        if (value is string str)
-        {
-            return string.IsNullOrWhiteSpace(str) ? NotAvailableText : str;
-        }
-        
+        if (value is string str) return string.IsNullOrWhiteSpace(str) ? NotAvailableText : str;
+
         return value;
     }
 

@@ -11,17 +11,17 @@ namespace FlickrApp.ViewModels;
 [QueryProperty(nameof(Longitude), nameof(Longitude))]
 public partial class MapResultsViewModel : ObservableObject
 {
-    private readonly INavigationService _navigation;
+    private const int perPage = 10;
     private readonly IFlickrApiService _flickr;
+    private readonly INavigationService _navigation;
+
+    private bool _isLatitudeSet;
+    private bool _isLongitudeSet;
 
     [ObservableProperty] private string _latitude = string.Empty;
     [ObservableProperty] private string _longitude = string.Empty;
 
-    private bool _isLatitudeSet = false;
-    private bool _isLongitudeSet = false;
-
     private int _page = 1;
-    private const int perPage = 10;
 
     [ObservableProperty] private ObservableCollection<FlickrPhoto> _photos = [];
 
@@ -62,7 +62,7 @@ public partial class MapResultsViewModel : ObservableObject
         {
             _page = 1;
             Debug.WriteLine($"latitude: {Latitude}, longitude: {Longitude}");
-            var result = await _flickr.GetForLocationAsync(Latitude, Longitude, _page, perPage);
+            var result = await _flickr.GetForLocationAsync(Latitude, Longitude, _page);
 
             Photos = new ObservableCollection<FlickrPhoto>(result);
         }
@@ -78,11 +78,8 @@ public partial class MapResultsViewModel : ObservableObject
         try
         {
             _page++;
-            var result = await _flickr.GetMoreForLocationAsync(Latitude, Longitude, _page, perPage);
-            foreach (var photo in result)
-            {
-                Photos.Add(photo);
-            }
+            var result = await _flickr.GetMoreForLocationAsync(Latitude, Longitude, _page);
+            foreach (var photo in result) Photos.Add(photo);
         }
         catch (Exception e)
         {
@@ -94,6 +91,6 @@ public partial class MapResultsViewModel : ObservableObject
     private async Task GoToPhotoDetailsAsync(FlickrPhoto photo)
     {
         await _navigation.GoToAsync("PhotoDetailsPage",
-            new Dictionary<string, object>() { { "PhotoId", photo.Id } });
+            new Dictionary<string, object> { { "PhotoId", photo.Id } });
     }
 }

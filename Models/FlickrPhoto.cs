@@ -4,6 +4,7 @@ namespace FlickrApp.Models;
 
 public class FlickrPhoto
 {
+    private const string baseUrl = "https://live.staticflickr.com";
     [JsonPropertyName("id")] public string Id { get; set; }
 
     [JsonPropertyName("owner")] public string Owner { get; set; }
@@ -22,20 +23,9 @@ public class FlickrPhoto
 
     [JsonPropertyName("isfamily")] public int Isfamily { get; set; }
 
-    private const string baseUrl = "https://live.staticflickr.com";
+    public string LargeUrl => $"{baseUrl}/{Server}/{Id}_{Secret}_b.jpg";
 
-    public string LargeUrl
-    {
-        get => $"{baseUrl}/{Server}/{Id}_{Secret}_b.jpg";
-    }
+    public string MediumUrl => $"{baseUrl}/{Server}/{Id}_{Secret}_m.jpg";
 
-    public string MediumUrl
-    {
-        get => $"{baseUrl}/{Server}/{Id}_{Secret}_m.jpg";
-    }
-
-    public string SmallUrl
-    {
-        get => $"{baseUrl}/{Server}/{Id}_{Secret}_s.jpg";
-    }
+    public string SmallUrl => $"{baseUrl}/{Server}/{Id}_{Secret}_s.jpg";
 }

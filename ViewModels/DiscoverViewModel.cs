@@ -5,65 +5,57 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlickrApp.Models;
 using FlickrApp.Services;
-using System.Linq;
 
 namespace FlickrApp.ViewModels;
 
 public partial class DiscoverViewModel : ObservableObject
 {
-    private readonly INavigationService _navigation;
-    private readonly IFlickrApiService _flickr;
-
-    private int _currentPage = 1;
     private const int pageSize = 15;
-    private bool moreItemsAvailable = true;
 
 
     private const string ExcludedTags = "-naked,-Naked";
-    
-    [ObservableProperty] private string _title = "Discover";
-    [ObservableProperty] private ObservableCollection<FlickrPhoto> _photos = [];
+    private readonly IFlickrApiService _flickr;
+    private readonly INavigationService _navigation;
 
-     public DiscoverViewModel()
-     {
-     }
-
-    [ObservableProperty] private bool _isLoading = false;
+    private int _currentPage = 1;
 
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(FilterDisplayTitle))]
     private string _currentTagFilter = string.Empty;
 
-    public string FilterDisplayTitle
+    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty] private ObservableCollection<FlickrPhoto> _photos = [];
+
+    [ObservableProperty] private string _title = "Discover";
+    private bool moreItemsAvailable = true;
+
+    public DiscoverViewModel()
     {
-        get
-        {
-            if (string.IsNullOrEmpty(CurrentTagFilter))
-            {
-                return "Popular:";
-            }
-            else
-            {
-                
-                TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
-                return $"{textInfo.ToTitleCase(CurrentTagFilter)}:";
-            }
-        }
     }
 
     public DiscoverViewModel(INavigationService navigation, IFlickrApiService flickr)
     {
         _navigation = navigation;
         _flickr = flickr;
-        InitializeViewModelCommand = new AsyncRelayCommand(InitializeViewModel); 
+        InitializeViewModelCommand = new AsyncRelayCommand(InitializeViewModel);
         InitializeViewModelCommand.Execute(null);
+    }
+
+    public string FilterDisplayTitle
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(CurrentTagFilter)) return "Popular:";
+
+            var textInfo = CultureInfo.CurrentCulture.TextInfo;
+            return $"{textInfo.ToTitleCase(CurrentTagFilter)}:";
+        }
     }
 
     public IAsyncRelayCommand InitializeViewModelCommand { get; }
 
     private async Task InitializeViewModel()
     {
-        
-        await FetchPhotosAsync(page: 1, isNewSearchOrFilter: true, tag: string.Empty);
+        await FetchPhotosAsync(1, true, string.Empty);
     }
 
     // private async Task LoadItems()
@@ -93,10 +85,10 @@ public partial class DiscoverViewModel : ObservableObject
         // {
         //     Debug.WriteLine(e.Message);
         // }
-        await FetchPhotosAsync(page: _currentPage + 1, isNewSearchOrFilter: false, tag: CurrentTagFilter);
+        await FetchPhotosAsync(_currentPage + 1, false, CurrentTagFilter);
     }
 
-    private bool CanLoadMore() 
+    private bool CanLoadMore()
     {
         return !IsLoading && moreItemsAvailable;
     }
@@ -104,19 +96,19 @@ public partial class DiscoverViewModel : ObservableObject
     [RelayCommand]
     private async Task GoToPhotoDetails(FlickrPhoto photo)
     {
-        if (photo == null) 
+        if (photo == null)
         {
             Debug.WriteLine("GoToPhotoDetails called with null photo.");
             return;
         }
 
-        await _navigation.GoToAsync("PhotoDetailsPage", new Dictionary<string, object>() { { "PhotoId", photo.Id } });
+        await _navigation.GoToAsync("PhotoDetailsPage", new Dictionary<string, object> { { "PhotoId", photo.Id } });
     }
 
     [RelayCommand]
-    private async Task FilterByTag(string tag) 
+    private async Task FilterByTag(string tag)
     {
-        await FetchPhotosAsync(page: 1, isNewSearchOrFilter: true, tag: tag ?? string.Empty);
+        await FetchPhotosAsync(1, true, tag ?? string.Empty);
     }
 
 
@@ -124,7 +116,7 @@ public partial class DiscoverViewModel : ObservableObject
     {
         if (IsLoading || (!isNewSearchOrFilter && !moreItemsAvailable))
         {
-             Debug.WriteLine($"---> Fetch skipped. IsLoading: {IsLoading}, MoreItemsAvailable: {moreItemsAvailable}");
+            Debug.WriteLine($"---> Fetch skipped. IsLoading: {IsLoading}, MoreItemsAvailable: {moreItemsAvailable}");
             return;
         }
 
@@ -135,6 +127,7 @@ public partial class DiscoverViewModel : ObservableObject
             moreItemsAvailable = true;
             Debug.WriteLine("---> Resetting moreItemsAvailable to true for new search/filter.");
         }
+
         LoadMoreItemsCommand.NotifyCanExecuteChanged();
 
         try
@@ -153,34 +146,26 @@ public partial class DiscoverViewModel : ObservableObject
                 Debug.WriteLine($"---> Load More. Tag: '{CurrentTagFilter}'. Requesting page: {_currentPage}.");
             }
 
-            
+
             string finalTagsParameter;
             if (!string.IsNullOrEmpty(CurrentTagFilter))
-            {
-                
                 finalTagsParameter = $"{CurrentTagFilter},{ExcludedTags}";
-            }
             else
-            {
-                
                 finalTagsParameter = ExcludedTags;
-            }
             Debug.WriteLine($"---> Using final tags parameter for API: '{finalTagsParameter}'");
-            
 
-            
+
             var newPhotos = await _flickr.SearchAsync(
-                text: null,
-                tags: finalTagsParameter, 
-                page: _currentPage,
-                perPage: pageSize
+                null,
+                finalTagsParameter,
+                _currentPage,
+                pageSize
             );
 
             if (newPhotos != null && newPhotos.Any())
             {
-                int addedCount = 0;
+                var addedCount = 0;
                 foreach (var photo in newPhotos)
-                {
                     if (!Photos.Any(p => p.Id == photo.Id))
                     {
                         Photos.Add(photo);
@@ -190,7 +175,7 @@ public partial class DiscoverViewModel : ObservableObject
                     {
                         Debug.WriteLine($"---> Skipping duplicate photo ID: {photo.Id}");
                     }
-                }
+
                 Debug.WriteLine($"---> Added {addedCount} NEW photos.");
 
                 if (newPhotos.Count < pageSize)
@@ -202,13 +187,13 @@ public partial class DiscoverViewModel : ObservableObject
             }
             else
             {
-                 Debug.WriteLine("---> No photos received from API.");
+                Debug.WriteLine("---> No photos received from API.");
                 moreItemsAvailable = false;
             }
         }
         catch (Exception ex)
         {
-             Debug.WriteLine($"### ERROR during FetchPhotosAsync: {ex.Message}");
+            Debug.WriteLine($"### ERROR during FetchPhotosAsync: {ex.Message}");
             moreItemsAvailable = false;
         }
         finally

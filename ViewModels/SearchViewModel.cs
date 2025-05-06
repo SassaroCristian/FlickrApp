@@ -9,14 +9,14 @@ namespace FlickrApp.ViewModels;
 
 public partial class SearchViewModel : ObservableObject
 {
-    private readonly INavigationService _navigation;
+    private const int perPage = 10;
     private readonly IFlickrApiService _flickr;
+    private readonly INavigationService _navigation;
 
     private int _page = 1;
-    private const int perPage = 10;
+    [ObservableProperty] private ObservableCollection<FlickrPhoto> _photos = [];
 
     [ObservableProperty] private string _searchText = string.Empty;
-    [ObservableProperty] private ObservableCollection<FlickrPhoto> _photos = [];
 
     public SearchViewModel()
     {
@@ -34,7 +34,7 @@ public partial class SearchViewModel : ObservableObject
         try
         {
             _page = 1;
-            var response = await _flickr.SearchAsync(SearchText, string.Empty, _page, perPage);
+            var response = await _flickr.SearchAsync(SearchText, string.Empty, _page);
             Photos = new ObservableCollection<FlickrPhoto>(response);
         }
         catch (Exception e)
@@ -49,7 +49,7 @@ public partial class SearchViewModel : ObservableObject
         try
         {
             _page++;
-            var response = await _flickr.SearchMoreAsync(SearchText, string.Empty, _page, perPage);
+            var response = await _flickr.SearchMoreAsync(SearchText, string.Empty, _page);
             foreach (var photo in response)
                 Photos.Add(photo);
         }
@@ -62,6 +62,6 @@ public partial class SearchViewModel : ObservableObject
     [RelayCommand]
     private async Task GoToPhotoDetails(FlickrPhoto photo)
     {
-        await _navigation.GoToAsync("PhotoDetailsPage", new Dictionary<string, object>() { { "PhotoId", photo.Id } });
+        await _navigation.GoToAsync("PhotoDetailsPage", new Dictionary<string, object> { { "PhotoId", photo.Id } });
     }
 }

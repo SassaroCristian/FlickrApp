@@ -1,10 +1,7 @@
 using System.Globalization;
-using Microsoft.Maui.Controls;
-using FlickrApp.Models; 
-using System.Linq;
+using FlickrApp.Models;
 
 namespace FlickrApp.Converters;
-
 
 public class TagListToStringConverter : IValueConverter
 {
@@ -19,10 +16,7 @@ public class TagListToStringConverter : IValueConverter
                 .Select(tag => !string.IsNullOrWhiteSpace(tag.Raw) ? tag.Raw : tag.Content)
                 .Where(tagContent => !string.IsNullOrWhiteSpace(tagContent));
 
-            if (tagStrings.Any())
-            {
-                return string.Join(Separator, tagStrings);
-            }
+            if (tagStrings.Any()) return string.Join(Separator, tagStrings);
         }
 
         return NotAvailableText;

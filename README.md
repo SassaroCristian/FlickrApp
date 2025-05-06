@@ -2,10 +2,11 @@ FlickrApp (.NET MAUI)
 
 Una semplice applicazione mobile cross-platform realizzata con .NET MAUI per cercare e sfogliare foto da Flickr.
 
-
 ## 📝 Descrizione
 
-Questo progetto è stato sviluppato come applicazione d'esempio per esplorare le funzionalità di .NET MAUI e l'integrazione con API esterne (Flickr API). Permette agli utenti di inserire termini di ricerca e visualizzare una galleria di immagini corrispondenti, con la possibilità di vedere i dettagli di una singola foto.
+Questo progetto è stato sviluppato come applicazione d'esempio per esplorare le funzionalità di .NET MAUI e
+l'integrazione con API esterne (Flickr API). Permette agli utenti di inserire termini di ricerca e visualizzare una
+galleria di immagini corrispondenti, con la possibilità di vedere i dettagli di una singola foto.
 
 ## ✨ Funzionalità Chiave
 
@@ -30,5 +31,7 @@ Segui questi passaggi per clonare ed eseguire il progetto localmente.
 
 * **.NET SDK** (Versione 8.0 o successiva consigliata)
 * **Workload .NET MAUI** installato: Esegui `dotnet workload install maui` nel tuo terminale.
-* Un IDE come [JetBrains Rider](https://www.jetbrains.com/rider/) o [Visual Studio](https://visualstudio.microsoft.com/) con il supporto MAUI.
-* **Chiave API Flickr:** È **necessaria** una chiave API valida da Flickr per permettere all'app di effettuare richieste. Puoi ottenerla [qui](https://www.flickr.com/services/api/misc.api_keys.html).
+* Un IDE come [JetBrains Rider](https://www.jetbrains.com/rider/) o [Visual Studio](https://visualstudio.microsoft.com/)
+  con il supporto MAUI.
+* **Chiave API Flickr:** È **necessaria** una chiave API valida da Flickr per permettere all'app di effettuare
+  richieste. Puoi ottenerla [qui](https://www.flickr.com/services/api/misc.api_keys.html).

@@ -9,10 +9,7 @@ public class NavigationService(IServiceProvider sp) : INavigationService
             var queryParams = string.Join("&",
                 parameters.Select(kvp =>
                     $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value.ToString())}"));
-            if (!string.IsNullOrEmpty(queryParams))
-            {
-                route = $"{route}?{queryParams}";
-            }
+            if (!string.IsNullOrEmpty(queryParams)) route = $"{route}?{queryParams}";
         }
 
         await Shell.Current.GoToAsync(route);

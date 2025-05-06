@@ -2,14 +2,14 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewModels="clr-namespace:FlickrApp.ViewModels"
-             xmlns:flickrApp="clr-namespace:FlickrApp" xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
+             xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
              x:Class="FlickrApp.Views.SearchPage"
-             Title="Search"> <ContentPage.Resources>
+             Title="Search">
+    <ContentPage.Resources>
         <ResourceDictionary>
-             <ResourceDictionary.MergedDictionaries>
-                 <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
-             </ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -19,18 +19,20 @@
                 Style="{StaticResource BorderFlickrAppSearchBar}"
                 StrokeShape="RoundRectangle 10,10,10,10"
                 StrokeThickness="0"
-                Padding="0"> <SearchBar Style="{StaticResource SearchBarFlickrApp}"
+                Padding="0">
+            <SearchBar Style="{StaticResource SearchBarFlickrApp}"
                        Placeholder="Search photos..."
                        VerticalOptions="Center"
                        Text="{Binding SearchText}"
                        SearchCommand="{Binding SearchCommand}"
-                       BackgroundColor="{StaticResource White}"/> </Border>
+                       BackgroundColor="{StaticResource White}" />
+        </Border>
 
         <shared:PhotoListView Grid.Row="1"
                               ItemsSource="{Binding Photos}"
                               LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}"
                               ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" />
 
-        </Grid>
+    </Grid>
 
 </ContentPage>

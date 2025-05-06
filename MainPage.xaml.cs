@@ -1,7 +1,5 @@
 ﻿namespace FlickrApp;
 
-public partial class MainPage : ContentPage
+public class MainPage : ContentPage
 {
-	
 }
-

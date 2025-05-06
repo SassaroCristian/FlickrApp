@@ -1,3 +1,5 @@
+using FlickrApp.Entities;
+
 namespace FlickrApp.Repositories;
 
 public interface IPhotoRepository

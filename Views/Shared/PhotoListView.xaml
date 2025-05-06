@@ -33,9 +33,11 @@
                     StrokeShape="RoundRectangle 25,25,25,25"
                     StrokeThickness="0" HeightRequest="220"
                     WidthRequest="363"
-                    Padding="0,10"> <Border.Shadow>
+                    Padding="0,10">
+                    <Border.Shadow>
                         <Shadow Brush="Black"
-                                Offset="5,10"   Radius="10"    Opacity="0.6"/> </Border.Shadow>
+                                Offset="5,10" Radius="10" Opacity="0.6" />
+                    </Border.Shadow>
                     <ImageButton
                         Source="{Binding MediumUrl}"
                         Aspect="AspectFill"
@@ -43,8 +45,9 @@
                             Source={RelativeSource AncestorType={x:Type shared:PhotoListView}},
                             Path=ItemTappedCommand}"
                         CommandParameter="{Binding .}"
-                        CornerRadius="25"/> </Border>
-                </DataTemplate>
+                        CornerRadius="25" />
+                </Border>
+            </DataTemplate>
         </CollectionView.ItemTemplate>
         <CollectionView.EmptyView>
             <Border
@@ -54,8 +57,7 @@
                     Source="photo_list_empty"
                     VerticalOptions="Center"
                     HorizontalOptions="Center"
-                    Aspect="AspectFit">
-                </Image>
+                    Aspect="AspectFit" />
             </Border>
         </CollectionView.EmptyView>
     </CollectionView>

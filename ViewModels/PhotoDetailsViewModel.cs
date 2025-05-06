@@ -3,22 +3,20 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using FlickrApp.Models;
 using FlickrApp.Services;
 using Debug = System.Diagnostics.Debug;
-using System.Linq;
 
 namespace FlickrApp.ViewModels;
 
 [QueryProperty(nameof(PhotoId), nameof(PhotoId))]
 public partial class PhotoDetailsViewModel : ObservableObject
 {
-    private IFlickrApiService _flickr;
-
-    [ObservableProperty] private string _photoId = string.Empty;
-    [ObservableProperty] private FlickrDetails? _details = null;
+    private readonly IFlickrApiService _flickr;
 
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(CommentsHeaderTitle))]
     private ObservableCollection<FlickrComment> _comments = [];
 
-    public string CommentsHeaderTitle => $"Comments ({Comments?.Count ?? 0})";
+    [ObservableProperty] private FlickrDetails? _details;
+
+    [ObservableProperty] private string _photoId = string.Empty;
 
     public PhotoDetailsViewModel()
     {
@@ -30,6 +28,8 @@ public partial class PhotoDetailsViewModel : ObservableObject
         if (_comments == null)
             _comments = new ObservableCollection<FlickrComment>();
     }
+
+    public string CommentsHeaderTitle => $"Comments ({Comments?.Count ?? 0})";
 
     partial void OnPhotoIdChanged(string value)
     {
