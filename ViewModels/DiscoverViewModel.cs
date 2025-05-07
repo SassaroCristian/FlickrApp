@@ -10,7 +10,6 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
 {
     private const string excludedTags = "-naked,-Naked";
     private const int perPageInit = 15;
-    private readonly INavigationService _navigation;
     private readonly IFlickrApiService _flickr;
     
     private string _currentTagFilter = string.Empty;
@@ -19,9 +18,7 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
 
     public DiscoverViewModel(INavigationService navigation, IFlickrApiService flickr) : base(navigation)
     {
-        _navigation = navigation;
         _flickr = flickr;
-
         _ = InitializeAsync(perPageInit);
     }
 

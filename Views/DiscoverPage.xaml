@@ -66,6 +66,7 @@
         <Label Grid.Row="1"
                Text="{Binding FilterDisplayTitle}"
                Style="{StaticResource HeaderLabelStyle}" />
+        
         <shared:PhotoListView
             Grid.Row="2"
             ItemsSource="{Binding Photos}"
