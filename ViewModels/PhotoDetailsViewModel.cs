@@ -7,7 +7,7 @@ using Debug = System.Diagnostics.Debug;
 namespace FlickrApp.ViewModels;
 
 [QueryProperty(nameof(PhotoId), nameof(PhotoId))]
-public partial class PhotoDetailsViewModel(IFlickrApiService flickr) : BaseViewModel
+public partial class PhotoDetailsViewModel(IFlickrApiService flickr) : Base.BaseViewModel
 {
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(CommentsHeaderTitle))]
     private ObservableCollection<FlickrComment> _comments = [];

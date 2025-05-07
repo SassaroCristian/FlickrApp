@@ -2,6 +2,7 @@ using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FlickrApp.Models;
 using FlickrApp.Services;
+using FlickrApp.ViewModels.Base;
 
 namespace FlickrApp.ViewModels;
 
@@ -47,21 +48,19 @@ public partial class MapResultsViewModel(INavigationService navigation, IFlickrA
 
     protected override async Task<ICollection<FlickrPhoto>> FetchItemsAsync(int page, int perPage)
     {
-        await ExecuteSafelyAsync(async () =>
+        return await ExecuteSafelyAsync(async () =>
         {
             var items = await flickr.GetForLocationAsync(Latitude, Longitude, page, perPage);
             return items;
-        });
-        return [];
+        }) ?? [];
     }
 
     protected override async Task<ICollection<FlickrPhoto>> FetchMoreItemsAsync(int page, int perPage)
     {
-        await ExecuteSafelyAsync(async () =>
+        return await ExecuteSafelyAsync(async () =>
         {
             var items = await flickr.GetMoreForLocationAsync(Latitude, Longitude, page, perPage);
             return items;
-        });
-        return [];
+        }) ?? [];
     }
 }

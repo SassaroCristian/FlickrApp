@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace FlickrApp.ViewModels;
+namespace FlickrApp.ViewModels.Base;
 
 public abstract partial class BaseViewModel : ObservableObject
 {
@@ -152,6 +152,7 @@ public abstract partial class BaseViewModel : ObservableObject
             }
             onComplete?.Invoke();
         }
+
         return result;
     }
 }

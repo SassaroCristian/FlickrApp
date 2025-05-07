@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using FlickrApp.Models;
 using FlickrApp.Services;
 
-namespace FlickrApp.ViewModels;
+namespace FlickrApp.ViewModels.Base;
 
 public abstract partial class PhotoListViewModelBase(INavigationService navigation) : BaseViewModel
 {
@@ -44,7 +44,7 @@ public abstract partial class PhotoListViewModelBase(INavigationService navigati
 
             var photos = await FetchMoreItemsAsync(_page, _perPage);
             if (photos.Count < _perPage) AreMoreItemsAvailable = false;
-            foreach (var photo in Photos) Photos.Add(photo);
+            foreach (var photo in photos) Photos.Add(photo);
         });
     }
     
