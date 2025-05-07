@@ -156,6 +156,6 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
         var json = await response.Content.ReadAsStringAsync();
         var finalResponse = JsonSerializer.Deserialize<FlickrApiResponses.GetComments>(json);
 
-        return finalResponse.Comments.List != null ? [..finalResponse.Comments.List] : [];
+        return finalResponse?.Comments?.List != null ? [..finalResponse.Comments.List] : [];
     }
 }

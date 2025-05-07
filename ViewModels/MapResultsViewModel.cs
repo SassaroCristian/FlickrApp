@@ -9,14 +9,14 @@ namespace FlickrApp.ViewModels;
 
 [QueryProperty(nameof(Latitude), nameof(Latitude))]
 [QueryProperty(nameof(Longitude), nameof(Longitude))]
-public partial class MapResultsViewModel : ObservableObject
+public partial class MapResultsViewModel(INavigationService navigation, IFlickrApiService flickr) : BaseViewModel
 {
     private const int perPage = 10;
-    private readonly IFlickrApiService _flickr;
-    private readonly INavigationService _navigation;
 
     private bool _isLatitudeSet;
     private bool _isLongitudeSet;
+
+    private bool _areMoreItemsAvailable = true;
 
     [ObservableProperty] private string _latitude = string.Empty;
     [ObservableProperty] private string _longitude = string.Empty;
@@ -24,16 +24,6 @@ public partial class MapResultsViewModel : ObservableObject
     private int _page = 1;
 
     [ObservableProperty] private ObservableCollection<FlickrPhoto> _photos = [];
-
-    public MapResultsViewModel()
-    {
-    }
-
-    public MapResultsViewModel(INavigationService navigation, IFlickrApiService flickr)
-    {
-        _navigation = navigation;
-        _flickr = flickr;
-    }
 
 
     partial void OnLatitudeChanged(string value)
@@ -50,47 +40,49 @@ public partial class MapResultsViewModel : ObservableObject
 
     private void TryLoadData()
     {
-        Debug.WriteLine("try load data");
+        Debug.WriteLine(" ---> try loading data");
         if (_isLatitudeSet && _isLongitudeSet)
             Task.Run(FillDataAsync);
     }
 
     private async Task FillDataAsync()
     {
-        Debug.WriteLine("filling data");
-        try
+        Debug.WriteLine("  ---> filling data");
+        Debug.WriteLine($"---> Pin is at latitude: {Latitude}, longitude: {Longitude}");
+
+        await ExecuteSafelyAsync(async () =>
         {
             _page = 1;
-            Debug.WriteLine($"latitude: {Latitude}, longitude: {Longitude}");
-            var result = await _flickr.GetForLocationAsync(Latitude, Longitude, _page);
+            _areMoreItemsAvailable = true;
 
+            var result = await flickr.GetForLocationAsync(Latitude, Longitude, _page);
             Photos = new ObservableCollection<FlickrPhoto>(result);
-        }
-        catch (Exception e)
-        {
-            Debug.WriteLine(e.Message);
-        }
+
+            if (Photos.Count == perPage) _areMoreItemsAvailable = false;
+        });
     }
 
     [RelayCommand]
     private async Task LoadMoreItemsAsync()
     {
-        try
+        if (!_areMoreItemsAvailable) return;
+        Debug.WriteLine("  ---> loading more items");
+
+        await ExecuteSafelyAsync(async () =>
         {
             _page++;
-            var result = await _flickr.GetMoreForLocationAsync(Latitude, Longitude, _page);
+
+            var result = await flickr.GetMoreForLocationAsync(Latitude, Longitude, _page);
             foreach (var photo in result) Photos.Add(photo);
-        }
-        catch (Exception e)
-        {
-            Debug.WriteLine(e.Message);
-        }
+
+            if (result.Count == perPage) _areMoreItemsAvailable = false;
+        });
     }
 
     [RelayCommand]
     private async Task GoToPhotoDetailsAsync(FlickrPhoto photo)
     {
-        await _navigation.GoToAsync("PhotoDetailsPage",
-            new Dictionary<string, object> { { "PhotoId", photo.Id } });
+        await ExecuteSafelyAsync(async () =>
+            await navigation.GoToAsync("PhotoDetailsPage", new Dictionary<string, object> { { "PhotoId", photo.Id } }));
     }
 }

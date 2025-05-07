@@ -6,7 +6,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     
     xmlns:views="clr-namespace:FlickrApp.Views"
-    xmlns:viewModels="clr-namespace:FlickrApp.ViewModels"
     xmlns:locators="clr-namespace:FlickrApp.Locators"
 
     BindingContext="{x:Static locators:ViewModelLocator.AppShellViewModel}"
