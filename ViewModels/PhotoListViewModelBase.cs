@@ -26,9 +26,8 @@ public abstract partial class PhotoListViewModelBase(INavigationService navigati
         await ExecuteSafelyAsync(async () =>
         {
             var photos = await FetchItemsAsync(_page, perPage);
-            Photos = new ObservableCollection<FlickrPhoto>(photos);
-
             if (photos.Count < _perPage) AreMoreItemsAvailable = false;
+            Photos = new ObservableCollection<FlickrPhoto>(photos);
         });
     }
 
@@ -44,9 +43,8 @@ public abstract partial class PhotoListViewModelBase(INavigationService navigati
             _page++;
 
             var photos = await FetchMoreItemsAsync(_page, _perPage);
-            foreach (var photo in Photos) Photos.Add(photo);
-
             if (photos.Count < _perPage) AreMoreItemsAvailable = false;
+            foreach (var photo in Photos) Photos.Add(photo);
         });
     }
     

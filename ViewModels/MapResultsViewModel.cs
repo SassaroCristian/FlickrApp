@@ -53,7 +53,11 @@ public partial class MapResultsViewModel(INavigationService navigation, IFlickrA
 
     protected override async Task<ICollection<FlickrPhoto>> FetchMoreItemsAsync(int page, int perPage)
     {
-        var items = await flickr.GetMoreForLocationAsync(Latitude, Longitude, page, perPage);
-        return items;
+        await ExecuteSafelyAsync(async () =>
+        {
+            var items = await flickr.GetMoreForLocationAsync(Latitude, Longitude, page, perPage);
+            return items;
+        });
+        return [];
     }
 }
