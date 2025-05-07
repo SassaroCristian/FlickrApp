@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlickrApp.Models;
@@ -16,13 +17,15 @@ public abstract partial class PhotoListViewModelBase(INavigationService navigati
 
     protected async Task InitializeAsync(int perPage = 20)
     {
+        Debug.WriteLine(" ---> Initializing PhotoListViewModelBase");
+
         AreMoreItemsAvailable = true;
         _page = 1;
         _perPage = perPage;
 
         await ExecuteSafelyAsync(async () =>
         {
-            var photos = await FetchMoreItemsAsync(_page, perPage);
+            var photos = await FetchItemsAsync(_page, perPage);
             Photos = new ObservableCollection<FlickrPhoto>(photos);
 
             if (photos.Count < _perPage) AreMoreItemsAvailable = false;
@@ -30,8 +33,10 @@ public abstract partial class PhotoListViewModelBase(INavigationService navigati
     }
 
     [RelayCommand]
-    private async Task LoadMoreMoreItemsAsync()
+    private async Task LoadMoreItemsAsync()
     {
+        Debug.WriteLine(" ---> Loading More Items");
+        
         if (!AreMoreItemsAvailable) return;
 
         await ExecuteSafelyAsync(async () =>
@@ -44,6 +49,7 @@ public abstract partial class PhotoListViewModelBase(INavigationService navigati
             if (photos.Count < _perPage) AreMoreItemsAvailable = false;
         });
     }
+    
 
     [RelayCommand]
     private async Task GoToPhotoDetailsAsync(FlickrPhoto photo)
@@ -55,5 +61,7 @@ public abstract partial class PhotoListViewModelBase(INavigationService navigati
         });
     }
 
+    protected abstract Task<ICollection<FlickrPhoto>> FetchItemsAsync(int page, int perPage);
+    
     protected abstract Task<ICollection<FlickrPhoto>> FetchMoreItemsAsync(int page, int perPage);
 }

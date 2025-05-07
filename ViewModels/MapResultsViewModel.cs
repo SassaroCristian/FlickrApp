@@ -1,7 +1,5 @@
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using FlickrApp.Models;
 using FlickrApp.Services;
 
@@ -9,23 +7,17 @@ namespace FlickrApp.ViewModels;
 
 [QueryProperty(nameof(Latitude), nameof(Latitude))]
 [QueryProperty(nameof(Longitude), nameof(Longitude))]
-public partial class MapResultsViewModel(INavigationService navigation, IFlickrApiService flickr) : BaseViewModel
+public partial class MapResultsViewModel(INavigationService navigation, IFlickrApiService flickr)
+    : PhotoListViewModelBase(navigation)
 {
-    private const int perPage = 10;
+    private const int perPageInit = 10;
 
     private bool _isLatitudeSet;
     private bool _isLongitudeSet;
 
-    private bool _areMoreItemsAvailable = true;
-
     [ObservableProperty] private string _latitude = string.Empty;
     [ObservableProperty] private string _longitude = string.Empty;
-
-    private int _page = 1;
-
-    [ObservableProperty] private ObservableCollection<FlickrPhoto> _photos = [];
-
-
+    
     partial void OnLatitudeChanged(string value)
     {
         _isLatitudeSet = true;
@@ -48,41 +40,20 @@ public partial class MapResultsViewModel(INavigationService navigation, IFlickrA
     private async Task FillDataAsync()
     {
         Debug.WriteLine("  ---> filling data");
-        Debug.WriteLine($"---> Pin is at latitude: {Latitude}, longitude: {Longitude}");
+        Debug.WriteLine($" ---> Pin is at latitude: {Latitude}, longitude: {Longitude}");
 
-        await ExecuteSafelyAsync(async () =>
-        {
-            _page = 1;
-            _areMoreItemsAvailable = true;
-
-            var result = await flickr.GetForLocationAsync(Latitude, Longitude, _page);
-            Photos = new ObservableCollection<FlickrPhoto>(result);
-
-            if (Photos.Count == perPage) _areMoreItemsAvailable = false;
-        });
+        await InitializeAsync(perPageInit);
     }
 
-    [RelayCommand]
-    private async Task LoadMoreItemsAsync()
+    protected override async Task<ICollection<FlickrPhoto>> FetchItemsAsync(int page, int perPage)
     {
-        if (!_areMoreItemsAvailable) return;
-        Debug.WriteLine("  ---> loading more items");
-
-        await ExecuteSafelyAsync(async () =>
-        {
-            _page++;
-
-            var result = await flickr.GetMoreForLocationAsync(Latitude, Longitude, _page);
-            foreach (var photo in result) Photos.Add(photo);
-
-            if (result.Count == perPage) _areMoreItemsAvailable = false;
-        });
+        var items = await flickr.GetForLocationAsync(Latitude, Longitude, page, perPage);
+        return items;
     }
 
-    [RelayCommand]
-    private async Task GoToPhotoDetailsAsync(FlickrPhoto photo)
+    protected override async Task<ICollection<FlickrPhoto>> FetchMoreItemsAsync(int page, int perPage)
     {
-        await ExecuteSafelyAsync(async () =>
-            await navigation.GoToAsync("PhotoDetailsPage", new Dictionary<string, object> { { "PhotoId", photo.Id } }));
+        var items = await flickr.GetMoreForLocationAsync(Latitude, Longitude, page, perPage);
+        return items;
     }
 }
