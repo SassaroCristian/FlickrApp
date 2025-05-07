@@ -1,9 +1,16 @@
 ﻿using CommunityToolkit.Maui;
 using FlickrApp.Locators;
 using FlickrApp.Services;
+using Microsoft.Maui.Controls;
 using FlickrApp.ViewModels;
 using FlickrApp.Views;
 using Microsoft.Extensions.Logging;
+using FlickrApp.Repositories;
+using SQLite;
+using System.IO;
+using FlickrApp.Entities;
+using Microsoft.Maui.Storage;
+using Microsoft.Maui.Hosting;
 
 namespace FlickrApp;
 
@@ -31,32 +38,44 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-        // SINGLETON
+
         builder.Services.AddSingleton<HttpClient>();
         builder.Services.AddSingleton<INavigationService, NavigationService>();
         builder.Services.AddSingleton<ITokenService, TokenService>();
         builder.Services.AddSingleton<IFlickrApiService, FlickrApiService>();
 
-        // TRANSIENT
+        builder.Services.AddSingleton<SQLiteAsyncConnection>(sp =>
+        {
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "Photos.db3");
+            return new SQLiteAsyncConnection(
+                dbPath,
+                SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.SharedCache
+            );
+        });
+
+        builder.Services.AddSingleton<IPhotoRepository, PhotoRepository>();
+        builder.Services.AddSingleton<ILocalFileSystemService, LocalFileSystemService>();
+
         builder.Services.AddTransient<AppShell>();
         builder.Services.AddTransient<AppShellViewModel>();
-        // DiscoverPage
         builder.Services.AddTransient<DiscoverPage>();
         builder.Services.AddTransient<DiscoverViewModel>();
-        // PhotoDetails
         builder.Services.AddTransient<PhotoDetailsPage>();
         builder.Services.AddTransient<PhotoDetailsViewModel>();
-        // Maps
         builder.Services.AddTransient<MapsPage>();
         builder.Services.AddTransient<MapsViewModel>();
-        // Map Result
         builder.Services.AddTransient<MapResultsPage>();
         builder.Services.AddTransient<MapResultsViewModel>();
-        // Search
         builder.Services.AddTransient<SearchPage>();
         builder.Services.AddTransient<SearchViewModel>();
 
         var app = builder.Build();
+
+        var conn = app.Services.GetRequiredService<SQLiteAsyncConnection>();
+        conn.CreateTableAsync<Photo>()
+            .GetAwaiter()
+            .GetResult();
+
         ViewModelLocator.Initialize(app.Services);
 
         return app;
