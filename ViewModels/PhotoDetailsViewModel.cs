@@ -90,7 +90,6 @@ public partial class PhotoDetailsViewModel : ObservableObject
                     OwnerNsid = Details.Owner?.Nsid,
                     OwnerUsername = Details.Owner?.Username,
                     Secret = Details.Secret,
-                    Server = Details.Server,
                     Farm = Details.Farm,
                     DateUploaded = Details.Dates?.Posted,
                     Views = Details.Views,
