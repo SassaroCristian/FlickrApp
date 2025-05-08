@@ -114,9 +114,10 @@ public partial class PhotoDetailsViewModel(
                 ? $"Download successful. File saved at: {localFilePath}"
                 : $"Download failed for photo ID: {PhotoId}");
 
-            Toast.Make(localFilePath != null
+            var toast = Toast.Make(localFilePath != null
                 ? $"Download successful\nFile saved at: {localFilePath}"
                 : $"Download failed for photo ID: {PhotoId}");
+            await toast.Show();
         });
     }
 
