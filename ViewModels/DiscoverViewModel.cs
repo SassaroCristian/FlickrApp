@@ -1,34 +1,123 @@
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlickrApp.Models;
 using FlickrApp.Services;
 using FlickrApp.ViewModels.Base;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace FlickrApp.ViewModels;
+
+public enum FlickrSortOption
+{
+    InterestingnessDesc,
+    InterestingnessAsc,
+    DatePostedDesc,
+    DatePostedAsc
+}
+
+public record SortOptionDisplay(FlickrSortOption SortEnumValue, string DisplayName);
 
 public partial class DiscoverViewModel : PhotoListViewModelBase
 {
     private const string excludedTags = "-naked,-Naked";
     private const int perPageInit = 15;
     private readonly IFlickrApiService _flickr;
-    
+
     private string _currentTagFilter = string.Empty;
 
     [ObservableProperty] private string _filterDisplayTitle = "Popular";
 
+    [ObservableProperty] private FlickrSortOption _selectedSortOption;
+
+    [ObservableProperty] private ObservableCollection<SortOptionDisplay> _availableSortOptions;
+
+    [ObservableProperty] private SortOptionDisplay? _selectedSortOptionItem;
+
+    [ObservableProperty] private string _selectedSortOptionDisplayName = string.Empty;
+
     public DiscoverViewModel(INavigationService navigation, IFlickrApiService flickr) : base(navigation)
     {
         _flickr = flickr;
+
+        _availableSortOptions = new ObservableCollection<SortOptionDisplay>
+        {
+            new(FlickrSortOption.InterestingnessDesc, "Most Interesting"),
+            new(FlickrSortOption.InterestingnessAsc, "Least Interesting"),
+            new(FlickrSortOption.DatePostedDesc, "Newest First"),
+            new(FlickrSortOption.DatePostedAsc, "Oldest First")
+        };
+
+        SelectedSortOption = FlickrSortOption.InterestingnessDesc;
+
         _ = InitializeAsync(perPageInit);
+    }
+
+    partial void OnSelectedSortOptionChanged(FlickrSortOption value)
+    {
+        SelectedSortOptionDisplayName =
+            AvailableSortOptions.FirstOrDefault(o => o.SortEnumValue == value)?.DisplayName ?? "N/A";
+
+        if (SelectedSortOptionItem == null || SelectedSortOptionItem.SortEnumValue != value)
+        {
+            SelectedSortOptionItem = AvailableSortOptions.FirstOrDefault(o => o.SortEnumValue == value);
+        }
+
+        Debug.WriteLine(
+            $"DiscoverViewModel: SelectedSortOption (enum) changed to: {value}, DisplayName: {SelectedSortOptionDisplayName}");
+    }
+
+    async partial void OnSelectedSortOptionItemChanged(SortOptionDisplay? oldValue, SortOptionDisplay? newValue)
+    {
+        if (newValue != null && (oldValue == null || oldValue.SortEnumValue != newValue.SortEnumValue))
+        {
+            Debug.WriteLine($"DiscoverViewModel: SelectedSortOptionItem (Picker) changed to: {newValue.DisplayName}");
+            // Only update the enum value here. Let the command handle the refresh.
+            SelectedSortOption = newValue.SortEnumValue;
+            // Trigger the refresh command only if the value actually changed
+            if (oldValue?.SortEnumValue != newValue.SortEnumValue)
+            {
+                await SetSortOrderAsync(newValue.SortEnumValue);
+            }
+        }
+        else if (newValue == null && oldValue != null)
+        {
+            Debug.WriteLine($"DiscoverViewModel: SelectedSortOptionItem (Picker) deselected.");
+        }
+    }
+
+    private string GetSortOrderApiString(FlickrSortOption sortOption)
+    {
+        return sortOption switch
+        {
+            FlickrSortOption.InterestingnessDesc => "interestingness-desc",
+            FlickrSortOption.InterestingnessAsc => "interestingness-asc",
+            FlickrSortOption.DatePostedDesc => "date-posted-desc",
+            FlickrSortOption.DatePostedAsc => "date-posted-asc",
+            _ => "interestingness-desc"
+        };
+    }
+
+    [RelayCommand]
+    private async Task SetSortOrderAsync(FlickrSortOption newSortOption)
+    {
+        if (SelectedSortOption != newSortOption)
+        {
+            SelectedSortOption = newSortOption;
+        }
+
+        Debug.WriteLine($"DiscoverViewModel: SetSortOrderAsync called with {SelectedSortOption}. Refreshing photos.");
+        await InitializeAsync(perPageInit);
     }
 
     [RelayCommand]
     private async Task FilterByTagAsync(string? tag)
     {
         _currentTagFilter = tag ?? string.Empty;
+        FilterDisplayTitle = string.IsNullOrWhiteSpace(tag) ? "Popular" : tag[..1].ToUpper() + tag[1..].ToLower();
 
-        if (string.IsNullOrWhiteSpace(tag)) FilterDisplayTitle = "Popular";
-        else FilterDisplayTitle = tag[..1].ToUpper() + tag[1..].ToLower();
+        SelectedSortOption = FlickrSortOption.InterestingnessDesc;
 
         await InitializeAsync(perPageInit);
     }
@@ -37,8 +126,18 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
     {
         return await ExecuteSafelyAsync(async () =>
         {
-            var items = await _flickr.SearchAsync(string.Empty,
-                string.Concat(_currentTagFilter, ",", excludedTags), page, perPage);
+            var apiSortOrder = GetSortOrderApiString(SelectedSortOption);
+            string effectiveTags = _currentTagFilter;
+            if (!string.IsNullOrEmpty(excludedTags))
+            {
+                if (!string.IsNullOrEmpty(effectiveTags))
+                    effectiveTags = string.Concat(effectiveTags, ",", excludedTags);
+                else effectiveTags = excludedTags;
+            }
+
+            Debug.WriteLine(
+                $"DiscoverViewModel.FetchItemsAsync: Page: {page}, PerPage: {perPage}, Sort: {apiSortOrder}, Tags: '{effectiveTags}'");
+            var items = await _flickr.SearchAsync(string.Empty, effectiveTags, page, perPage, apiSortOrder);
             return items;
         }) ?? [];
     }
@@ -47,8 +146,18 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
     {
         return await ExecuteSafelyAsync(async () =>
         {
-            var items = await _flickr.SearchMoreAsync(string.Empty,
-                string.Concat(_currentTagFilter, ",", excludedTags), page, perPage);
+            var apiSortOrder = GetSortOrderApiString(SelectedSortOption);
+            string effectiveTags = _currentTagFilter;
+            if (!string.IsNullOrEmpty(excludedTags))
+            {
+                if (!string.IsNullOrEmpty(effectiveTags))
+                    effectiveTags = string.Concat(effectiveTags, ",", excludedTags);
+                else effectiveTags = excludedTags;
+            }
+
+            Debug.WriteLine(
+                $"DiscoverViewModel.FetchMoreItemsAsync: Page: {page}, PerPage: {perPage}, Sort: {apiSortOrder}, Tags: '{effectiveTags}'");
+            var items = await _flickr.SearchMoreAsync(string.Empty, effectiveTags, page, perPage, apiSortOrder);
             return items;
         }) ?? [];
     }
