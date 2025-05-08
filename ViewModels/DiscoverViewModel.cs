@@ -1,11 +1,10 @@
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlickrApp.Models;
 using FlickrApp.Services;
 using FlickrApp.ViewModels.Base;
-using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace FlickrApp.ViewModels;
 
@@ -127,13 +126,10 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
         return await ExecuteSafelyAsync(async () =>
         {
             var apiSortOrder = GetSortOrderApiString(SelectedSortOption);
-            string effectiveTags = _currentTagFilter;
-            if (!string.IsNullOrEmpty(excludedTags))
-            {
-                if (!string.IsNullOrEmpty(effectiveTags))
-                    effectiveTags = string.Concat(effectiveTags, ",", excludedTags);
-                else effectiveTags = excludedTags;
-            }
+
+            var effectiveTags = !string.IsNullOrEmpty(_currentTagFilter)
+                ? string.Concat(_currentTagFilter, ",", excludedTags)
+                : excludedTags;
 
             Debug.WriteLine(
                 $"DiscoverViewModel.FetchItemsAsync: Page: {page}, PerPage: {perPage}, Sort: {apiSortOrder}, Tags: '{effectiveTags}'");
@@ -147,13 +143,10 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
         return await ExecuteSafelyAsync(async () =>
         {
             var apiSortOrder = GetSortOrderApiString(SelectedSortOption);
-            string effectiveTags = _currentTagFilter;
-            if (!string.IsNullOrEmpty(excludedTags))
-            {
-                if (!string.IsNullOrEmpty(effectiveTags))
-                    effectiveTags = string.Concat(effectiveTags, ",", excludedTags);
-                else effectiveTags = excludedTags;
-            }
+
+            var effectiveTags = !string.IsNullOrEmpty(_currentTagFilter)
+                ? string.Concat(_currentTagFilter, ",", excludedTags)
+                : excludedTags;
 
             Debug.WriteLine(
                 $"DiscoverViewModel.FetchMoreItemsAsync: Page: {page}, PerPage: {perPage}, Sort: {apiSortOrder}, Tags: '{effectiveTags}'");
