@@ -12,6 +12,7 @@ public static class ViewModelLocator
     public static MapsViewModel MapsViewModel => Resolve<MapsViewModel>();
     public static PhotoDetailsViewModel PhotoDetailsViewModel => Resolve<PhotoDetailsViewModel>();
     public static SearchViewModel SearchViewModel => Resolve<SearchViewModel>();
+    public static LikedPhotosViewModel LikedPhotosViewModel => Resolve<LikedPhotosViewModel>();
 
     public static void Initialize(IServiceProvider serviceProvider)
     {

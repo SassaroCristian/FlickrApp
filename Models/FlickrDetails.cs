@@ -57,16 +57,17 @@ public class FlickrDetails
 
     [JsonPropertyName("media")] public string? Media { get; set; }
 
+    private string? _largeImageUrl = string.Empty;
     public string? LargeImageUrl
     {
-        get
-        {
-            if (string.IsNullOrEmpty(Server) || string.IsNullOrEmpty(Id) || string.IsNullOrEmpty(Secret))
-                return "https://via.placeholder.com/800x600.png?text=Image+Not+Available";
-
-            return $"https://live.staticflickr.com/{Server}/{Id}_{Secret}_b.jpg";
-        }
+        get =>
+            string.IsNullOrWhiteSpace(_largeImageUrl)
+                ? $"https://live.staticflickr.com/{Server}/{Id}_{Secret}_b.jpg"
+                : _largeImageUrl;
+        set => _largeImageUrl = value;
     }
+    
+    
 }
 
 public class Comments

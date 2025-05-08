@@ -10,6 +10,16 @@ namespace FlickrApp.Repositories
             return await database.Table<Photo>().ToListAsync();
         }
 
+        public async Task<List<Photo>> GetAllPhotosAsync(int pageNumber, int pageSize)
+        {
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageSize < 1) pageSize = 10;
+
+            var itemsToSkip = (pageNumber - 1) * pageSize;
+
+            return await database.Table<Photo>().Skip(itemsToSkip).Take(pageSize).ToListAsync();
+        }
+
         public async Task<Photo> GetPhotoByIdAsync(string id)
         {
             return await database.FindAsync<Photo>(id);
@@ -51,8 +61,9 @@ namespace FlickrApp.Repositories
         public async Task<bool> IsPhotoSavedLocallyAsync(string photoId)
         {
             var photo = await database.FindAsync<Photo>(photoId);
-
-            return photo != null && !string.IsNullOrEmpty(photo.LocalFilePath);
+            if (File.Exists(photo?.LocalFilePath)) return true;
+            await DeletePhotoAsync(photoId);
+            return false;
         }
     }
 }

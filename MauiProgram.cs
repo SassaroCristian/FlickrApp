@@ -51,7 +51,6 @@ public static class MauiProgram
         builder.Services.AddSingleton<INavigationService, NavigationService>();
         builder.Services.AddSingleton<ITokenService, TokenService>();
         builder.Services.AddSingleton<IFlickrApiService, FlickrApiService>();
-
         builder.Services.AddSingleton<SQLiteAsyncConnection>(sp =>
         {
             var dbPath = Path.Combine(FileSystem.AppDataDirectory, "Photos.db3");
@@ -81,6 +80,9 @@ public static class MauiProgram
         // Search
         builder.Services.AddTransient<SearchPage>();
         builder.Services.AddTransient<SearchViewModel>();
+        // LikedPhoto
+        builder.Services.AddTransient<LikedPhotosPage>();
+        builder.Services.AddTransient<LikedPhotosViewModel>();
 
         var app = builder.Build();
 

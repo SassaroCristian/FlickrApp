@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlickrApp.Entities;
@@ -23,7 +24,7 @@ public partial class PhotoDetailsViewModel(
     [ObservableProperty] private FlickrDetails? _details;
     [ObservableProperty] private string _photoId = string.Empty;
     [ObservableProperty] private bool _isFavorite;
-    [ObservableProperty] private bool _isDownloaded;
+    
 
     public string CommentsHeaderTitle => $"Comments ({Comments?.Count})";
 
@@ -96,12 +97,6 @@ public partial class PhotoDetailsViewModel(
     [RelayCommand]
     private async Task DownloadAsync()
     {
-        if (IsDownloaded)
-        {
-            Debug.WriteLine("DownloadCommand: Already downloaded. Skipping.");
-            return;
-        }
-
         if (Details == null)
         {
             Debug.WriteLine("DownloadCommand: Details are null. Cannot download.");
@@ -115,15 +110,13 @@ public partial class PhotoDetailsViewModel(
             var targetDirectory = fileService.GetAppSpecificDownloadsDirectory();
             var localFilePath = await fileService.SaveImageAsync(Details.LargeImageUrl, Details.Id, targetDirectory);
 
-            if (localFilePath != null)
-            {
-                Debug.WriteLine($"Download successful. File saved at: {localFilePath}");
-                IsDownloaded = true;
-            }
-            else
-            {
-                Debug.WriteLine($"Download failed for photo ID: {PhotoId}");
-            }
+            Debug.WriteLine(localFilePath != null
+                ? $"Download successful. File saved at: {localFilePath}"
+                : $"Download failed for photo ID: {PhotoId}");
+
+            Toast.Make(localFilePath != null
+                ? $"Download successful\nFile saved at: {localFilePath}"
+                : $"Download failed for photo ID: {PhotoId}");
         });
     }
 
@@ -132,13 +125,39 @@ public partial class PhotoDetailsViewModel(
     {
         Details = null;
         Comments.Clear();
-
+        
         // GETTING DETAILS
         await ExecuteSafelyAsync(async () =>
         {
             Debug.WriteLine(" ---> Getting details ...");
-            var details = await flickr.GetDetailsAsync(PhotoId);
-            Details = details;
+            var isPhotoSavedLocally = await photoRepository.IsPhotoSavedLocallyAsync(PhotoId);
+
+            if (isPhotoSavedLocally)
+            {
+                var photoEntity = await photoRepository.GetPhotoByIdAsync(PhotoId);
+                Details = new FlickrDetails
+                {
+                    Id = photoEntity.Id,
+                    Secret = photoEntity.Secret,
+                    Server = photoEntity.Server,
+                    Farm = photoEntity.Farm,
+                    DateUploaded = photoEntity.DateUploaded,
+                    Views = photoEntity.Views,
+                    Title = new Title { Content = photoEntity.Title },
+                    Description = new Description { Content = photoEntity.Description },
+                    Owner = new Owner
+                    {
+                        Nsid = photoEntity.OwnerNsid,
+                        Username = photoEntity.OwnerUsername
+                    },
+                    LargeImageUrl = photoEntity.LocalFilePath
+                };
+                IsFavorite = true;
+            }
+            else
+            {
+                Details = await flickr.GetDetailsAsync(PhotoId);
+            }
         });
 
         // GETTING COMMENTS

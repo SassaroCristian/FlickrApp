@@ -28,7 +28,7 @@
                 ItemSpacing="10" />
         </CollectionView.ItemsLayout>
         <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="model:FlickrPhoto">
+            <DataTemplate>
                 <Border
                     StrokeShape="RoundRectangle 25,25,25,25"
                     StrokeThickness="0" HeightRequest="220"
@@ -39,8 +39,7 @@
                                 Offset="5,10" Radius="10" Opacity="0.6" />
                     </Border.Shadow>
                     <ImageButton
-                        Source="{Binding MediumUrl}"
-                        Aspect="AspectFill"
+                        Source="{Binding MediumUrl}" Aspect="AspectFill"
                         Command="{Binding
                             Source={RelativeSource AncestorType={x:Type shared:PhotoListView}},
                             Path=ItemTappedCommand}"
