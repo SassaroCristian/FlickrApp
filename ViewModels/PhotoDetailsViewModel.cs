@@ -1,31 +1,35 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using FlickrApp.Entities;
 using FlickrApp.Models;
+using FlickrApp.Repositories;
 using FlickrApp.Services;
 using FlickrApp.ViewModels.Base;
 using Debug = System.Diagnostics.Debug;
-using System.Linq;
-using System.Threading.Tasks;
-using FlickrApp.Repositories;
-using FlickrApp.Entities;
 
 
 namespace FlickrApp.ViewModels;
 
 [QueryProperty(nameof(PhotoId), nameof(PhotoId))]
-public partial class PhotoDetailsViewModel : BaseViewModel
+public partial class PhotoDetailsViewModel(
+    IFlickrApiService flickr,
+    IPhotoRepository photoRepository,
+    ILocalFileSystemService fileService) : BaseViewModel
 {
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(CommentsHeaderTitle))]
     private ObservableCollection<FlickrComment> _comments = [];
 
     [ObservableProperty] private FlickrDetails? _details;
     [ObservableProperty] private string _photoId = string.Empty;
+    [ObservableProperty] private bool _isFavorite;
+    [ObservableProperty] private bool _isDownloaded;
 
     public string CommentsHeaderTitle => $"Comments ({Comments?.Count})";
 
     partial void OnPhotoIdChanged(string value)
     {
-        Debug.WriteLine("photoId changed: " + value + "");
+        Debug.WriteLine($"photoId changed: {value}");
         _ = FillData();
     }
 
@@ -38,20 +42,20 @@ public partial class PhotoDetailsViewModel : BaseViewModel
             return;
         }
 
-        try
+        await ExecuteSafelyAsync(async () =>
         {
             if (IsFavorite)
             {
                 Debug.WriteLine($"Removing photo {PhotoId} from favorites (DB and potentially file).");
 
-                var photoToRemove = await _photoRepository.GetPhotoByIdAsync(PhotoId);
+                var photoToRemove = await photoRepository.GetPhotoByIdAsync(PhotoId);
 
-                var deletedRows = await _photoRepository.DeletePhotoAsync(PhotoId);
+                var deletedRows = await photoRepository.DeletePhotoAsync(PhotoId);
                 Debug.WriteLine($"DB: Deleted {deletedRows} row(s) for photo ID {PhotoId}.");
 
-                if (photoToRemove != null && !string.IsNullOrEmpty(photoToRemove.LocalFilePath))
+                if (!string.IsNullOrEmpty(photoToRemove.LocalFilePath))
                 {
-                    await _fileService.DeleteFileAsync(photoToRemove.LocalFilePath);
+                    await fileService.DeleteFileAsync(photoToRemove.LocalFilePath);
                     Debug.WriteLine($"File System: Deleted local file: {photoToRemove.LocalFilePath}");
                 }
 
@@ -75,25 +79,18 @@ public partial class PhotoDetailsViewModel : BaseViewModel
                     LocalFilePath = null
                 };
 
-                var targetDirectory = _fileService.GetAppSpecificPhotosDirectory();
+                var targetDirectory = fileService.GetAppSpecificPhotosDirectory();
                 var localFilePath =
-                    await _fileService.SaveImageAsync(Details.LargeImageUrl, Details.Id, targetDirectory);
+                    await fileService.SaveImageAsync(Details.LargeImageUrl, Details.Id, targetDirectory);
 
                 photoToSave.LocalFilePath = localFilePath;
 
-                var rowsAffected = await _photoRepository.SavePhotoAsync(photoToSave);
+                var rowsAffected = await photoRepository.SavePhotoAsync(photoToSave);
                 Debug.WriteLine($"DB: Saved/Updated {rowsAffected} row(s) for photo ID {PhotoId}.");
 
                 IsFavorite = true;
             }
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"### ERROR during ToggleFavoriteAsync for photo {PhotoId}: {ex.Message}");
-        }
-        finally
-        {
-        }
+        });
     }
 
     [RelayCommand]
@@ -111,20 +108,23 @@ public partial class PhotoDetailsViewModel : BaseViewModel
             return;
         }
 
-        Debug.WriteLine($"Attempting to download image for photo ID: {PhotoId} from URL: {Details.LargeImageUrl}");
-
-        var targetDirectory = _fileService.GetAppSpecificDownloadsDirectory();
-        var localFilePath = await _fileService.SaveImageAsync(Details.LargeImageUrl, Details.Id, targetDirectory);
-
-        if (localFilePath != null)
+        await ExecuteSafelyAsync(async () =>
         {
-            Debug.WriteLine($"Download successful. File saved at: {localFilePath}");
-            IsDownloaded = true;
-        }
-        else
-        {
-            Debug.WriteLine($"Download failed for photo ID: {PhotoId}");
-        }
+            Debug.WriteLine($"Attempting to download image for photo ID: {PhotoId} from URL: {Details.LargeImageUrl}");
+
+            var targetDirectory = fileService.GetAppSpecificDownloadsDirectory();
+            var localFilePath = await fileService.SaveImageAsync(Details.LargeImageUrl, Details.Id, targetDirectory);
+
+            if (localFilePath != null)
+            {
+                Debug.WriteLine($"Download successful. File saved at: {localFilePath}");
+                IsDownloaded = true;
+            }
+            else
+            {
+                Debug.WriteLine($"Download failed for photo ID: {PhotoId}");
+            }
+        });
     }
 
 

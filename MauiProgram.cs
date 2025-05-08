@@ -1,15 +1,13 @@
-﻿using CommunityToolkit.Maui;
+﻿using System.Diagnostics;
+using CommunityToolkit.Maui;
+using FlickrApp.Entities;
 using FlickrApp.Locators;
+using FlickrApp.Repositories;
 using FlickrApp.Services;
 using FlickrApp.ViewModels;
 using FlickrApp.Views;
 using Microsoft.Extensions.Logging;
-using FlickrApp.Repositories;
 using SQLite;
-using System.IO;
-using FlickrApp.Entities;
-using Microsoft.Maui.Storage;
-using Microsoft.Maui.Hosting;
 
 namespace FlickrApp;
 
