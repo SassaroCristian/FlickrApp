@@ -1,10 +1,15 @@
-﻿using System.Diagnostics;
-using CommunityToolkit.Maui;
+﻿using CommunityToolkit.Maui;
 using FlickrApp.Locators;
 using FlickrApp.Services;
 using FlickrApp.ViewModels;
 using FlickrApp.Views;
 using Microsoft.Extensions.Logging;
+using FlickrApp.Repositories;
+using SQLite;
+using System.IO;
+using FlickrApp.Entities;
+using Microsoft.Maui.Storage;
+using Microsoft.Maui.Hosting;
 
 namespace FlickrApp;
 
@@ -49,7 +54,18 @@ public static class MauiProgram
         builder.Services.AddSingleton<ITokenService, TokenService>();
         builder.Services.AddSingleton<IFlickrApiService, FlickrApiService>();
 
-        // TRANSIENT
+        builder.Services.AddSingleton<SQLiteAsyncConnection>(sp =>
+        {
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "Photos.db3");
+            return new SQLiteAsyncConnection(
+                dbPath,
+                SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.SharedCache
+            );
+        });
+
+        builder.Services.AddSingleton<IPhotoRepository, PhotoRepository>();
+        builder.Services.AddSingleton<ILocalFileSystemService, LocalFileSystemService>();
+
         builder.Services.AddTransient<AppShell>();
         builder.Services.AddTransient<AppShellViewModel>();
         // DiscoverPage
@@ -69,6 +85,12 @@ public static class MauiProgram
         builder.Services.AddTransient<SearchViewModel>();
 
         var app = builder.Build();
+
+        var conn = app.Services.GetRequiredService<SQLiteAsyncConnection>();
+        conn.CreateTableAsync<Photo>()
+            .GetAwaiter()
+            .GetResult();
+
         ViewModelLocator.Initialize(app.Services);
 
         return app;
