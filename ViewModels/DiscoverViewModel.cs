@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlickrApp.Models;
@@ -37,8 +38,9 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
     {
         return await ExecuteSafelyAsync(async () =>
         {
-            var items = await _flickr.SearchAsync(string.Empty,
-                string.Concat(_currentTagFilter, ",", excludedTags), page, perPage);
+            var tags = string.Concat(_currentTagFilter, ",", excludedTags);
+            Debug.WriteLine(tags);
+            var items = await _flickr.SearchAsync(string.Empty, tags, page, perPage);
             return items;
         }) ?? [];
     }
@@ -47,8 +49,9 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
     {
         return await ExecuteSafelyAsync(async () =>
         {
-            var items = await _flickr.SearchMoreAsync(string.Empty,
-                string.Concat(_currentTagFilter, ",", excludedTags), page, perPage);
+            var tags = string.Concat(_currentTagFilter, ",", excludedTags);
+            Debug.WriteLine(tags);
+            var items = await _flickr.SearchMoreAsync(string.Empty, tags, page, perPage);
             return items;
         }) ?? [];
     }

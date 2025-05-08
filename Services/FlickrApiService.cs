@@ -67,7 +67,11 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
         };
 
         if (!string.IsNullOrEmpty(text)) queryParams.Add("text", text);
-        if (!string.IsNullOrEmpty(tags)) queryParams.Add("tags", tags);
+        if (!string.IsNullOrEmpty(tags))
+        {
+            queryParams.Add("tags", tags);
+            queryParams.Add("tag_mode", "all");
+        }
 
         var requestUrl = QueryHelpers.AddQueryString(baseUrl, queryParams);
 
