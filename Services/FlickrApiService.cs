@@ -11,7 +11,6 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
     private const string baseUrl = "https://www.flickr.com/services/rest/";
     private const string apiKey = "255ac8fdac4726aa339fa1c2161b9e5b";
     private DateTime _getForLocationMaxUploadDate = DateTime.UtcNow;
-
     private DateTime _getRecentMaxUploadDate = DateTime.UtcNow;
     private DateTime _searchMaxUploadDate = DateTime.UtcNow;
 
@@ -32,28 +31,27 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
             { "page", page.ToString() },
             { "per_page", perPage.ToString() },
             { "sort", "date-posted-desc" },
-            { "max_upload_date", _getRecentMaxUploadDate.ToString(CultureInfo.InvariantCulture) }
+            { "max_upload_date", _getRecentMaxUploadDate.ToString(CultureInfo.InvariantCulture) },
+            
         };
-
         var requestUrl = QueryHelpers.AddQueryString(baseUrl, queryParams);
         Debug.WriteLine(requestUrl);
-
         var response = await httpClient.GetAsync(requestUrl);
         response.EnsureSuccessStatusCode();
-
         var json = await response.Content.ReadAsStringAsync();
         var finalResponse = JsonSerializer.Deserialize<FlickrApiResponses.GetRecent>(json);
-
         return finalResponse != null ? [..finalResponse.Photos.List] : [];
     }
 
-    public async Task<List<FlickrPhoto>> SearchAsync(string text, string tags, int page = 1, int perPage = 10)
+    public async Task<List<FlickrPhoto>> SearchAsync(string text, string tags, int page = 1, int perPage = 10,
+        string? sortOrder = null)
     {
         _searchMaxUploadDate = DateTime.UtcNow;
-        return await SearchMoreAsync(text, tags, page, perPage);
+        return await SearchMoreAsync(text, tags, page, perPage, sortOrder);
     }
 
-    public async Task<List<FlickrPhoto>> SearchMoreAsync(string text, string tags, int page = 1, int perPage = 10)
+    public async Task<List<FlickrPhoto>> SearchMoreAsync(string text, string tags, int page = 1, int perPage = 10,
+        string? sortOrder = null)
     {
         var queryParams = new Dictionary<string, string>
         {
@@ -73,14 +71,22 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
             queryParams.Add("tag_mode", "all");
         }
 
-        var requestUrl = QueryHelpers.AddQueryString(baseUrl, queryParams);
+        if (!string.IsNullOrEmpty(sortOrder))
+        {
+            queryParams.Add("sort", sortOrder);
+            Debug.WriteLine($"FlickrApiService.SearchMoreAsync: Using sortOrder: {sortOrder}");
+        }
+        else
+        {
+            Debug.WriteLine($"FlickrApiService.SearchMoreAsync: No sortOrder provided, using Flickr API default.");
+        }
 
+        var requestUrl = QueryHelpers.AddQueryString(baseUrl, queryParams);
+        Debug.WriteLine(requestUrl);
         var response = await httpClient.GetAsync(requestUrl);
         response.EnsureSuccessStatusCode();
-
         var json = await response.Content.ReadAsStringAsync();
         var finalResponse = JsonSerializer.Deserialize<FlickrApiResponses.Search>(json);
-
         return finalResponse != null ? [..finalResponse.Photos.List] : [];
     }
 
@@ -106,15 +112,12 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
             { "lon", longitude },
             { "max_upload_date", _getForLocationMaxUploadDate.ToString(CultureInfo.InvariantCulture) }
         };
-
         var requestUrl = QueryHelpers.AddQueryString(baseUrl, queryParams);
-
+        Debug.WriteLine(requestUrl);
         var response = await httpClient.GetAsync(requestUrl);
         response.EnsureSuccessStatusCode();
-
         var json = await response.Content.ReadAsStringAsync();
         var finalResponse = JsonSerializer.Deserialize<FlickrApiResponses.Search>(json);
-
         return finalResponse != null ? [..finalResponse.Photos.List] : [];
     }
 
@@ -128,15 +131,12 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
             { "api_key", apiKey },
             { "photo_id", photoId }
         };
-
         var requestUrl = QueryHelpers.AddQueryString(baseUrl, queryParams);
-
+        Debug.WriteLine(requestUrl);
         var response = await httpClient.GetAsync(requestUrl);
         response.EnsureSuccessStatusCode();
-
         var json = await response.Content.ReadAsStringAsync();
         var finalResponse = JsonSerializer.Deserialize<FlickrApiResponses.GetDetails>(json);
-
         return finalResponse?.Details;
     }
 
@@ -150,16 +150,12 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
             { "api_key", apiKey },
             { "photo_id", photoId }
         };
-
         var requestUrl = QueryHelpers.AddQueryString(baseUrl, queryParams);
         Debug.WriteLine(requestUrl);
-
         var response = await httpClient.GetAsync(requestUrl);
         response.EnsureSuccessStatusCode();
-
         var json = await response.Content.ReadAsStringAsync();
         var finalResponse = JsonSerializer.Deserialize<FlickrApiResponses.GetComments>(json);
-
         return finalResponse?.Comments?.List != null ? [..finalResponse.Comments.List] : [];
     }
 }

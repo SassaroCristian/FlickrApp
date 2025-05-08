@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-
              xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
              xmlns:converters="clr-namespace:FlickrApp.Converters"
              xmlns:locators="clr-namespace:FlickrApp.Locators"
-
-             BindingContext="{x:Static locators:ViewModelLocator.DiscoverViewModel}"
-
+             xmlns:viewmodels="clr-namespace:FlickrApp.ViewModels" BindingContext="{x:Static locators:ViewModelLocator.DiscoverViewModel}"
              x:Class="FlickrApp.Views.DiscoverPage"
              Title="Discover"
              BackgroundColor="{StaticResource PrimaryBackgroundColor}">
@@ -18,20 +14,30 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
             <converters:NullOrEmptyToNaConverter x:Key="naConverter" />
             <converters:TagListToStringConverter x:Key="tagListConverter" />
 
             <Style x:Key="TagButtonStyle" TargetType="Button">
                 <Setter Property="BackgroundColor" Value="{StaticResource ButtonBackgroundColor}" />
                 <Setter Property="TextColor" Value="{StaticResource ButtonTextColor}" />
-                <Setter Property="CornerRadius" Value="8" /> <Setter Property="FontSize" Value="Small" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="FontSize" Value="Small" />
                 <Setter Property="Padding" Value="10,5" />
                 <Setter Property="MinimumHeightRequest" Value="40" />
                 <Setter Property="MinimumWidthRequest" Value="70" />
                 <Setter Property="BorderColor" Value="{StaticResource PrimaryPlaceholderColor}" />
                 <Setter Property="BorderWidth" Value="1" />
             </Style>
+
+            <Style x:Key="SortPickerStyle" TargetType="Picker">
+                <Setter Property="FontSize" Value="Small" />
+                <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
+                <Setter Property="TitleColor" Value="{StaticResource PrimaryPlaceholderColor}" />
+                <Setter Property="BackgroundColor" Value="{StaticResource Gray100}" />
+                <Setter Property="HeightRequest" Value="40"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+
             <Style x:Key="HeaderLabelStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
                 <Setter Property="FontSize" Value="Medium" />
@@ -43,41 +49,47 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto, Auto, *, Auto" Margin="10"
+    <Grid RowDefinitions="Auto, Auto, Auto, *, Auto" Margin="10" RowSpacing="10"
           BackgroundColor="{StaticResource PrimaryBackgroundColor}">
 
-        <ScrollView Orientation="Horizontal" Grid.Row="0" Padding="0,10,0,10">
+        <ScrollView Orientation="Horizontal" Grid.Row="0" Padding="0,0,0,5">
             <HorizontalStackLayout Spacing="10">
                 <Button Text="Popular" Command="{Binding FilterByTagCommand}" CommandParameter="{x:Null}"
                         Style="{StaticResource TagButtonStyle}" IsEnabled="{Binding IsNotBusy}" />
                 <Button Text="Animals" Command="{Binding FilterByTagCommand}" CommandParameter="animals"
                         Style="{StaticResource TagButtonStyle}" IsEnabled="{Binding IsNotBusy}" />
-                <Button Text="Nature" Command="{Binding FilterByTagCommand}" CommandParameter="nature"
+                <Button Text="Nature" Command="{Binding FilterByTagCommand}" CommandParameter="nature" 
                         Style="{StaticResource TagButtonStyle}" IsEnabled="{Binding IsNotBusy}" />
-                <Button Text="Architecture" Command="{Binding FilterByTagCommand}" CommandParameter="architecture"
+                <Button Text="Architecture" Command="{Binding FilterByTagCommand}" CommandParameter="architecture" 
                         Style="{StaticResource TagButtonStyle}" IsEnabled="{Binding IsNotBusy}" />
-                <Button Text="People" Command="{Binding FilterByTagCommand}" CommandParameter="people"
+                <Button Text="People" Command="{Binding FilterByTagCommand}" CommandParameter="people" 
                         Style="{StaticResource TagButtonStyle}" IsEnabled="{Binding IsNotBusy}" />
                 <Button Text="Travel" Command="{Binding FilterByTagCommand}" CommandParameter="travel"
                         Style="{StaticResource TagButtonStyle}" IsEnabled="{Binding IsNotBusy}" />
             </HorizontalStackLayout>
         </ScrollView>
 
-        <Label Grid.Row="1"
-               Text="{Binding FilterDisplayTitle}"
-               Style="{StaticResource HeaderLabelStyle}" />
+        <HorizontalStackLayout Grid.Row="1" Spacing="5" VerticalOptions="Center" Padding="0,5,0,5">
+            <Label Text="Sort by:" VerticalOptions="Center" TextColor="{StaticResource PrimaryTextColor}" FontSize="Small"/>
+            <Picker Title="Most Interesting"
+                    Style="{StaticResource SortPickerStyle}"
+                    ItemsSource="{Binding AvailableSortOptions}"
+                    ItemDisplayBinding="{Binding DisplayName}" 
+                    SelectedItem="{Binding SelectedSortOptionItem}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    HorizontalOptions="FillAndExpand" />
+        </HorizontalStackLayout>
+
+        <Label Grid.Row="2" Text="{Binding FilterDisplayTitle}" Style="{StaticResource HeaderLabelStyle}" Margin="10,0,0,0" />
         
-        <shared:PhotoListView
-            Grid.Row="2"
-            ItemsSource="{Binding Photos}"
-            LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}"
-            ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" />
+        <shared:PhotoListView Grid.Row="3"
+                              ItemsSource="{Binding Photos}"
+                              LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}"
+                              ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" />
 
-        <ActivityIndicator
-            Grid.Row="0" Grid.RowSpan="4" HorizontalOptions="Center" VerticalOptions="Center"
-            IsRunning="{Binding IsBusy}"
-            IsVisible="{Binding IsBusy}"
-            Color="{StaticResource SecondaryBackgroundColor}" />
-
+        <ActivityIndicator Grid.Row="0" Grid.RowSpan="5" HorizontalOptions="Center" VerticalOptions="Center"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           Color="{StaticResource SecondaryBackgroundColor}" />
     </Grid>
 </ContentPage>
