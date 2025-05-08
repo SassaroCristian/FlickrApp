@@ -1,71 +1,56 @@
-using SQLite;
 using FlickrApp.Entities;
-
+using SQLite;
 
 namespace FlickrApp.Repositories
 {
-    public class PhotoRepository : IPhotoRepository
+    public class PhotoRepository(SQLiteAsyncConnection database) : IPhotoRepository
     {
-        private readonly SQLiteAsyncConnection _database;
-
-
-        public PhotoRepository(SQLiteAsyncConnection dbConnection)
+        public async Task<List<Photo>> GetAllPhotosAsync()
         {
-            _database = dbConnection;
-        }
-
-
-        public Task<List<Photo>> GetAllPhotosAsync()
-        {
-            return _database.Table<Photo>().ToListAsync();
+            return await database.Table<Photo>().ToListAsync();
         }
 
         public async Task<Photo> GetPhotoByIdAsync(string id)
         {
-            return await _database.FindAsync<Photo>(id);
+            return await database.FindAsync<Photo>(id);
         }
 
         public async Task<int> SavePhotoAsync(Photo photo)
         {
-            var existingPhoto = await _database.FindAsync<Photo>(photo.Id);
+            var existingPhoto = await database.FindAsync<Photo>(photo.Id);
 
-            if (existingPhoto != null)
-            {
-                return await _database.UpdateAsync(photo);
-            }
-            else
-            {
-                return await _database.InsertAsync(photo);
-            }
+            if (existingPhoto != null) return await database.UpdateAsync(photo);
+            else return await database.InsertAsync(photo);
+            
         }
 
-        public Task<int> DeletePhotoAsync(string id)
+        public async Task<int> DeletePhotoAsync(string id)
         {
-            return _database.DeleteAsync<Photo>(id);
+            return await database.DeleteAsync<Photo>(id);
         }
 
-        public Task<List<Photo>> SearchPhotosByTitleAsync(string title)
+        public async Task<List<Photo>> SearchPhotosByTitleAsync(string title)
         {
             if (string.IsNullOrEmpty(title))
             {
-                return Task.FromResult(new List<Photo>());
+                return await Task.FromResult(new List<Photo>());
             }
 
-            return _database.Table<Photo>()
+            return await database.Table<Photo>()
                 .Where(p => p.Title != null && p.Title.Contains(title))
                 .ToListAsync();
         }
 
-        public Task<List<Photo>> GetPhotosWithLocalFilesAsync()
+        public async Task<List<Photo>> GetPhotosWithLocalFilesAsync()
         {
-            return _database.Table<Photo>()
+            return await database.Table<Photo>()
                 .Where(p => !string.IsNullOrEmpty(p.LocalFilePath))
                 .ToListAsync();
         }
 
         public async Task<bool> IsPhotoSavedLocallyAsync(string photoId)
         {
-            var photo = await _database.FindAsync<Photo>(photoId);
+            var photo = await database.FindAsync<Photo>(photoId);
 
             return photo != null && !string.IsNullOrEmpty(photo.LocalFilePath);
         }

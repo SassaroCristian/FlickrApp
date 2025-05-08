@@ -1,22 +1,10 @@
-using System;
-using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.Maui.Storage;
 using Debug = System.Diagnostics.Debug;
 
 namespace FlickrApp.Services
 {
-    public class LocalFileSystemService : ILocalFileSystemService
+    public class LocalFileSystemService(HttpClient httpClient) : ILocalFileSystemService
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _appDataDirectory; 
-
-        public LocalFileSystemService(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-            _appDataDirectory = FileSystem.AppDataDirectory; 
-        }
+        private readonly string _appDataDirectory = FileSystem.AppDataDirectory;
 
         public string GetAppSpecificPhotosDirectory()
         {
@@ -52,11 +40,7 @@ namespace FlickrApp.Services
                      return filePath; 
                 }
 
-
-                
-                var imageBytes = await _httpClient.GetByteArrayAsync(imageUrl);
-
-                
+                var imageBytes = await httpClient.GetByteArrayAsync(imageUrl);
                 await File.WriteAllBytesAsync(filePath, imageBytes);
 
                 Debug.WriteLine($"Image saved locally to: {filePath}");
@@ -90,6 +74,5 @@ namespace FlickrApp.Services
         }
 
         // TODO: Aggiungere un metodo per salvare in directory pubbliche se necessario per il download button
-
     }
 }
