@@ -140,10 +140,10 @@ namespace FlickrApp.Repositories
             try
             {
                 var result = await database.DeleteAsync<PhotoEntity>(id);
-                if (result > 0)
-                    StatusMessage = $"Photo with ID '{id}' deleted successfully.";
-                else
-                    StatusMessage = $"Photo with ID '{id}' not found or could not be deleted.";
+                result += await database.DeleteAsync<DetailEntity>(id);
+                StatusMessage = result > 0
+                    ? $"Photo with ID '{id}' deleted successfully."
+                    : $"Photo with ID '{id}' not found or could not be deleted.";
                 return result;
             }
             catch (SQLiteException ex)
