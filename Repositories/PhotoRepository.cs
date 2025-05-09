@@ -89,7 +89,7 @@ namespace FlickrApp.Repositories
                     .FirstOrDefaultAsync();
                 if (existingPhoto == null)
                 {
-                    await database.InsertWithChildrenAsync(photoEntity);
+                    await database.InsertOrReplaceWithChildrenAsync(photoEntity);
                     StatusMessage = $"Photo with ID '{photoEntity.Id}' added successfully.";
                     return 1;
                 }
@@ -113,18 +113,14 @@ namespace FlickrApp.Repositories
                 if (existingPhoto != null)
                 {
                     var result = await database.UpdateAsync(photoEntity);
-                    if (result > 0)
-                        StatusMessage = $"Photo with ID '{photoEntity.Id}' updated successfully.";
-                    else
-                        StatusMessage =
-                            $"Photo with ID '{photoEntity.Id}' was not updated. (No changes or photo not found by update operation).";
+                    StatusMessage = result > 0
+                        ? $"Photo with ID '{photoEntity.Id}' updated successfully."
+                        : $"Photo with ID '{photoEntity.Id}' was not updated. (No changes or photo not found by update operation).";
                     return result;
                 }
-                else
-                {
-                    StatusMessage = $"Photo with ID '{photoEntity.Id}' not found. Update operation skipped.";
-                    return 0;
-                }
+
+                StatusMessage = $"Photo with ID '{photoEntity.Id}' not found. Update operation skipped.";
+                return 0;
             }
             catch (SQLiteException ex)
             {

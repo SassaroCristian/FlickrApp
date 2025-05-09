@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using AutoMapper;
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlickrApp.Entities;
@@ -59,7 +60,8 @@ public partial class PhotoDetailsViewModel(
                     }
 
                     var deletedRows = await photoRepository.DeletePhotoAsync(PhotoId);
-                    Debug.WriteLine($"DB: Deleted {deletedRows} row(s) for photo ID {PhotoId}.");
+                    Debug.WriteLine($"DB: Deleted {deletedRows} row(s) for photo ID {PhotoId}." +
+                                    $"\nStatus Message: {photoRepository.StatusMessage}");
 
                     IsFavorite = false;
                 }
@@ -87,36 +89,27 @@ public partial class PhotoDetailsViewModel(
     [RelayCommand]
     private async Task DownloadAsync()
     {
-        /*
-            if (IsDownloaded)
+        await ExecuteSafelyAsync(async () =>
+        {
+            Debug.WriteLine(
+                $"Attempting to download image for photo ID: {PhotoId} from URL: {Detail!.Photo.LargeUrl}");
+
+            var targetDirectory = fileService.GetAppSpecificDownloadsDirectory();
+            var localFilePath =
+                await fileService.SaveImageAsync(Detail!.Photo.LargeUrl, Detail.Id, targetDirectory);
+
+            if (localFilePath != null)
             {
-                Debug.WriteLine("DownloadCommand: Already downloaded. Skipping.");
-                return;
+                Debug.WriteLine($"Download successful. File saved at: {localFilePath}");
+                var toast = Toast.Make($"Download successful. File saved at: {localFilePath}");
+                await toast.Show();
+                IsDownloaded = true;
             }
-
-            if (Detail == null)
+            else
             {
-                Debug.WriteLine("DownloadCommand: Detail are null. Cannot download.");
-                return;
+                Debug.WriteLine($"Download failed for photo ID: {PhotoId}");
             }
-
-            await ExecuteSafelyAsync(async () =>
-            {
-                Debug.WriteLine($"Attempting to download image for photo ID: {PhotoId} from URL: {Detail.LargeImageUrl}");
-
-                var targetDirectory = fileService.GetAppSpecificDownloadsDirectory();
-                var localFilePath = await fileService.SaveImageAsync(Detail.LargeImageUrl, Detail.Id, targetDirectory);
-
-                if (localFilePath != null)
-                {
-                    Debug.WriteLine($"Download successful. File saved at: {localFilePath}");
-                    IsDownloaded = true;
-                }
-                else
-                {
-                    Debug.WriteLine($"Download failed for photo ID: {PhotoId}");
-                }
-            });*/
+        });
     }
 
 
