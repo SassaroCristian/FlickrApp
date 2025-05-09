@@ -108,6 +108,11 @@
         ContentTemplate="{DataTemplate views:SearchPage}" />
 
     <ShellContent
+        Icon="heart"
+        Title="Liked Photos"
+        ContentTemplate="{DataTemplate views:LikedPhotosPage}" />
+
+    <ShellContent
         Icon="land_layer_location"
         Title="Map"
         ContentTemplate="{DataTemplate views:MapsPage}" />

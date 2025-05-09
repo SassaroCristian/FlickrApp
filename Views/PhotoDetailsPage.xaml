@@ -93,12 +93,6 @@
                 <Setter Property="HorizontalOptions" Value="Center" />
                 <Setter Property="Padding" Value="0" />
                 <Setter Property="Source" Value="download" /> <Setter Property="Aspect" Value="AspectFit" />
-                <Style.Triggers>
-                    <DataTrigger TargetType="ImageButton" Binding="{Binding IsDownloaded}" Value="True">
-                        <Setter Property="IsEnabled" Value="False" />
-                        <Setter Property="Source" Value="downloadgreen" />
-                    </DataTrigger>
-                </Style.Triggers>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>

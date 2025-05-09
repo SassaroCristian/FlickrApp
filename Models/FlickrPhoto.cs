@@ -25,7 +25,13 @@ public class FlickrPhoto
 
     public string LargeUrl => $"{baseUrl}/{Server}/{Id}_{Secret}_b.jpg";
 
-    public string MediumUrl => $"{baseUrl}/{Server}/{Id}_{Secret}_m.jpg";
+    private string? _mediumUrl = string.Empty;
 
+    public string? MediumUrl
+    {
+        get => string.IsNullOrWhiteSpace(_mediumUrl) ? $"{baseUrl}/{Server}/{Id}_{Secret}_m.jpg" : _mediumUrl;
+        set => _mediumUrl = value;
+    }
+    
     public string SmallUrl => $"{baseUrl}/{Server}/{Id}_{Secret}_s.jpg";
 }
