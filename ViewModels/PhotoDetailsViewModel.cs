@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using AutoMapper;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlickrApp.Entities;
@@ -15,12 +16,13 @@ namespace FlickrApp.ViewModels;
 public partial class PhotoDetailsViewModel(
     IFlickrApiService flickr,
     IPhotoRepository photoRepository,
-    ILocalFileSystemService fileService) : BaseViewModel
+    ILocalFileSystemService fileService,
+    IMapper mapper) : BaseViewModel
 {
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(CommentsHeaderTitle))]
     private ObservableCollection<FlickrComment> _comments = [];
 
-    [ObservableProperty] private FlickrDetails? _details;
+    [ObservableProperty] private DetailEntity? _detail;
     [ObservableProperty] private string _photoId = string.Empty;
     [ObservableProperty] private bool _isFavorite;
     [ObservableProperty] private bool _isDownloaded;
@@ -29,116 +31,119 @@ public partial class PhotoDetailsViewModel(
 
     partial void OnPhotoIdChanged(string value)
     {
-        Debug.WriteLine($"photoId changed: {value}");
+        Debug.WriteLine($" ---> ID changed to: {value}");
         _ = FillData();
     }
 
     [RelayCommand]
     private async Task ToggleFavoriteAsync()
     {
-        if (Details == null)
-        {
-            Debug.WriteLine("ToggleFavoriteCommand: Details are null. Cannot toggle favorite status.");
-            return;
-        }
-
-        await ExecuteSafelyAsync(async () =>
-        {
-            if (IsFavorite)
+        /*
+            if (Detail == null)
             {
-                Debug.WriteLine($"Removing photo {PhotoId} from favorites (DB and potentially file).");
+                Debug.WriteLine("ToggleFavoriteCommand: Detail are null. Cannot toggle favorite status.");
+                return;
+            }
 
-                var photoToRemove = await photoRepository.GetPhotoByIdAsync(PhotoId);
-
-                var deletedRows = await photoRepository.DeletePhotoAsync(PhotoId);
-                Debug.WriteLine($"DB: Deleted {deletedRows} row(s) for photo ID {PhotoId}.");
-
-                if (!string.IsNullOrEmpty(photoToRemove.LocalFilePath))
+            await ExecuteSafelyAsync(async () =>
+            {
+                if (IsFavorite)
                 {
-                    await fileService.DeleteFileAsync(photoToRemove.LocalFilePath);
-                    Debug.WriteLine($"File System: Deleted local file: {photoToRemove.LocalFilePath}");
+                    Debug.WriteLine($"Removing photo {PhotoId} from favorites (DB and potentially file).");
+
+                    var photoToRemove = await photoRepository.GetPhotoByIdAsync(PhotoId);
+
+                    var deletedRows = await photoRepository.DeletePhotoAsync(PhotoId);
+                    Debug.WriteLine($"DB: Deleted {deletedRows} row(s) for photo ID {PhotoId}.");
+
+                    if (!string.IsNullOrEmpty(photoToRemove.LocalFilePath))
+                    {
+                        await fileService.DeleteFileAsync(photoToRemove.LocalFilePath);
+                        Debug.WriteLine($"File System: Deleted local file: {photoToRemove.LocalFilePath}");
+                    }
+
+                    IsFavorite = false;
                 }
-
-                IsFavorite = false;
-            }
-            else
-            {
-                Debug.WriteLine($"Adding photo {PhotoId} to favorites (DB and local file).");
-
-                var photoToSave = new PhotoEntity
+                else
                 {
-                    Id = Details.Id,
-                    Title = Details.Title?.Content,
-                    //Description = Details.Description?.Content,
-                    //OwnerNsid = Details.Owner?.Nsid,
-                    //OwnerUsername = Details.Owner?.Username,
-                    Secret = Details.Secret,
-                    //Farm = Details.Farm,
-                    //DateUploaded = Details.Dates?.Posted,
-                    //Views = Details.Views,
-                    LocalFilePath = null
-                };
+                    Debug.WriteLine($"Adding photo {PhotoId} to favorites (DB and local file).");
 
-                var targetDirectory = fileService.GetAppSpecificPhotosDirectory();
-                var localFilePath =
-                    await fileService.SaveImageAsync(Details.LargeImageUrl, Details.Id, targetDirectory);
+                    var photoToSave = new PhotoEntity
+                    {
+                        Id = Detail.Id,
+                        Title = Detail.Title?.Content,
+                        //Description = Detail.Description?.Content,
+                        //OwnerNsid = Detail.Owner?.Nsid,
+                        //OwnerUsername = Detail.Owner?.Username,
+                        Secret = Detail.Secret,
+                        //Farm = Detail.Farm,
+                        //DateUploaded = Detail.Dates?.Posted,
+                        //Views = Detail.Views,
+                        LocalFilePath = null
+                    };
 
-                photoToSave.LocalFilePath = localFilePath;
+                    var targetDirectory = fileService.GetAppSpecificPhotosDirectory();
+                    var localFilePath =
+                        await fileService.SaveImageAsync(Detail.LargeImageUrl, Detail.Id, targetDirectory);
 
-                var rowsAffected = await photoRepository.AddPhotoAsync(photoToSave);
-                Debug.WriteLine($"DB: Saved/Updated {rowsAffected} row(s) for photo ID {PhotoId}.");
+                    photoToSave.LocalFilePath = localFilePath;
 
-                IsFavorite = true;
-            }
-        });
+                    var rowsAffected = await photoRepository.AddPhotoAsync(photoToSave);
+                    Debug.WriteLine($"DB: Saved/Updated {rowsAffected} row(s) for photo ID {PhotoId}.");
+
+                    IsFavorite = true;
+                }
+            });*/
     }
 
     [RelayCommand]
     private async Task DownloadAsync()
     {
-        if (IsDownloaded)
-        {
-            Debug.WriteLine("DownloadCommand: Already downloaded. Skipping.");
-            return;
-        }
-
-        if (Details == null)
-        {
-            Debug.WriteLine("DownloadCommand: Details are null. Cannot download.");
-            return;
-        }
-
-        await ExecuteSafelyAsync(async () =>
-        {
-            Debug.WriteLine($"Attempting to download image for photo ID: {PhotoId} from URL: {Details.LargeImageUrl}");
-
-            var targetDirectory = fileService.GetAppSpecificDownloadsDirectory();
-            var localFilePath = await fileService.SaveImageAsync(Details.LargeImageUrl, Details.Id, targetDirectory);
-
-            if (localFilePath != null)
+        /*
+            if (IsDownloaded)
             {
-                Debug.WriteLine($"Download successful. File saved at: {localFilePath}");
-                IsDownloaded = true;
+                Debug.WriteLine("DownloadCommand: Already downloaded. Skipping.");
+                return;
             }
-            else
+
+            if (Detail == null)
             {
-                Debug.WriteLine($"Download failed for photo ID: {PhotoId}");
+                Debug.WriteLine("DownloadCommand: Detail are null. Cannot download.");
+                return;
             }
-        });
+
+            await ExecuteSafelyAsync(async () =>
+            {
+                Debug.WriteLine($"Attempting to download image for photo ID: {PhotoId} from URL: {Detail.LargeImageUrl}");
+
+                var targetDirectory = fileService.GetAppSpecificDownloadsDirectory();
+                var localFilePath = await fileService.SaveImageAsync(Detail.LargeImageUrl, Detail.Id, targetDirectory);
+
+                if (localFilePath != null)
+                {
+                    Debug.WriteLine($"Download successful. File saved at: {localFilePath}");
+                    IsDownloaded = true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Download failed for photo ID: {PhotoId}");
+                }
+            });*/
     }
 
 
     private async Task FillData()
     {
-        Details = null;
+        Detail = null;
         Comments.Clear();
 
         // GETTING DETAILS
         await ExecuteSafelyAsync(async () =>
         {
             Debug.WriteLine(" ---> Getting details ...");
-            var details = await flickr.GetDetailsAsync(PhotoId);
-            Details = details;
+            var item = await flickr.GetDetailsAsync(PhotoId);
+            var detail = mapper.Map<DetailEntity>(item);
+            Detail = detail;
         });
 
         // GETTING COMMENTS

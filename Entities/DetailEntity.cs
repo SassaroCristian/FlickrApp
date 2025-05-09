@@ -13,15 +13,19 @@ public class DetailEntity
 
     [Column("APDTDESCRIPTION")] public string? Description { get; set; }
 
+    [Column("APDTTAGS")] public string? Tags { get; set; }
+
     [Column("APDTOWNERNSID")] public string? OwnerNsid { get; set; }
 
     [Column("APDTOWNER")] public string? OwnerUsername { get; set; }
 
     [Column("APDTFARM")] public int Farm { get; set; }
 
+    [Column("APDTLICENSE")] public string? License { get; set; }
+
     [Column("APDTDATEUPLOADED")] public string? DateUploaded { get; set; }
 
     [Column("APDTVIEWS")] public string? Views { get; set; }
-
+        
     [OneToOne("Id", ReadOnly = true)] public PhotoEntity? Photo { get; set; }
 }

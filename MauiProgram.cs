@@ -68,7 +68,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ILocalFileSystemService, LocalFileSystemService>();
 
         // MAPPER
-        builder.Services.AddAutoMapper(typeof(PhotoProfile).Assembly);
+        builder.Services.AddAutoMapper(typeof(PhotoProfile).Assembly, typeof(DetailProfile).Assembly);
 
         // App Shell
         builder.Services.AddTransient<AppShell>();

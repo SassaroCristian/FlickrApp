@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace FlickrApp.Models;
@@ -56,17 +57,6 @@ public class FlickrDetails
     [JsonPropertyName("urls")] public Urls? Urls { get; set; }
 
     [JsonPropertyName("media")] public string? Media { get; set; }
-
-    public string? LargeImageUrl
-    {
-        get
-        {
-            if (string.IsNullOrEmpty(Server) || string.IsNullOrEmpty(Id) || string.IsNullOrEmpty(Secret))
-                return "https://via.placeholder.com/800x600.png?text=Image+Not+Available";
-
-            return $"https://live.staticflickr.com/{Server}/{Id}_{Secret}_b.jpg";
-        }
-    }
 }
 
 public class Comments
@@ -230,6 +220,16 @@ public class Tag
 public class Tags
 {
     [JsonPropertyName("tag")] public List<Tag>? Tag { get; set; }
+
+    public override string ToString()
+    {
+        if (Tag == null) return string.Empty;
+
+        var sb = new StringBuilder();
+        foreach (var tag in Tag) sb.AppendJoin(",", tag.Content);
+
+        return sb.ToString();
+    }
 }
 
 public class Title
