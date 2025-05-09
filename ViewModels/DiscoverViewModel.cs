@@ -1,8 +1,9 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using AutoMapper;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FlickrApp.Models;
+using FlickrApp.Entities;
 using FlickrApp.Services;
 using FlickrApp.ViewModels.Base;
 
@@ -23,6 +24,7 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
     private const string excludedTags = "-naked,-Naked";
     private const int perPageInit = 15;
     private readonly IFlickrApiService _flickr;
+    private readonly IMapper _mapper;
 
     private string _currentTagFilter = string.Empty;
 
@@ -36,9 +38,10 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
 
     [ObservableProperty] private string _selectedSortOptionDisplayName = string.Empty;
 
-    public DiscoverViewModel(INavigationService navigation, IFlickrApiService flickr) : base(navigation)
+    public DiscoverViewModel(INavigationService navigation, IFlickrApiService flickr, IMapper mapper) : base(navigation)
     {
         _flickr = flickr;
+        _mapper = mapper;
 
         _availableSortOptions = new ObservableCollection<SortOptionDisplay>
         {
@@ -119,7 +122,7 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
         await InitializeAsync(perPageInit);
     }
 
-    protected override async Task<ICollection<FlickrPhoto>> FetchItemsAsync(int page, int perPage)
+    protected override async Task<ICollection<PhotoEntity>> FetchItemsAsync(int page, int perPage)
     {
         return await ExecuteSafelyAsync(async () =>
         {
@@ -132,11 +135,12 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
             Debug.WriteLine(
                 $"DiscoverViewModel.FetchItemsAsync: Page: {page}, PerPage: {perPage}, Sort: {apiSortOrder}, Tags: '{effectiveTags}'");
             var items = await _flickr.SearchAsync(string.Empty, effectiveTags, page, perPage, apiSortOrder);
-            return items;
+            var result = items.Select(_mapper.Map<PhotoEntity>).ToList();
+            return result;
         }) ?? [];
     }
 
-    protected override async Task<ICollection<FlickrPhoto>> FetchMoreItemsAsync(int page, int perPage)
+    protected override async Task<ICollection<PhotoEntity>> FetchMoreItemsAsync(int page, int perPage)
     {
         return await ExecuteSafelyAsync(async () =>
         {
@@ -149,7 +153,8 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
             Debug.WriteLine(
                 $"DiscoverViewModel.FetchMoreItemsAsync: Page: {page}, PerPage: {perPage}, Sort: {apiSortOrder}, Tags: '{effectiveTags}'");
             var items = await _flickr.SearchMoreAsync(string.Empty, effectiveTags, page, perPage, apiSortOrder);
-            return items;
+            var result = items.Select(_mapper.Map<PhotoEntity>).ToList();
+            return result;
         }) ?? [];
     }
 }

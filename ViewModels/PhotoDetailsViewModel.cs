@@ -65,17 +65,17 @@ public partial class PhotoDetailsViewModel(
             {
                 Debug.WriteLine($"Adding photo {PhotoId} to favorites (DB and local file).");
 
-                var photoToSave = new Photo
+                var photoToSave = new PhotoEntity
                 {
                     Id = Details.Id,
                     Title = Details.Title?.Content,
-                    Description = Details.Description?.Content,
-                    OwnerNsid = Details.Owner?.Nsid,
-                    OwnerUsername = Details.Owner?.Username,
+                    //Description = Details.Description?.Content,
+                    //OwnerNsid = Details.Owner?.Nsid,
+                    //OwnerUsername = Details.Owner?.Username,
                     Secret = Details.Secret,
-                    Farm = Details.Farm,
-                    DateUploaded = Details.Dates?.Posted,
-                    Views = Details.Views,
+                    //Farm = Details.Farm,
+                    //DateUploaded = Details.Dates?.Posted,
+                    //Views = Details.Views,
                     LocalFilePath = null
                 };
 
@@ -85,7 +85,7 @@ public partial class PhotoDetailsViewModel(
 
                 photoToSave.LocalFilePath = localFilePath;
 
-                var rowsAffected = await photoRepository.SavePhotoAsync(photoToSave);
+                var rowsAffected = await photoRepository.AddPhotoAsync(photoToSave);
                 Debug.WriteLine($"DB: Saved/Updated {rowsAffected} row(s) for photo ID {PhotoId}.");
 
                 IsFavorite = true;

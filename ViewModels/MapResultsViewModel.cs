@@ -1,6 +1,7 @@
 using System.Diagnostics;
+using AutoMapper;
 using CommunityToolkit.Mvvm.ComponentModel;
-using FlickrApp.Models;
+using FlickrApp.Entities;
 using FlickrApp.Services;
 using FlickrApp.ViewModels.Base;
 
@@ -8,7 +9,7 @@ namespace FlickrApp.ViewModels;
 
 [QueryProperty(nameof(Latitude), nameof(Latitude))]
 [QueryProperty(nameof(Longitude), nameof(Longitude))]
-public partial class MapResultsViewModel(INavigationService navigation, IFlickrApiService flickr)
+public partial class MapResultsViewModel(INavigationService navigation, IFlickrApiService flickr, IMapper mapper)
     : PhotoListViewModelBase(navigation)
 {
     private const int perPageInit = 10;
@@ -46,21 +47,23 @@ public partial class MapResultsViewModel(INavigationService navigation, IFlickrA
         await InitializeAsync(perPageInit);
     }
 
-    protected override async Task<ICollection<FlickrPhoto>> FetchItemsAsync(int page, int perPage)
+    protected override async Task<ICollection<PhotoEntity>> FetchItemsAsync(int page, int perPage)
     {
         return await ExecuteSafelyAsync(async () =>
         {
             var items = await flickr.GetForLocationAsync(Latitude, Longitude, page, perPage);
-            return items;
+            var result = items.Select(mapper.Map<PhotoEntity>).ToList();
+            return result;
         }) ?? [];
     }
 
-    protected override async Task<ICollection<FlickrPhoto>> FetchMoreItemsAsync(int page, int perPage)
+    protected override async Task<ICollection<PhotoEntity>> FetchMoreItemsAsync(int page, int perPage)
     {
         return await ExecuteSafelyAsync(async () =>
         {
             var items = await flickr.GetMoreForLocationAsync(Latitude, Longitude, page, perPage);
-            return items;
+            var result = items.Select(mapper.Map<PhotoEntity>).ToList();
+            return result;
         }) ?? [];
     }
 }

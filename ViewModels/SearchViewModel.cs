@@ -1,13 +1,14 @@
 using System.Diagnostics;
+using AutoMapper;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FlickrApp.Models;
+using FlickrApp.Entities;
 using FlickrApp.Services;
 using FlickrApp.ViewModels.Base;
 
 namespace FlickrApp.ViewModels;
 
-public partial class SearchViewModel(INavigationService navigation, IFlickrApiService flickr)
+public partial class SearchViewModel(INavigationService navigation, IFlickrApiService flickr, IMapper mapper)
     : PhotoListViewModelBase(navigation)
 {
     private const int perPageInit = 10;
@@ -26,23 +27,25 @@ public partial class SearchViewModel(INavigationService navigation, IFlickrApiSe
         await InitializeAsync(perPageInit);
     }
 
-    protected override async Task<ICollection<FlickrPhoto>> FetchItemsAsync(int page, int perPage)
+    protected override async Task<ICollection<PhotoEntity>> FetchItemsAsync(int page, int perPage)
     {
         Debug.WriteLine($" ---> Fetching items for {SearchText}");
         return await ExecuteSafelyAsync(async () =>
         {
             var items = await flickr.SearchAsync(SearchText, string.Empty, page, perPage);
-            return items;
+            var result = items.Select(mapper.Map<PhotoEntity>).ToList();
+            return result;
         }) ?? [];
     }
 
-    protected override async Task<ICollection<FlickrPhoto>> FetchMoreItemsAsync(int page, int perPage)
+    protected override async Task<ICollection<PhotoEntity>> FetchMoreItemsAsync(int page, int perPage)
     {
         Debug.WriteLine($" ---> Fetching more items for {SearchText}");
         return await ExecuteSafelyAsync(async () =>
         {
             var items = await flickr.SearchMoreAsync(SearchText, string.Empty, page, perPage);
-            return items;
+            var result = items.Select(mapper.Map<PhotoEntity>).ToList();
+            return result;
         }) ?? [];
     }
 }
