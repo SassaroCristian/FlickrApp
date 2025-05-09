@@ -38,7 +38,7 @@ public partial class PhotoDetailsViewModel(
     [RelayCommand]
     private async Task ToggleFavoriteAsync()
     {
-        /*
+        
             if (Detail == null)
             {
                 Debug.WriteLine("ToggleFavoriteCommand: Detail are null. Cannot toggle favorite status.");
@@ -50,17 +50,16 @@ public partial class PhotoDetailsViewModel(
                 if (IsFavorite)
                 {
                     Debug.WriteLine($"Removing photo {PhotoId} from favorites (DB and potentially file).");
-
                     var photoToRemove = await photoRepository.GetPhotoByIdAsync(PhotoId);
 
-                    var deletedRows = await photoRepository.DeletePhotoAsync(PhotoId);
-                    Debug.WriteLine($"DB: Deleted {deletedRows} row(s) for photo ID {PhotoId}.");
-
-                    if (!string.IsNullOrEmpty(photoToRemove.LocalFilePath))
+                    if (!string.IsNullOrEmpty(photoToRemove?.LocalFilePath))
                     {
                         await fileService.DeleteFileAsync(photoToRemove.LocalFilePath);
                         Debug.WriteLine($"File System: Deleted local file: {photoToRemove.LocalFilePath}");
                     }
+
+                    var deletedRows = await photoRepository.DeletePhotoAsync(PhotoId);
+                    Debug.WriteLine($"DB: Deleted {deletedRows} row(s) for photo ID {PhotoId}.");
 
                     IsFavorite = false;
                 }
@@ -68,23 +67,12 @@ public partial class PhotoDetailsViewModel(
                 {
                     Debug.WriteLine($"Adding photo {PhotoId} to favorites (DB and local file).");
 
-                    var photoToSave = new PhotoEntity
-                    {
-                        Id = Detail.Id,
-                        Title = Detail.Title?.Content,
-                        //Description = Detail.Description?.Content,
-                        //OwnerNsid = Detail.Owner?.Nsid,
-                        //OwnerUsername = Detail.Owner?.Username,
-                        Secret = Detail.Secret,
-                        //Farm = Detail.Farm,
-                        //DateUploaded = Detail.Dates?.Posted,
-                        //Views = Detail.Views,
-                        LocalFilePath = null
-                    };
-
+                    var photoToSave = Detail.Photo;
+                    if (photoToSave == null) return;
+                    
                     var targetDirectory = fileService.GetAppSpecificPhotosDirectory();
                     var localFilePath =
-                        await fileService.SaveImageAsync(Detail.LargeImageUrl, Detail.Id, targetDirectory);
+                        await fileService.SaveImageAsync(Detail.Photo!.LargeUrl, Detail.Id, targetDirectory);
 
                     photoToSave.LocalFilePath = localFilePath;
 
@@ -93,7 +81,7 @@ public partial class PhotoDetailsViewModel(
 
                     IsFavorite = true;
                 }
-            });*/
+            });
     }
 
     [RelayCommand]
@@ -141,13 +129,27 @@ public partial class PhotoDetailsViewModel(
         await ExecuteSafelyAsync(async () =>
         {
             Debug.WriteLine(" ---> Getting details ...");
-            var item = await flickr.GetDetailsAsync(PhotoId);
-            var detail = mapper.Map<DetailEntity>(item);
+
+            DetailEntity? detail = null;
+            var isPhotoSavedLocally = await photoRepository.IsPhotoSavedLocallyAsync(PhotoId);
+            if (isPhotoSavedLocally)
+            {
+                var photo = await photoRepository.GetPhotoWithDetailByIdAsync(PhotoId);
+                Debug.WriteLine(photoRepository.StatusMessage);
+                detail = photo?.Detail;
+                IsFavorite = true;
+            }
+            else
+            {
+                var item = await flickr.GetDetailsAsync(PhotoId);
+                Debug.WriteLine(" --> Getting details from flickr service");
+                detail = mapper.Map<DetailEntity>(item);
+            }
             Detail = detail;
         });
 
         // GETTING COMMENTS
-        await ExecuteSafelyAsync(async () =>
+        _ = ExecuteSafelyAsync(async () =>
         {
             Debug.WriteLine(" --- Getting comments ...");
             var comments = await flickr.GetCommentsAsync(PhotoId);

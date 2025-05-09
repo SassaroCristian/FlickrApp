@@ -9,7 +9,7 @@ public class DetailEntity
     [PrimaryKey]
     [Column("APDTID")]
     [ForeignKey(typeof(PhotoEntity))]
-    public required string Id { get; init; }
+    public string Id { get; init; }
 
     [Column("APDTDESCRIPTION")] public string? Description { get; set; }
 

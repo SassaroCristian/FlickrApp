@@ -1,5 +1,7 @@
 using FlickrApp.Entities;
 using SQLite;
+using SQLiteNetExtensionsAsync.Extensions;
+
 // Per List<T>
 
 // Per Task
@@ -8,23 +10,57 @@ namespace FlickrApp.Repositories
 {
     public class PhotoRepository(SQLiteAsyncConnection database) : IPhotoRepository
     {
-        public string MessageStatus = string.Empty;
+        public string StatusMessage { get; private set; } = string.Empty;
 
         public async Task<List<PhotoEntity>> GetAllPhotosAsync()
         {
             try
             {
                 var list = await database.Table<PhotoEntity>().ToListAsync();
-                if (list.Count > 0)
-                    MessageStatus = $"{list.Count} photo(s) retrieved successfully.";
-                else
-                    MessageStatus = "No photos found in the database.";
+                StatusMessage = list.Count > 0
+                    ? $"{list.Count} photo(s) retrieved successfully."
+                    : "No photos found in the database.";
                 return list;
             }
             catch (SQLiteException ex)
             {
-                MessageStatus = $"Error retrieving photos: {ex.Message}";
-                return new List<PhotoEntity>();
+                StatusMessage = $"Error retrieving photos: {ex.Message}";
+                return [];
+            }
+        }
+
+        public async Task<List<PhotoEntity>> GetAllPhotosAsync(int pageNumber, int pageSize)
+        {
+            try
+            {
+                var itemsToSkip = (pageNumber - 1) * pageSize;
+                var list = await database.Table<PhotoEntity>().Skip(itemsToSkip).Take(pageSize).ToListAsync();
+                StatusMessage = list.Count > 0
+                    ? $"{list.Count} photo(s) retrieved successfully."
+                    : "No photos found in the database.";
+                return list;
+            }
+            catch (SQLiteException ex)
+            {
+                StatusMessage = $"Error retrieving photos: {ex.Message}";
+                return [];
+            }
+        }
+
+        public async Task<PhotoEntity?> GetPhotoWithDetailByIdAsync(string id)
+        {
+            try
+            {
+                var photo = await database.GetWithChildrenAsync<PhotoEntity>(id);
+                StatusMessage = photo != null
+                    ? $"Photo with ID '{id}' retrieved successfully."
+                    : $"Photo with ID '{id}' not found.";
+                return photo;
+            }
+            catch (SQLiteException ex)
+            {
+                StatusMessage = $"Error finding photo with ID '{id}': {ex.Message}";
+                return null;
             }
         }
 
@@ -33,15 +69,14 @@ namespace FlickrApp.Repositories
             try
             {
                 var photo = await database.FindAsync<PhotoEntity>(id);
-                if (photo != null)
-                    MessageStatus = $"Photo with ID '{id}' retrieved successfully.";
-                else
-                    MessageStatus = $"Photo with ID '{id}' not found.";
+                StatusMessage = photo != null
+                    ? $"Photo with ID '{id}' retrieved successfully."
+                    : $"Photo with ID '{id}' not found.";
                 return photo;
             }
             catch (SQLiteException ex)
             {
-                MessageStatus = $"Error finding photo with ID '{id}': {ex.Message}";
+                StatusMessage = $"Error finding photo with ID '{id}': {ex.Message}";
                 return null;
             }
         }
@@ -54,22 +89,17 @@ namespace FlickrApp.Repositories
                     .FirstOrDefaultAsync();
                 if (existingPhoto == null)
                 {
-                    var result = await database.InsertAsync(photoEntity);
-                    if (result > 0)
-                        MessageStatus = $"Photo with ID '{photoEntity.Id}' added successfully.";
-                    else
-                        MessageStatus = $"Failed to add photo with ID '{photoEntity.Id}'. No rows affected.";
-                    return result;
+                    await database.InsertWithChildrenAsync(photoEntity);
+                    StatusMessage = $"Photo with ID '{photoEntity.Id}' added successfully.";
+                    return 1;
                 }
-                else
-                {
-                    MessageStatus = $"Photo with ID '{photoEntity.Id}' already exists. Add operation skipped.";
-                    return 0;
-                }
+
+                StatusMessage = $"Photo with ID '{photoEntity.Id}' already exists. Add operation skipped.";
+                return 0;   
             }
             catch (SQLiteException ex)
             {
-                MessageStatus = $"Error adding photo with ID '{photoEntity.Id}': {ex.Message}";
+                StatusMessage = $"Error adding photo with ID '{photoEntity.Id}': {ex.Message}";
                 return 0;
             }
         }
@@ -84,21 +114,21 @@ namespace FlickrApp.Repositories
                 {
                     var result = await database.UpdateAsync(photoEntity);
                     if (result > 0)
-                        MessageStatus = $"Photo with ID '{photoEntity.Id}' updated successfully.";
+                        StatusMessage = $"Photo with ID '{photoEntity.Id}' updated successfully.";
                     else
-                        MessageStatus =
+                        StatusMessage =
                             $"Photo with ID '{photoEntity.Id}' was not updated. (No changes or photo not found by update operation).";
                     return result;
                 }
                 else
                 {
-                    MessageStatus = $"Photo with ID '{photoEntity.Id}' not found. Update operation skipped.";
+                    StatusMessage = $"Photo with ID '{photoEntity.Id}' not found. Update operation skipped.";
                     return 0;
                 }
             }
             catch (SQLiteException ex)
             {
-                MessageStatus = $"Error updating photo with ID '{photoEntity.Id}': {ex.Message}";
+                StatusMessage = $"Error updating photo with ID '{photoEntity.Id}': {ex.Message}";
                 return 0;
             }
         }
@@ -107,7 +137,7 @@ namespace FlickrApp.Repositories
         {
             if (string.IsNullOrEmpty(id))
             {
-                MessageStatus = "Photo ID cannot be null or empty for deletion.";
+                StatusMessage = "Photo ID cannot be null or empty for deletion.";
                 return 0;
             }
 
@@ -115,14 +145,14 @@ namespace FlickrApp.Repositories
             {
                 var result = await database.DeleteAsync<PhotoEntity>(id);
                 if (result > 0)
-                    MessageStatus = $"Photo with ID '{id}' deleted successfully.";
+                    StatusMessage = $"Photo with ID '{id}' deleted successfully.";
                 else
-                    MessageStatus = $"Photo with ID '{id}' not found or could not be deleted.";
+                    StatusMessage = $"Photo with ID '{id}' not found or could not be deleted.";
                 return result;
             }
             catch (SQLiteException ex)
             {
-                MessageStatus = $"Error deleting photo with ID '{id}': {ex.Message}";
+                StatusMessage = $"Error deleting photo with ID '{id}': {ex.Message}";
                 return 0;
             }
         }
@@ -131,7 +161,7 @@ namespace FlickrApp.Repositories
         {
             if (string.IsNullOrEmpty(photoId))
             {
-                MessageStatus = "Photo ID cannot be null or empty for local check.";
+                StatusMessage = "Photo ID cannot be null or empty for local check.";
                 return false;
             }
 
@@ -139,27 +169,27 @@ namespace FlickrApp.Repositories
             {
                 var photo = await database.FindAsync<PhotoEntity>(photoId);
                 var isSaved = photo != null && !string.IsNullOrEmpty(photo.LocalFilePath) &&
-                              File.Exists(photo.LocalFilePath); // Aggiunto System.IO.File.Exists
+                              File.Exists(photo.LocalFilePath); 
 
                 if (photo == null)
-                    MessageStatus = $"Photo with ID '{photoId}' not found in database for local check.";
+                    StatusMessage = $"Photo with ID '{photoId}' not found in database for local check.";
                 else if (string.IsNullOrEmpty(photo.LocalFilePath))
-                    MessageStatus = $"Photo with ID '{photoId}' found, but has no local file path specified.";
+                    StatusMessage = $"Photo with ID '{photoId}' found, but has no local file path specified.";
                 else if (!File.Exists(photo.LocalFilePath))
-                    MessageStatus =
+                    StatusMessage =
                         $"Photo with ID '{photoId}' has a local path ('{photo.LocalFilePath}'), but the file does not exist.";
                 else
-                    MessageStatus = $"Photo with ID '{photoId}' is saved locally at '{photo.LocalFilePath}'.";
+                    StatusMessage = $"Photo with ID '{photoId}' is saved locally at '{photo.LocalFilePath}'.";
                 return isSaved;
             }
             catch (SQLiteException ex)
             {
-                MessageStatus = $"Database error checking local status for photo ID '{photoId}': {ex.Message}";
+                StatusMessage = $"Database error checking local status for photo ID '{photoId}': {ex.Message}";
                 return false;
             }
             catch (Exception ex)
             {
-                MessageStatus = $"Error checking local status for photo ID '{photoId}': {ex.Message}";
+                StatusMessage = $"Error checking local status for photo ID '{photoId}': {ex.Message}";
                 return false;
             }
         }

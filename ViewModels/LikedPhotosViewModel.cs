@@ -1,4 +1,4 @@
-using FlickrApp.Models;
+using FlickrApp.Entities;
 using FlickrApp.Repositories;
 using FlickrApp.Services;
 using FlickrApp.ViewModels.Base;
@@ -22,38 +22,21 @@ public class LikedPhotosViewModel : PhotoListViewModelBase
         _ = InitializeAsync(perPageInit);
     }
 
-    private async Task<List<FlickrPhoto>> GetAllPhotos(int pageNumber, int pageSize)
+    private async Task<List<PhotoEntity>> GetAllPhotos(int pageNumber, int pageSize)
     {
         return await ExecuteSafelyAsync(async () =>
         {
-            var items = await _photoRepository.GetAllPhotosAsync(pageNumber, pageSize);
-
-            var photos = new List<FlickrPhoto>();
-            foreach (var photoEntity in items)
-            {
-                if (!await _photoRepository.IsPhotoSavedLocallyAsync(photoEntity.Id)) continue;
-                photos.Add(new FlickrPhoto
-                {
-                    Id = photoEntity.Id,
-                    Owner = photoEntity.OwnerNsid ?? string.Empty,
-                    Secret = photoEntity.Secret,
-                    Server = photoEntity.Server,
-                    Farm = photoEntity.Farm,
-                    Title = photoEntity.Title ?? string.Empty,
-                    MediumUrl = photoEntity.LocalFilePath
-                });
-            }
-
+            var photos = await _photoRepository.GetAllPhotosAsync(pageNumber, pageSize);
             return photos;
         }) ?? [];
     }
 
-    protected override async Task<ICollection<FlickrPhoto>> FetchItemsAsync(int page, int perPage)
+    protected override async Task<ICollection<PhotoEntity>> FetchItemsAsync(int page, int perPage)
     {
         return await GetAllPhotos(page, perPage);
     }
 
-    protected override async Task<ICollection<FlickrPhoto>> FetchMoreItemsAsync(int page, int perPage)
+    protected override async Task<ICollection<PhotoEntity>> FetchMoreItemsAsync(int page, int perPage)
     {
         return await GetAllPhotos(page, perPage);
     }

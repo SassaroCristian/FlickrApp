@@ -9,6 +9,8 @@ namespace FlickrApp.Repositories;
 /// </summary>
 public interface IPhotoRepository
 {
+    public string StatusMessage { get; }
+    
     /// <summary>
     ///     Asynchronously retrieves all photos from the data source.
     /// </summary>
@@ -20,22 +22,52 @@ public interface IPhotoRepository
     Task<List<PhotoEntity>> GetAllPhotosAsync();
 
     /// <summary>
-    ///     Asynchronously retrieves a specific <see cref="PhotoEntity" /> using its unique identifier.
+    ///     Asynchronously retrieves a paginated list of photos from the data source.
+    /// </summary>
+    /// <param name="pageNumber">The page number to retrieve (1-based index).</param>
+    /// <param name="pageSize">The number of photos to retrieve per page.</param>
+    /// <returns>
+    ///     A <see cref="Task{TResult}" /> that represents the asynchronous operation.
+    ///     The task result contains a <see cref="List{T}" /> of <see cref="PhotoEntity" /> objects for the requested page.
+    ///     Returns an empty list if the page number is out of range or no photos are found for the given page.
+    /// </returns>
+    /// <remarks>
+    ///     It's recommended that implementations handle invalid <paramref name="pageNumber" /> (e.g., less than 1)
+    ///     or <paramref name="pageSize" /> (e.g., less than or equal to 0) gracefully,
+    ///     for instance, by returning an empty list or adjusting to default valid values.
+    /// </remarks>
+    /// <exception cref="System.ArgumentOutOfRangeException">
+    ///     May be thrown by implementations if <paramref name="pageNumber" /> or <paramref name="pageSize" />
+    ///     are considered invalid and not handled by returning an empty list (e.g., page size <= 0).
+    /// </exception>
+    Task<List<PhotoEntity>> GetAllPhotosAsync(int pageNumber, int pageSize);
+
+    /// <summary>
+    ///     Asynchronously retrieves a specific <see cref="PhotoEntity" /> by its unique identifier,
+    ///     including its associated <see cref="DetailEntity" />.
     /// </summary>
     /// <param name="id">The unique identifier of the photo to retrieve.</param>
     /// <returns>
     ///     A <see cref="Task{TResult}" /> that represents the asynchronous operation.
-    ///     The task result contains the <see cref="PhotoEntity" /> object if found; otherwise, <c>null</c>.
+    ///     The task result contains the <see cref="PhotoEntity" /> object with its <see cref="PhotoEntity.Detail" />
+    ///     property populated if the photo and its details are found; otherwise, <c>null</c> if the photo
+    ///     with the specified ID is not found. The <see cref="PhotoEntity.Detail" /> property will also be
+    ///     <c>null</c> if the photo is found but has no associated details.
     /// </returns>
     /// <remarks>
-    ///     Implementations are expected to return <c>null</c> if the ID does not match any photo,
-    ///     rather than throwing a "not found" exception.
+    ///     This method is expected to perform an "eager load" of the photo's details.
+    ///     If the photo ID is invalid or not found, the method should return <c>null</c> rather than throwing an exception.
     /// </remarks>
     /// <exception cref="System.ArgumentNullException">
-    ///     May be thrown if <paramref name="id" /> is null or empty, depending on
-    ///     the implementation.
+    ///     May be thrown by implementations if the provided <paramref name="id" /> is null or empty.
     /// </exception>
-    Task<PhotoEntity?> GetPhotoByIdAsync(string id); // Kept PhotoEntity? to indicate nullability
+    /// <exception cref="System.Exception">
+    ///     May be thrown by implementations if there's an issue accessing the data source,
+    ///     though specific database exceptions (e.g., SQLiteException) are more likely.
+    /// </exception>
+    Task<PhotoEntity?> GetPhotoWithDetailByIdAsync(string id);
+
+    Task<PhotoEntity?> GetPhotoByIdAsync(string id); 
 
     /// <summary>
     ///     Asynchronously adds a new <see cref="PhotoEntity" /> to the data source.

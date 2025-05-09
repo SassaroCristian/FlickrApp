@@ -88,11 +88,17 @@ public static class MauiProgram
         // Search
         builder.Services.AddTransient<SearchPage>();
         builder.Services.AddTransient<SearchViewModel>();
+        // Liked Photos
+        builder.Services.AddTransient<LikedPhotosPage>();
+        builder.Services.AddTransient<LikedPhotosViewModel>();
 
         var app = builder.Build();
         
         var conn = app.Services.GetRequiredService<SQLiteAsyncConnection>();
         conn.CreateTableAsync<PhotoEntity>()
+            .GetAwaiter()
+            .GetResult();
+        conn.CreateTableAsync<DetailEntity>()
             .GetAwaiter()
             .GetResult();
 
