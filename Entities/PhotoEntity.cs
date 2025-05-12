@@ -29,7 +29,7 @@ public class PhotoEntity
 
     [Ignore]
     public string DisplayLargeSource =>
-        (IsSavedLocally ? LocalFilePath : MediumUrl) ?? throw new InvalidOperationException();
+        (IsSavedLocally ? LocalFilePath : LargeUrl) ?? throw new InvalidOperationException();
 
     [Ignore]
     public string DisplayMediumSource =>
@@ -37,7 +37,7 @@ public class PhotoEntity
 
     [Ignore]
     public string DisplaySmallSource =>
-        (IsSavedLocally ? LocalFilePath : MediumUrl) ?? throw new InvalidOperationException();
+        (IsSavedLocally ? LocalFilePath : SmallUrl) ?? throw new InvalidOperationException();
     
     [OneToOne("Id", CascadeOperations = CascadeOperation.All)]
     public DetailEntity? Detail { get; set; }
