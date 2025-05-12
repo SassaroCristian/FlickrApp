@@ -3,63 +3,53 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
-             xmlns:entities="clr-namespace:FlickrApp.Entities"
-             x:Class="FlickrApp.Views.Shared.PhotoListView">
+             xmlns:model="clr-namespace:FlickrApp.Models"
+             x:Class="FlickrApp.Views.Shared.PhotoListView"
+             Padding="5">
 
     <ContentView.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Key="PhotoItemTemplate" x:DataType="model:FlickrPhoto">
+                <Border StrokeShape="RoundRectangle 20"
+                        StrokeThickness="0"
+                        HeightRequest="220"
+                        Padding="0"
+                        Margin="5">
+                    <FlexLayout.Basis>
+                        <OnIdiom Phone="98%"
+                                 Tablet="31.5%"
+                                 Default="98%" />
+                    </FlexLayout.Basis>
+                    <FlexLayout.Grow>0</FlexLayout.Grow>
+                    <FlexLayout.Shrink>0</FlexLayout.Shrink>
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="4,4" Radius="8" Opacity="0.3" />
+                    </Border.Shadow>
+                    <ImageButton Source="{Binding MediumUrl}"
+                                 Aspect="AspectFill"
+                                 Command="{Binding Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, Path=ItemTappedCommand}"
+                                 CommandParameter="{Binding .}"
+                                 CornerRadius="20"
+                                 HorizontalOptions="FillAndExpand"
+                                 VerticalOptions="FillAndExpand" />
+                </Border>
+            </DataTemplate>
         </ResourceDictionary>
     </ContentView.Resources>
 
-    <CollectionView
-        ItemsSource="{Binding
-            Source={RelativeSource AncestorType={x:Type shared:PhotoListView}},
-            Path=ItemsSource}"
-        RemainingItemsThreshold="3"
-        RemainingItemsThresholdReachedCommand="{Binding
-            Source={RelativeSource AncestorType={x:Type shared:PhotoListView}},
-            Path=LoadMoreItemsCommand}">
-        <CollectionView.ItemsLayout>
-            <LinearItemsLayout
-                Orientation="Vertical"
-                ItemSpacing="10" />
-        </CollectionView.ItemsLayout>
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="entities:PhotoEntity">
-                <Border
-                    StrokeShape="RoundRectangle 25,25,25,25"
-                    StrokeThickness="0" HeightRequest="220"
-                    WidthRequest="363"
-                    Padding="0,10">
-                    <Border.Shadow>
-                        <Shadow Brush="Black"
-                                Offset="5,10" Radius="10" Opacity="0.6" />
-                    </Border.Shadow>
-                    <ImageButton
-                        Source="{Binding DisplayMediumSource}"
-                        Aspect="AspectFill"
-                        Command="{Binding
-                            Source={RelativeSource AncestorType={x:Type shared:PhotoListView}},
-                            Path=ItemTappedCommand}"
-                        CommandParameter="{Binding .}"
-                        CornerRadius="25" />
-                </Border>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-        <CollectionView.EmptyView>
-            <Border
-                StrokeThickness="0"
-                Padding="20">
-                <Image
-                    Source="photo_list_empty"
-                    VerticalOptions="Center"
-                    HorizontalOptions="Center"
-                    Aspect="AspectFit" />
-            </Border>
-        </CollectionView.EmptyView>
-    </CollectionView>
-
+    <ScrollView Orientation="Vertical"
+                HorizontalScrollBarVisibility="Never"
+                Scrolled="OnMainScrollViewScrolled">
+        <FlexLayout x:Name="PhotosFlexLayout"
+                    Direction="Row"
+                    Wrap="Wrap"
+                    JustifyContent="SpaceAround"
+                    AlignItems="Start"
+                    BindableLayout.ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, Path=ItemsSource}"
+                    BindableLayout.ItemTemplate="{StaticResource PhotoItemTemplate}" />
+    </ScrollView>
 </ContentView>
