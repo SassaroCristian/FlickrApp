@@ -42,6 +42,10 @@
             Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, 
             Path=ItemsSource}"
         ItemTemplate="{StaticResource PhotoItemTemplate}"
+        RemainingItemsThreshold="{OnIdiom Phone=3, Tablet=6}"
+        RemainingItemsThresholdReachedCommand="{Binding 
+            Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, 
+            Path=LoadMoreItemsCommand}"
         SelectionMode="None">
         <CollectionView.ItemsLayout>
             <GridItemsLayout

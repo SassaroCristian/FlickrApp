@@ -22,7 +22,6 @@ public record SortOptionDisplay(FlickrSortOption SortEnumValue, string DisplayNa
 public partial class DiscoverViewModel : PhotoListViewModelBase
 {
     private const string excludedTags = "-naked,-Naked";
-    private const int perPageInit = 15;
     private readonly IFlickrApiService _flickr;
     private readonly IMapper _mapper;
 
@@ -53,7 +52,7 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
 
         SelectedSortOption = FlickrSortOption.InterestingnessDesc;
 
-        _ = InitializeAsync(perPageInit);
+        _ = InitializeAsync();
     }
 
     partial void OnSelectedSortOptionChanged(FlickrSortOption value)
@@ -108,7 +107,7 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
         }
 
         Debug.WriteLine($"DiscoverViewModel: SetSortOrderAsync called with {SelectedSortOption}. Refreshing photos.");
-        await InitializeAsync(perPageInit);
+        await InitializeAsync();
     }
 
     [RelayCommand]
@@ -119,7 +118,7 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
 
         SelectedSortOption = FlickrSortOption.InterestingnessDesc;
 
-        await InitializeAsync(perPageInit);
+        await InitializeAsync();
     }
 
     protected override async Task<ICollection<PhotoEntity>> FetchItemsAsync(int page, int perPage)

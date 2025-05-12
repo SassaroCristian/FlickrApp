@@ -11,8 +11,6 @@ namespace FlickrApp.ViewModels;
 public partial class SearchViewModel(INavigationService navigation, IFlickrApiService flickr, IMapper mapper)
     : PhotoListViewModelBase(navigation)
 {
-    private const int perPageInit = 10;
-    
     [ObservableProperty] private string _searchText = string.Empty;
 
     [RelayCommand]
@@ -24,7 +22,7 @@ public partial class SearchViewModel(INavigationService navigation, IFlickrApiSe
             return;
         }
 
-        await InitializeAsync(perPageInit);
+        await InitializeAsync();
     }
 
     protected override async Task<ICollection<PhotoEntity>> FetchItemsAsync(int page, int perPage)

@@ -15,9 +15,9 @@ public abstract partial class PhotoListViewModelBase(INavigationService navigati
     [ObservableProperty] private bool _areMoreItemsAvailable = true;
     [ObservableProperty] private ObservableCollection<PhotoEntity> _photos = [];
 
-    protected async Task InitializeAsync(int perPage = 20)
+    protected async Task InitializeAsync(int perPage)
     {
-        Debug.WriteLine(" ---> Initializing PhotoListViewModelBase");
+        Debug.WriteLine($" ---> Initializing PhotoListViewModelBase, PerPage {perPage}");
 
         AreMoreItemsAvailable = true;
         _page = 1;
@@ -29,6 +29,14 @@ public abstract partial class PhotoListViewModelBase(INavigationService navigati
             if (photos.Count < _perPage) AreMoreItemsAvailable = false;
             Photos = new ObservableCollection<PhotoEntity>(photos);
         });
+    }
+
+    protected async Task InitializeAsync()
+    {
+        var currentIdiom = DeviceInfo.Idiom;
+        var perPage = currentIdiom == DeviceIdiom.Phone ? 10 :
+            currentIdiom == DeviceIdiom.Tablet ? 21 : 0;
+        await InitializeAsync(perPage);
     }
 
     [RelayCommand]

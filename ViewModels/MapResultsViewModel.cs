@@ -12,7 +12,6 @@ namespace FlickrApp.ViewModels;
 public partial class MapResultsViewModel(INavigationService navigation, IFlickrApiService flickr, IMapper mapper)
     : PhotoListViewModelBase(navigation)
 {
-    private const int perPageInit = 10;
 
     private bool _isLatitudeSet;
     private bool _isLongitudeSet;
@@ -44,7 +43,7 @@ public partial class MapResultsViewModel(INavigationService navigation, IFlickrA
         Debug.WriteLine("  ---> filling data");
         Debug.WriteLine($" ---> Pin is at latitude: {Latitude}, longitude: {Longitude}");
 
-        await InitializeAsync(perPageInit);
+        await InitializeAsync();
     }
 
     protected override async Task<ICollection<PhotoEntity>> FetchItemsAsync(int page, int perPage)

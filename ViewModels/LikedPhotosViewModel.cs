@@ -9,7 +9,6 @@ public class LikedPhotosViewModel : PhotoListViewModelBase
 {
     private ILocalFileSystemService _fileSystem;
     private readonly IPhotoRepository _photoRepository;
-    private const int perPageInit = 10;
 
     public LikedPhotosViewModel(
         IPhotoRepository photoRepository,
@@ -19,7 +18,7 @@ public class LikedPhotosViewModel : PhotoListViewModelBase
         _photoRepository = photoRepository;
         _fileSystem = fileSystem;
 
-        _ = InitializeAsync(perPageInit);
+        _ = InitializeAsync();
     }
 
     private async Task<List<PhotoEntity>> GetAllPhotos(int pageNumber, int pageSize)
