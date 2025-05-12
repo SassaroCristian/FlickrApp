@@ -19,14 +19,26 @@ public class PhotoEntity
 
     [NotMapped] private const string baseUrl = "https://live.staticflickr.com";
 
-    [Ignore] public string SmallUrl => $"{baseUrl}/{Server}/{Id}_{Secret}_s.jpg";
-
+    [Ignore] public string LargeUrl => $"{baseUrl}/{Server}/{Id}_{Secret}_b.jpg";
+    
     [Ignore] public string MediumUrl => $"{baseUrl}/{Server}/{Id}_{Secret}_m.jpg";
 
-    [Ignore] public string LargeUrl => $"{baseUrl}/{Server}/{Id}_{Secret}_b.jpg";
-
+    [Ignore] public string SmallUrl => $"{baseUrl}/{Server}/{Id}_{Secret}_s.jpg";
+    
     [Ignore] public bool IsSavedLocally => File.Exists(LocalFilePath);
 
+    [Ignore]
+    public string DisplayLargeSource =>
+        (IsSavedLocally ? LocalFilePath : MediumUrl) ?? throw new InvalidOperationException();
+
+    [Ignore]
+    public string DisplayMediumSource =>
+        (IsSavedLocally ? LocalFilePath : MediumUrl) ?? throw new InvalidOperationException();
+
+    [Ignore]
+    public string DisplaySmallSource =>
+        (IsSavedLocally ? LocalFilePath : MediumUrl) ?? throw new InvalidOperationException();
+    
     [OneToOne("Id", CascadeOperations = CascadeOperation.All)]
     public DetailEntity? Detail { get; set; }
 }

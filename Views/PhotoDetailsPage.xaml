@@ -106,7 +106,7 @@
             <Border StrokeShape="RoundRectangle 15" StrokeThickness="0">
                 <Image Aspect="AspectFit"
                        MaximumHeightRequest="350"
-                       Source="{Binding Detail.Photo.LargeUrl}" />
+                       Source="{Binding Detail.Photo.DisplayLargeSource}" />
             </Border>
 
             <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto"
