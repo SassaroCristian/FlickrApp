@@ -19,19 +19,14 @@
                         HeightRequest="220"
                         Padding="0"
                         Margin="5">
-                    <FlexLayout.Basis>
-                        <OnIdiom Phone="98%"
-                                 Tablet="31.5%"
-                                 Default="98%" />
-                    </FlexLayout.Basis>
-                    <FlexLayout.Grow>0</FlexLayout.Grow>
-                    <FlexLayout.Shrink>0</FlexLayout.Shrink>
                     <Border.Shadow>
                         <Shadow Brush="Black" Offset="4,4" Radius="8" Opacity="0.3" />
                     </Border.Shadow>
                     <ImageButton Source="{Binding DisplayMediumSource}"
                                  Aspect="AspectFill"
-                                 Command="{Binding Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, Path=ItemTappedCommand}"
+                                 Command="{Binding 
+                                    Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, 
+                                    Path=ItemTappedCommand}"
                                  CommandParameter="{Binding .}"
                                  CornerRadius="20"
                                  HorizontalOptions="FillAndExpand"
@@ -41,15 +36,34 @@
         </ResourceDictionary>
     </ContentView.Resources>
 
-    <ScrollView Orientation="Vertical"
-                HorizontalScrollBarVisibility="Never"
-                Scrolled="OnMainScrollViewScrolled">
-        <FlexLayout x:Name="PhotosFlexLayout"
-                    Direction="Row"
-                    Wrap="Wrap"
-                    JustifyContent="SpaceAround"
-                    AlignItems="Start"
-                    BindableLayout.ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, Path=ItemsSource}"
-                    BindableLayout.ItemTemplate="{StaticResource PhotoItemTemplate}" />
-    </ScrollView>
+    <CollectionView
+        x:Name="PhotosCollectionView"
+        ItemsSource="{Binding 
+            Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, 
+            Path=ItemsSource}"
+        ItemTemplate="{StaticResource PhotoItemTemplate}"
+        SelectionMode="None">
+        <CollectionView.ItemsLayout>
+            <GridItemsLayout
+                Orientation="Vertical"
+                HorizontalItemSpacing="5"
+                VerticalItemSpacing="5">
+                <GridItemsLayout.Span>
+                    <OnIdiom Phone="2" Tablet="3" Default="3" />
+                </GridItemsLayout.Span>
+            </GridItemsLayout>
+        </CollectionView.ItemsLayout>
+        <CollectionView.EmptyView>
+            <Border
+                StrokeThickness="0"
+                HorizontalOptions="Center"
+                VerticalOptions="Center">
+                <Image
+                    Source="photo_list_empty"
+                    Aspect="AspectFit"
+                    Margin="2" />
+            </Border>
+        </CollectionView.EmptyView>
+    </CollectionView>
+    
 </ContentView>
