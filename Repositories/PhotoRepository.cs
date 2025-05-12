@@ -2,10 +2,6 @@ using FlickrApp.Entities;
 using SQLite;
 using SQLiteNetExtensionsAsync.Extensions;
 
-// Per List<T>
-
-// Per Task
-
 namespace FlickrApp.Repositories
 {
     public class PhotoRepository(SQLiteAsyncConnection database) : IPhotoRepository

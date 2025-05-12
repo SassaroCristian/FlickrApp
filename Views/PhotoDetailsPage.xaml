@@ -149,14 +149,14 @@
                     <Image x:Name="MainPhotoImage"
                            Aspect="AspectFit"
                            MaximumHeightRequest="500"
-                           Source="{Binding Details.LargeImageUrl}"
+                           Source="{Binding Detail.Photo.DisplayLargeSource}"
                            HorizontalOptions="Center" />
                 </Border>
                 <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto" ColumnSpacing="10"
                       HorizontalOptions="FillAndExpand">
                     <Border Grid.Column="0" Style="{StaticResource TagBorderStyle}" VerticalOptions="Center"
                             HorizontalOptions="Start">
-                        <Label Text="{Binding Details.Views, StringFormat='Viste: {0}', TargetNullValue='Viste: N/A'}"
+                        <Label Text="{Binding Detail.Views, StringFormat='Views: {0}', TargetNullValue='Views: N/A'}"
                                FontSize="Caption" TextColor="{StaticResource PrimaryPlaceholderColor}" />
                     </Border>
                     <HorizontalStackLayout Grid.Column="1" Spacing="10" HorizontalOptions="End"
@@ -175,31 +175,31 @@
 
             <ScrollView x:Name="DetailsColumnContent" VerticalOptions="Start">
                 <VerticalStackLayout Spacing="15">
-                    <Label Text="{Binding Details.Title.Content, Converter={StaticResource naConverter}}"
+                    <Label Text="{Binding Detail.Photo.Title, Converter={StaticResource NaConverter}}"
                            Style="{StaticResource TitleLabelStyle}" />
                     <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto, Auto, Auto" RowSpacing="8">
-                        <Label Grid.Row="0" Grid.Column="0" Text="Autore:" Style="{StaticResource DetailLabelKeyStyle}" />
+                        <Label Grid.Row="0" Grid.Column="0" Text="Author:" Style="{StaticResource DetailLabelKeyStyle}" />
                         <Label Grid.Row="0" Grid.Column="1"
-                               Text="{Binding Details.Owner.Username, Converter={StaticResource naConverter}}"
+                               Text="{Binding Detail.OwnerUsername, Converter={StaticResource NaConverter}}"
                                Style="{StaticResource DetailValueStyle}" />
-                        <Label Grid.Row="1" Grid.Column="0" Text="Caricata:"
+                        <Label Grid.Row="1" Grid.Column="0" Text="Uploaded:"
                                Style="{StaticResource DetailLabelKeyStyle}" />
                         <Label Grid.Row="1" Grid.Column="1"
-                               Text="{Binding Details.Dates.Taken, Converter={StaticResource naConverter}}"
+                               Text="{Binding Detail.DateUploaded, Converter={StaticResource NaConverter}}"
                                Style="{StaticResource DetailValueStyle}" />
-                        <Label Grid.Row="2" Grid.Column="0" Text="Descrizione:"
+                        <Label Grid.Row="2" Grid.Column="0" Text="Description:"
                                Style="{StaticResource DetailLabelKeyStyle}" />
                         <Label Grid.Row="2" Grid.Column="1"
-                               Text="{Binding Details.Description.Content, Converter={StaticResource naConverter}}"
+                               Text="{Binding Detail.Description, Converter={StaticResource NaConverter}}"
                                Style="{StaticResource DetailValueStyle}" />
                         <Label Grid.Row="3" Grid.Column="0" Text="Tags:" Style="{StaticResource DetailLabelKeyStyle}" />
                         <Label Grid.Row="3" Grid.Column="1"
-                               Text="{Binding Details.Tags.Tag, Converter={StaticResource tagListConverter}}"
+                               Text="{Binding Detail.Tags, Converter={StaticResource NaConverter}}"
                                Style="{StaticResource DetailValueStyle}" />
-                        <Label Grid.Row="4" Grid.Column="0" Text="Licenza:"
+                        <Label Grid.Row="4" Grid.Column="0" Text="Licenses:"
                                Style="{StaticResource DetailLabelKeyStyle}" />
                         <Label Grid.Row="4" Grid.Column="1"
-                               Text="{Binding Details.License, Converter={StaticResource naConverter}}"
+                               Text="{Binding Detail.License, Converter={StaticResource NaConverter}}"
                                Style="{StaticResource DetailValueStyle}" />
                     </Grid>
                 </VerticalStackLayout>
@@ -230,12 +230,12 @@
                             <Label Style="{StaticResource CommentAuthorStyle}">
                                 <Label.FormattedText>
                                     <FormattedString>
-                                        <Span Text="{Binding Authorname, Converter={StaticResource naConverter}}" />
+                                        <Span Text="{Binding Authorname, Converter={StaticResource NaConverter}}" />
                                         <Span Text=":" />
                                     </FormattedString>
                                 </Label.FormattedText>
                             </Label>
-                            <Label Text="{Binding Content, Converter={StaticResource naConverter}}"
+                            <Label Text="{Binding Content, Converter={StaticResource NaConverter}}"
                                    Style="{StaticResource CommentContentStyle}" />
                         </VerticalStackLayout>
                     </Border>

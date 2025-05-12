@@ -3,7 +3,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
-             xmlns:model="clr-namespace:FlickrApp.Models"
+             xmlns:entities="clr-namespace:FlickrApp.Entities"
              x:Class="FlickrApp.Views.Shared.PhotoListView"
              Padding="5">
 
@@ -13,7 +13,7 @@
                 <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <DataTemplate x:Key="PhotoItemTemplate" x:DataType="model:FlickrPhoto">
+            <DataTemplate x:Key="PhotoItemTemplate" x:DataType="entities:PhotoEntity">
                 <Border StrokeShape="RoundRectangle 20"
                         StrokeThickness="0"
                         HeightRequest="220"
@@ -29,7 +29,7 @@
                     <Border.Shadow>
                         <Shadow Brush="Black" Offset="4,4" Radius="8" Opacity="0.3" />
                     </Border.Shadow>
-                    <ImageButton Source="{Binding MediumUrl}"
+                    <ImageButton Source="{Binding DisplayMediumSource}"
                                  Aspect="AspectFill"
                                  Command="{Binding Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, Path=ItemTappedCommand}"
                                  CommandParameter="{Binding .}"
