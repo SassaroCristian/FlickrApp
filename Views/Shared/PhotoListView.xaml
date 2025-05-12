@@ -49,7 +49,7 @@
                 HorizontalItemSpacing="5"
                 VerticalItemSpacing="5">
                 <GridItemsLayout.Span>
-                    <OnIdiom Phone="2" Tablet="3" Default="3" />
+                    <OnIdiom Phone="1" Tablet="3" Default="3" />
                 </GridItemsLayout.Span>
             </GridItemsLayout>
         </CollectionView.ItemsLayout>
