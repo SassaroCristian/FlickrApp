@@ -6,7 +6,6 @@
              xmlns:model="clr-namespace:FlickrApp.Models"
              x:Class="FlickrApp.Views.Shared.PhotoListView"
              Padding="5">
-
     <ContentView.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,13 +18,6 @@
                         HeightRequest="220"
                         Padding="0"
                         Margin="5">
-                    <FlexLayout.Basis>
-                        <OnIdiom Phone="98%"
-                                 Tablet="31.5%"
-                                 Default="98%" />
-                    </FlexLayout.Basis>
-                    <FlexLayout.Grow>0</FlexLayout.Grow>
-                    <FlexLayout.Shrink>0</FlexLayout.Shrink>
                     <Border.Shadow>
                         <Shadow Brush="Black" Offset="4,4" Radius="8" Opacity="0.3" />
                     </Border.Shadow>
@@ -41,15 +33,21 @@
         </ResourceDictionary>
     </ContentView.Resources>
 
-    <ScrollView Orientation="Vertical"
-                HorizontalScrollBarVisibility="Never"
-                Scrolled="OnMainScrollViewScrolled">
-        <FlexLayout x:Name="PhotosFlexLayout"
-                    Direction="Row"
-                    Wrap="Wrap"
-                    JustifyContent="SpaceAround"
-                    AlignItems="Start"
-                    BindableLayout.ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, Path=ItemsSource}"
-                    BindableLayout.ItemTemplate="{StaticResource PhotoItemTemplate}" />
-    </ScrollView>
+    <CollectionView x:Name="PhotosCollectionView"
+                    ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, Path=ItemsSource}"
+                    ItemTemplate="{StaticResource PhotoItemTemplate}"
+                    RemainingItemsThreshold="1"
+                    RemainingItemsThresholdReachedCommand="{Binding Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, Path=LoadMoreItemsCommand}">
+        <CollectionView.ItemsLayout>
+            <GridItemsLayout Orientation="Vertical"
+                             VerticalItemSpacing="5" HorizontalItemSpacing="5">
+                <GridItemsLayout.Span>
+                    <OnIdiom
+                        Phone="1" Tablet="3" Default="3" />
+                </GridItemsLayout.Span>
+            </GridItemsLayout>
+        </CollectionView.ItemsLayout>
+
+    </CollectionView>
+
 </ContentView>

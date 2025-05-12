@@ -2,20 +2,34 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-
              xmlns:locators="clr-namespace:FlickrApp.Locators"
              xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
-
              BindingContext="{x:Static locators:ViewModelLocator.SearchViewModel}"
-
              x:Class="FlickrApp.Views.SearchPage"
-             Title="Search">
-
+             Title="Search"
+             BackgroundColor="{StaticResource PrimaryBackgroundColor}">
     <ContentPage.Resources>
         <ResourceDictionary>
-             <ResourceDictionary.MergedDictionaries>
-                 <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
-             </ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="GridFlickrAppContainer" TargetType="Grid">
+                <Setter Property="Padding" Value="10" />
+                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
+            </Style>
+            <Style x:Key="BorderFlickrAppSearchBar" TargetType="Border">
+                <Setter Property="Stroke" Value="{StaticResource Gray300}" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="BackgroundColor" Value="{StaticResource White}" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Margin" Value="0,0,0,10" />
+            </Style>
+            <Style x:Key="SearchBarFlickrApp" TargetType="SearchBar">
+                <Setter Property="BackgroundColor" Value="White" />
+                <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
+                <Setter Property="PlaceholderColor" Value="{StaticResource Gray500}" />
+                <Setter Property="CancelButtonColor" Value="{StaticResource Primary}" />
+            </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -23,20 +37,17 @@
 
         <Border Grid.Row="0"
                 Style="{StaticResource BorderFlickrAppSearchBar}"
-                StrokeShape="RoundRectangle 10,10,10,10"
-                StrokeThickness="0"
-                Padding="0"> <SearchBar Style="{StaticResource SearchBarFlickrApp}"
+                StrokeShape="RoundRectangle 10">
+            <SearchBar Style="{StaticResource SearchBarFlickrApp}"
                        Placeholder="Search photos..."
                        VerticalOptions="Center"
                        Text="{Binding SearchText}"
-                       SearchCommand="{Binding SearchCommand}"
-                       BackgroundColor="{StaticResource White}"/> </Border>
+                       SearchCommand="{Binding SearchCommand}" />
+        </Border>
 
         <shared:PhotoListView Grid.Row="1"
                               ItemsSource="{Binding Photos}"
                               LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}"
                               ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" />
-
-        </Grid>
-
+    </Grid>
 </ContentPage>
