@@ -80,6 +80,19 @@ public partial class SearchViewModel : PhotoListViewModelBase
     }
 
     [RelayCommand]
+    private void Clear()
+    {
+        SearchText = string.Empty;
+        SelectedSortCriterion = SortOptions.Relevance;
+        SearchTags = string.Empty;
+        StartDate = DateTime.MinValue;
+        EndDate = DateTime.UtcNow;
+        SelectedLicense = null;
+        SelectedContentType = null;
+        SelectedGeoContext = null;
+    }
+
+    [RelayCommand]
     private async Task SearchAsync()
     {
         if (CurrentIdiom == DeviceIdiom.Tablet)

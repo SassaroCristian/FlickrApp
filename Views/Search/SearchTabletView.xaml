@@ -111,7 +111,8 @@
                 <Button
                     HeightRequest="20"
                     FontSize="20"
-                    Text="Clear" />
+                    Text="Clear"
+                    Command="{Binding ClearCommand}" />
                 <Button
                     HeightRequest="20"
                     FontSize="20"
