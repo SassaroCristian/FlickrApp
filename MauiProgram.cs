@@ -7,6 +7,7 @@ using FlickrApp.Repositories;
 using FlickrApp.Services;
 using FlickrApp.ViewModels;
 using FlickrApp.Views;
+using FlickrApp.Views.Search;
 using Microsoft.Extensions.Logging;
 using SQLite;
 

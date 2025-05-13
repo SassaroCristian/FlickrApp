@@ -1,4 +1,5 @@
 ﻿using FlickrApp.Views;
+using FlickrApp.Views.Search;
 
 namespace FlickrApp;
 

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+
+             xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
+             xmlns:locators="clr-namespace:FlickrApp.Locators"
+
+             BindingContext="{x:Static locators:ViewModelLocator.SearchViewModel}"
+
+             x:Class="FlickrApp.Views.Search.SearchTabletView">
+
+    <Grid
+        ColumnDefinitions=".3*, .7*"
+        Style="{StaticResource GridFlickrAppContainer}">
+
+        <Grid
+            Grid.Column="0"
+            RowDefinitions="*, *, *, *, *, *, *, *, *, *"
+            RowSpacing="10">
+
+            <!-- KEY TEXT -->
+            <SearchBar
+                Grid.Row="0"
+                Style="{StaticResource SearchBarFlickrApp}"
+                Placeholder="Search photos..."
+                VerticalOptions="Center"
+                Text="{Binding SearchText}" />
+
+            <!-- SORT -->
+            <VerticalStackLayout
+                Grid.Row="1">
+                <Label
+                    Text="Sort by:" />
+                <Picker />
+            </VerticalStackLayout>
+
+            <!-- TAGS -->
+            <VerticalStackLayout
+                Grid.Row="2">
+                <Label
+                    Text="Tags:" />
+                <Entry
+                    Placeholder="Tag1, Tag2, Tag3, ..." />
+            </VerticalStackLayout>
+
+
+            <!-- UPLOAD DATE -->
+            <Grid
+                Grid.Row="3"
+                RowDefinitions="auto, auto"
+                ColumnDefinitions="*, *">
+                <Label
+                    Grid.Column="0" Grid.Row="0"
+                    Text="Start date:" />
+                <DatePicker Grid.Column="0" Grid.Row="1" />
+                <Label
+                    Grid.Column="1" Grid.Row="0"
+                    Text="End date:" />
+                <DatePicker Grid.Column="1" Grid.Row="1" />
+            </Grid>
+
+            <!-- LICENSE -->
+            <VerticalStackLayout
+                Grid.Row="4">
+                <Label Text="License:" />
+                <Picker
+                    ItemsSource="{Binding LicensePickerList}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectedLicense}"
+                    Title="Select a license" />
+            </VerticalStackLayout>
+
+            <!-- CONTENT TYPES -->
+            <VerticalStackLayout
+                Grid.Row="5">
+                <Label Text="Content Type:" />
+                <Picker />
+            </VerticalStackLayout>
+
+            <!-- GEO CONTEXT -->
+            <VerticalStackLayout
+                Grid.Row="6">
+                <Label Text="Geo Context:" />
+                <Picker />
+            </VerticalStackLayout>
+
+            <!-- CONTROLS -->
+            <HorizontalStackLayout
+                Grid.Row="7"
+                Spacing="5"
+                HorizontalOptions="End">
+                <Button
+                    HeightRequest="20"
+                    FontSize="20"
+                    Text="Clear" />
+                <Button
+                    HeightRequest="20"
+                    FontSize="20"
+                    Text="Search" />
+            </HorizontalStackLayout>
+
+        </Grid>
+
+        <shared:PhotoListView
+            Grid.Column="1"
+            ItemsSource="{Binding Photos}"
+            LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}"
+            ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" />
+    </Grid>
+
+</ContentView>

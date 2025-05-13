@@ -76,4 +76,17 @@
         <Folder Include="Helpers\"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <MauiXaml Update="Views\Search\SearchPage.xaml">
+            <SubType>Designer</SubType>
+        </MauiXaml>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Views\Search\SearchPage.xaml.cs">
+            <DependentUpon>SearchPage.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+    </ItemGroup>
+
 </Project>

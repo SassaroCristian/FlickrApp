@@ -158,4 +158,24 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
         var finalResponse = JsonSerializer.Deserialize<FlickrApiResponses.GetComments>(json);
         return finalResponse?.Comments?.List != null ? [..finalResponse.Comments.List] : [];
     }
+
+    public async Task<List<FlickrLicense>> GetLicensesAsync()
+    {
+        var queryParams = new Dictionary<string, string>
+        {
+            { "method", "flickr.photos.licenses.getInfo" },
+            { "format", "json" },
+            { "nojsoncallback", "1" },
+            { "api_key", apiKey }
+        };
+        var requestUrl = QueryHelpers.AddQueryString(baseUrl, queryParams);
+        Debug.WriteLine($" ---> Getting licenses from: {requestUrl}");
+
+        var response = await httpClient.GetAsync(requestUrl);
+        response.EnsureSuccessStatusCode();
+
+        var json = await response.Content.ReadAsStringAsync();
+        var finalResponse = JsonSerializer.Deserialize<FlickrApiResponses.GetLicenses>(json);
+        return finalResponse?.Licenses?.List != null ? [..finalResponse.Licenses.List] : [];
+    }
 }

@@ -2,12 +2,15 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             
              xmlns:locators="clr-namespace:FlickrApp.Locators"
-             xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
+             xmlns:search="clr-namespace:FlickrApp.Views.Search"
              BindingContext="{x:Static locators:ViewModelLocator.SearchViewModel}"
-             x:Class="FlickrApp.Views.SearchPage"
+             
              Title="Search"
+             x:Class="FlickrApp.Views.Search.SearchPage"
              BackgroundColor="{StaticResource PrimaryBackgroundColor}">
+    
     <ContentPage.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -33,21 +36,15 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto, *" Style="{StaticResource GridFlickrAppContainer}">
-
-        <Border Grid.Row="0"
-                Style="{StaticResource BorderFlickrAppSearchBar}"
-                StrokeShape="RoundRectangle 10">
-            <SearchBar Style="{StaticResource SearchBarFlickrApp}"
-                       Placeholder="Search photos..."
-                       VerticalOptions="Center"
-                       Text="{Binding SearchText}"
-                       SearchCommand="{Binding SearchCommand}" />
-        </Border>
-
-        <shared:PhotoListView Grid.Row="1"
-                              ItemsSource="{Binding Photos}"
-                              LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}"
-                              ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" />
-    </Grid>
+    <ContentPage.Content>
+        <OnIdiom x:TypeArguments="View">
+            <OnIdiom.Phone>
+                <search:SearchPhoneView BindingContext="{Binding .}" />
+            </OnIdiom.Phone>
+            <OnIdiom.Tablet>
+                <search:SearchTabletView BindingContext="{Binding .}" />
+            </OnIdiom.Tablet>
+        </OnIdiom>
+    </ContentPage.Content>
+    
 </ContentPage>

@@ -1,4 +1,4 @@
-namespace FlickrApp.Views;
+namespace FlickrApp.Views.Search;
 
 public partial class SearchPage : ContentPage
 {

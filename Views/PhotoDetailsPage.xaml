@@ -148,7 +148,7 @@
                 <Border StrokeShape="RoundRectangle 15" BackgroundColor="{StaticResource Gray100}" Padding="5">
                     <Image x:Name="MainPhotoImage"
                            Aspect="AspectFit"
-                           MaximumHeightRequest="500"
+                           HeightRequest="{OnIdiom Phone=350, Tablet=500}"
                            Source="{Binding Detail.Photo.DisplayLargeSource}"
                            HorizontalOptions="Center" />
                 </Border>

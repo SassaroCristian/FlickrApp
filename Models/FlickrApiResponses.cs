@@ -31,6 +31,13 @@ public class FlickrApiResponses
 
         [JsonPropertyName("stat")] public string Stat { get; set; }
     }
+
+    public class GetLicenses
+    {
+        [JsonPropertyName("licenses")] public Licenses? Licenses { get; set; }
+
+        [JsonPropertyName("stat")] public string? Stat { get; set; }
+    }
 }
 
 public class FlickrPhotos
@@ -51,4 +58,9 @@ public class FlickrComments
     [JsonPropertyName("photo_id")] public string PhotoId { get; set; }
 
     [JsonPropertyName("comment")] public List<FlickrComment>? List { get; set; }
+}
+
+public class Licenses
+{
+    [JsonPropertyName("license")] public List<FlickrLicense> List { get; set; }
 }

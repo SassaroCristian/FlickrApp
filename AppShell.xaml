@@ -7,6 +7,7 @@
     
     xmlns:views="clr-namespace:FlickrApp.Views"
     xmlns:locators="clr-namespace:FlickrApp.Locators"
+    xmlns:search="clr-namespace:FlickrApp.Views.Search"
 
     BindingContext="{x:Static locators:ViewModelLocator.AppShellViewModel}"
     
@@ -105,7 +106,7 @@
     <ShellContent
         Icon="issue_loupe"
         Title="Search"
-        ContentTemplate="{DataTemplate views:SearchPage}" />
+        ContentTemplate="{DataTemplate search:SearchPage}" />
 
     <ShellContent
         Icon="heart"
