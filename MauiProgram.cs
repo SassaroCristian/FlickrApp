@@ -71,6 +71,9 @@ public static class MauiProgram
         // MAPPER
         builder.Services.AddAutoMapper(typeof(PhotoProfile).Assembly, typeof(DetailProfile).Assembly);
 
+        // GLOBAL ERROR HANDLER
+        builder.Services.AddSingleton<IGlobalErrorHandler, GlobalErrorHandler>();
+
         // App Shell
         builder.Services.AddTransient<AppShell>();
         builder.Services.AddTransient<AppShellViewModel>();
