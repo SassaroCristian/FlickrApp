@@ -15,6 +15,8 @@ public record PickerItem(int Value, string DisplayText);
 
 public partial class SearchViewModel : PhotoListViewModelBase
 {
+    private static readonly DeviceIdiom CurrentIdiom = DeviceInfo.Idiom; 
+
     private INavigationService _navigation;
     private readonly IFlickrApiService _flickr;
     private readonly IMapper _mapper;
@@ -80,10 +82,33 @@ public partial class SearchViewModel : PhotoListViewModelBase
     [RelayCommand]
     private async Task SearchAsync()
     {
-        if (!IsFilterChanged) return;
-        Photos.Clear();
-        await InitializeAsync();
-        IsFilterChanged = false;
+        if (CurrentIdiom == DeviceIdiom.Tablet)
+        {
+            if (!IsFilterChanged) return;
+            Photos.Clear();
+            await InitializeAsync();
+            IsFilterChanged = false;
+        }
+        else if (CurrentIdiom == DeviceIdiom.Phone)
+        {
+            var searchParams = new SearchNavigationParams
+            {
+                SearchText = SearchText,
+                SearchTags = SearchTags,
+                StartDate = StartDate,
+                EndDate = EndDate,
+                LicenseId = SelectedLicense?.Id != -1 ? SelectedLicense?.Id.ToString() : string.Empty,
+                ContentType = SelectedContentType?.Value.ToString(),
+                SortCriterionValue = SelectedSortCriterion.Value
+            };
+            await ExecuteSafelyAsync(async () =>
+            {
+                await _navigation.GoToAsync("SearchResultPage", new Dictionary<string, object>
+                {
+                    { "SearchParameters", searchParams }
+                });
+            });
+        }
     }
 
     partial void OnSearchTextChanged(string value)

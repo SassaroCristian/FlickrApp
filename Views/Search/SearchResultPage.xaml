@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:locators="clr-namespace:FlickrApp.Locators"
+             xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
+
+             BindingContext="{x:Static locators:ViewModelLocator.SearchResultViewModel}"
+
+             x:Class="FlickrApp.Views.Search.SearchResultPage">
+
+    <Grid
+        Style="{StaticResource GridFlickrAppContainer}">
+
+        <shared:PhotoListView
+            ItemsSource="{Binding Photos}"
+            LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}"
+            ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" />
+
+    </Grid>
+
+</ContentPage>

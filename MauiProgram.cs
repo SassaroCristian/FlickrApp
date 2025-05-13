@@ -89,6 +89,9 @@ public static class MauiProgram
         // Search
         builder.Services.AddTransient<SearchPage>();
         builder.Services.AddTransient<SearchViewModel>();
+        // Search Result
+        builder.Services.AddTransient<SearchResultPage>();
+        builder.Services.AddTransient<SearchResultViewModel>();
         // Liked Photos
         builder.Services.AddTransient<LikedPhotosPage>();
         builder.Services.AddTransient<LikedPhotosViewModel>();

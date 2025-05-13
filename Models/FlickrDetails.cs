@@ -226,7 +226,7 @@ public class Tags
         if (Tag == null) return string.Empty;
 
         var sb = new StringBuilder();
-        foreach (var tag in Tag) sb.AppendJoin(",", tag.Content);
+        sb.AppendJoin(", ", Tag.Select(t => t.Content));
 
         return sb.ToString();
     }
