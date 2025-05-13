@@ -5,7 +5,7 @@
              xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
              xmlns:entities="clr-namespace:FlickrApp.Entities"
              x:Class="FlickrApp.Views.Shared.PhotoListView"
-             Padding="5">
+             Padding="5,5,5,0">
 
     <ContentView.Resources>
         <ResourceDictionary>
@@ -18,7 +18,7 @@
                         StrokeThickness="0"
                         HeightRequest="220"
                         Padding="0"
-                        Margin="5">
+                        Margin="5,5,5,10">
                     <Border.Shadow>
                         <Shadow Brush="Black" Offset="4,4" Radius="8" Opacity="0.3" />
                     </Border.Shadow>
@@ -65,7 +65,7 @@
                 <Image
                     Source="photo_list_empty"
                     Aspect="AspectFit"
-                    Margin="2" />
+                    Margin="2,2,2,0" />
             </Border>
         </CollectionView.EmptyView>
     </CollectionView>

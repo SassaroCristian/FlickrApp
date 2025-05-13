@@ -1,32 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-
              xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
-
              xmlns:locators="clr-namespace:FlickrApp.Locators"
-
              BindingContext="{x:Static locators:ViewModelLocator.DiscoverViewModel}"
-
              x:Class="FlickrApp.Views.DiscoverPage"
-
              Title="Discover"
-
              BackgroundColor="{StaticResource PrimaryBackgroundColor}">
 
-
     <ContentPage.Resources>
-
         <ResourceDictionary>
-
             <ResourceDictionary.MergedDictionaries>
-
                 <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
-
             </ResourceDictionary.MergedDictionaries>
-
 
             <Style x:Key="TagButtonStyle" TargetType="Button">
                 <Setter Property="BackgroundColor" Value="{StaticResource ButtonBackgroundColor}" />
@@ -40,286 +27,152 @@
                 <Setter Property="BorderWidth" Value="1" />
             </Style>
 
-
             <Style x:Key="SortPickerStyle" TargetType="Picker">
-
                 <Setter Property="FontSize" Value="Small" />
-
                 <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
-
                 <Setter Property="TitleColor" Value="{StaticResource PrimaryPlaceholderColor}" />
-
                 <Setter Property="BackgroundColor" Value="{StaticResource Gray100}" />
-
                 <Setter Property="HeightRequest" Value="40" />
-
                 <Setter Property="VerticalOptions" Value="Center" />
-
                 <Setter Property="MinimumWidthRequest" Value="200" />
-
             </Style>
-
 
             <Style x:Key="HeaderLabelStyle" TargetType="Label">
-
                 <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
-
                 <Setter Property="FontSize" Value="Medium" />
-
                 <Setter Property="VerticalTextAlignment" Value="Center" />
-
                 <Setter Property="HorizontalTextAlignment" Value="Start" />
-
                 <Setter Property="Margin" Value="10,0,0,10" />
-
                 <Setter Property="FontAttributes" Value="Bold" />
-
             </Style>
-
         </ResourceDictionary>
-
     </ContentPage.Resources>
 
-
     <Grid x:Name="PageGrid"
-
-          Margin="10"
-
-          BackgroundColor="{StaticResource PrimaryBackgroundColor}">
-
+          Margin="10,10,10,0" BackgroundColor="{StaticResource PrimaryBackgroundColor}">
         <VisualStateManager.VisualStateGroups>
-
             <VisualStateGroup x:Name="AdaptiveLayoutStates">
-
                 <VisualState x:Name="PhoneLayout">
-
                     <VisualState.StateTriggers>
-
                         <AdaptiveTrigger MinWindowWidth="0" />
-
                     </VisualState.StateTriggers>
-
                     <VisualState.Setters>
-
-                        <Setter TargetName="PageGrid" Property="RowDefinitions" Value="Auto, Auto, Auto, *, Auto" />
-
+                        <Setter TargetName="PageGrid" Property="RowDefinitions" Value="Auto, Auto, Auto, *" />
                         <Setter TargetName="PageGrid" Property="ColumnDefinitions" Value="*" />
-
                         <Setter TargetName="PageGrid" Property="RowSpacing" Value="10" />
-
                         <Setter TargetName="PageGrid" Property="ColumnSpacing" Value="0" />
 
-
                         <Setter TargetName="TagScrollView" Property="Grid.Row" Value="0" />
-
                         <Setter TargetName="TagScrollView" Property="Grid.Column" Value="0" />
-
                         <Setter TargetName="TagScrollView" Property="Grid.ColumnSpan" Value="1" />
-
                         <Setter TargetName="TagScrollView" Property="Padding" Value="0,0,0,5" />
 
-
                         <Setter TargetName="SortControlContainer" Property="Grid.Row" Value="1" />
-
                         <Setter TargetName="SortControlContainer" Property="Grid.Column" Value="0" />
-
                         <Setter TargetName="SortControlContainer" Property="Grid.ColumnSpan" Value="1" />
-
                         <Setter TargetName="SortControlContainer" Property="HorizontalOptions" Value="FillAndExpand" />
-
                         <Setter TargetName="SortControlContainer" Property="Padding" Value="0,5,0,5" />
-
                         <Setter TargetName="SortPicker" Property="HorizontalOptions" Value="FillAndExpand" />
 
-
                         <Setter TargetName="FilterTitleLabel" Property="Grid.Row" Value="2" />
-
                         <Setter TargetName="FilterTitleLabel" Property="Grid.Column" Value="0" />
-
                         <Setter TargetName="FilterTitleLabel" Property="Grid.ColumnSpan" Value="1" />
-
                         <Setter TargetName="FilterTitleLabel" Property="Margin" Value="10,0,0,0" />
 
-
                         <Setter TargetName="ThePhotoListView" Property="Grid.Row" Value="3" />
-
                         <Setter TargetName="ThePhotoListView" Property="Grid.Column" Value="0" />
-
                         <Setter TargetName="ThePhotoListView" Property="Grid.ColumnSpan" Value="1" />
-
                         <Setter TargetName="ThePhotoListView" Property="VerticalOptions" Value="FillAndExpand" />
-
                         <Setter TargetName="ThePhotoListView" Property="HorizontalOptions" Value="FillAndExpand" />
 
-
                         <Setter TargetName="LoadingIndicator" Property="Grid.Row" Value="0" />
-
                         <Setter TargetName="LoadingIndicator" Property="Grid.Column" Value="0" />
-
-                        <Setter TargetName="LoadingIndicator" Property="Grid.RowSpan" Value="5" />
-
+                        <Setter TargetName="LoadingIndicator" Property="Grid.RowSpan" Value="4" />
                         <Setter TargetName="LoadingIndicator" Property="Grid.ColumnSpan" Value="1" />
-
                     </VisualState.Setters>
-
                 </VisualState>
-
                 <VisualState x:Name="TabletLayout">
-
                     <VisualState.StateTriggers>
-
                         <AdaptiveTrigger MinWindowWidth="768" />
-
                     </VisualState.StateTriggers>
-
                     <VisualState.Setters>
-
-                        <Setter TargetName="PageGrid" Property="RowDefinitions" Value="Auto, Auto, *, Auto" />
-
+                        <Setter TargetName="PageGrid" Property="RowDefinitions" Value="Auto, Auto, *" />
                         <Setter TargetName="PageGrid" Property="ColumnDefinitions" Value="*, Auto" />
-
                         <Setter TargetName="PageGrid" Property="ColumnSpacing" Value="10" />
-
                         <Setter TargetName="PageGrid" Property="RowSpacing" Value="5" />
 
-
                         <Setter TargetName="TagScrollView" Property="Grid.Row" Value="0" />
-
                         <Setter TargetName="TagScrollView" Property="Grid.Column" Value="0" />
-
                         <Setter TargetName="TagScrollView" Property="Grid.ColumnSpan" Value="1" />
-
                         <Setter TargetName="TagScrollView" Property="Padding" Value="0,5,0,5" />
 
-
                         <Setter TargetName="SortControlContainer" Property="Grid.Row" Value="0" />
-
                         <Setter TargetName="SortControlContainer" Property="Grid.Column" Value="1" />
-
                         <Setter TargetName="SortControlContainer" Property="Grid.ColumnSpan" Value="1" />
-
                         <Setter TargetName="SortControlContainer" Property="HorizontalOptions" Value="End" />
-
                         <Setter TargetName="SortControlContainer" Property="Padding" Value="0,5,0,5" />
-
                         <Setter TargetName="SortPicker" Property="HorizontalOptions" Value="End" />
 
-
                         <Setter TargetName="FilterTitleLabel" Property="Grid.Row" Value="1" />
-
                         <Setter TargetName="FilterTitleLabel" Property="Grid.Column" Value="0" />
-
                         <Setter TargetName="FilterTitleLabel" Property="Grid.ColumnSpan" Value="2" />
-
                         <Setter TargetName="FilterTitleLabel" Property="Margin" Value="10,10,0,5" />
 
-
                         <Setter TargetName="ThePhotoListView" Property="Grid.Row" Value="2" />
-
                         <Setter TargetName="ThePhotoListView" Property="Grid.Column" Value="0" />
-
                         <Setter TargetName="ThePhotoListView" Property="Grid.ColumnSpan" Value="2" />
-
                         <Setter TargetName="ThePhotoListView" Property="VerticalOptions" Value="FillAndExpand" />
-
                         <Setter TargetName="ThePhotoListView" Property="HorizontalOptions" Value="FillAndExpand" />
 
-
                         <Setter TargetName="LoadingIndicator" Property="Grid.Row" Value="0" />
-
                         <Setter TargetName="LoadingIndicator" Property="Grid.Column" Value="0" />
-
-                        <Setter TargetName="LoadingIndicator" Property="Grid.RowSpan" Value="4" />
-
+                        <Setter TargetName="LoadingIndicator" Property="Grid.RowSpan" Value="3" />
                         <Setter TargetName="LoadingIndicator" Property="Grid.ColumnSpan" Value="2" />
-
                     </VisualState.Setters>
-
                 </VisualState>
-
             </VisualStateGroup>
-
         </VisualStateManager.VisualStateGroups>
 
-
-        <ScrollView x:Name="TagScrollView" Orientation="Horizontal" Padding="0,0,0,5"
-
+        <ScrollView x:Name="TagScrollView" Orientation="Horizontal" Padding="0,0,0,0"
                     HorizontalScrollBarVisibility="Never">
-
             <HorizontalStackLayout Spacing="10">
-
                 <Button Text="Popular" Command="{Binding FilterByTagCommand}" CommandParameter="{x:Null}"
-
                         Style="{StaticResource TagButtonStyle}" IsEnabled="{Binding IsNotBusy}" />
-
                 <Button Text="Animals" Command="{Binding FilterByTagCommand}" CommandParameter="animals"
-
                         Style="{StaticResource TagButtonStyle}" IsEnabled="{Binding IsNotBusy}" />
-
                 <Button Text="Nature" Command="{Binding FilterByTagCommand}" CommandParameter="nature"
-
                         Style="{StaticResource TagButtonStyle}" IsEnabled="{Binding IsNotBusy}" />
-
                 <Button Text="Architecture" Command="{Binding FilterByTagCommand}" CommandParameter="architecture"
-
                         Style="{StaticResource TagButtonStyle}" IsEnabled="{Binding IsNotBusy}" />
-
                 <Button Text="People" Command="{Binding FilterByTagCommand}" CommandParameter="people"
-
                         Style="{StaticResource TagButtonStyle}" IsEnabled="{Binding IsNotBusy}" />
-
                 <Button Text="Travel" Command="{Binding FilterByTagCommand}" CommandParameter="travel"
-
                         Style="{StaticResource TagButtonStyle}" IsEnabled="{Binding IsNotBusy}" />
-
             </HorizontalStackLayout>
-
         </ScrollView>
 
-
         <HorizontalStackLayout x:Name="SortControlContainer" Spacing="5" VerticalOptions="Center" Padding="0,5,0,5">
-
             <Label Text="Sort by:" VerticalOptions="Center" TextColor="{StaticResource PrimaryTextColor}"
-
                    FontSize="Small" />
-
-            <Picker x:Name="SortPicker" Title="Most Interesting" Style="{StaticResource SortPickerStyle}"
-
+            <Picker x:Name="SortPicker" Title="Most Interesting" Style="{StaticResource SortPickerStyle} "
                     ItemsSource="{Binding AvailableSortOptions}"
-
                     ItemDisplayBinding="{Binding DisplayName}"
-
                     SelectedItem="{Binding SelectedSortOptionItem}"
-
                     IsEnabled="{Binding IsNotBusy}" />
-
         </HorizontalStackLayout>
 
-
         <Label x:Name="FilterTitleLabel" Text="{Binding FilterDisplayTitle}" Style="{StaticResource HeaderLabelStyle}"
-
                Margin="10,0,0,0" />
 
-
         <shared:PhotoListView x:Name="ThePhotoListView"
-
                               ItemsSource="{Binding Photos}"
-
                               LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}"
-
                               ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" />
 
-
         <ActivityIndicator x:Name="LoadingIndicator"
-
                            HorizontalOptions="Center" VerticalOptions="Center"
-
                            IsRunning="{Binding IsBusy}"
-
                            IsVisible="{Binding IsBusy}"
-
                            Color="{StaticResource SecondaryBackgroundColor}" />
-
     </Grid>
-
 </ContentPage>
