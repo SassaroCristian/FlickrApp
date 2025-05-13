@@ -133,7 +133,8 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
 
             Debug.WriteLine(
                 $"DiscoverViewModel.FetchItemsAsync: Page: {page}, PerPage: {perPage}, Sort: {apiSortOrder}, Tags: '{effectiveTags}'");
-            var items = await _flickr.SearchAsync(string.Empty, effectiveTags, page, perPage, apiSortOrder);
+            var items = await _flickr.SearchAsync(tags: effectiveTags, page: page, perPage: perPage,
+                sortOrder: apiSortOrder);
             var result = items.Select(_mapper.Map<PhotoEntity>).ToList();
             return result;
         }) ?? [];
@@ -151,7 +152,8 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
 
             Debug.WriteLine(
                 $"DiscoverViewModel.FetchMoreItemsAsync: Page: {page}, PerPage: {perPage}, Sort: {apiSortOrder}, Tags: '{effectiveTags}'");
-            var items = await _flickr.SearchMoreAsync(string.Empty, effectiveTags, page, perPage, apiSortOrder);
+            var items = await _flickr.SearchMoreAsync(tags: effectiveTags, page: page, perPage: perPage,
+                sortOrder: apiSortOrder);
             var result = items.Select(_mapper.Map<PhotoEntity>).ToList();
             return result;
         }) ?? [];

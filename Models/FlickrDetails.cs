@@ -68,14 +68,14 @@ public class Country
 {
     [JsonPropertyName("_content")] public string? Content { get; set; }
 
-    [JsonPropertyName("woeid")] public string? Woeid { get; set; }
+    [JsonPropertyName("woeid")] public int? Woeid { get; set; }
 }
 
 public class County
 {
     [JsonPropertyName("_content")] public string? Content { get; set; }
 
-    [JsonPropertyName("woeid")] public string? Woeid { get; set; }
+    [JsonPropertyName("woeid")] public int? Woeid { get; set; }
 }
 
 public class Dates
@@ -86,7 +86,7 @@ public class Dates
 
     [JsonPropertyName("takengranularity")] public int Takengranularity { get; set; }
 
-    [JsonPropertyName("takenunknown")] public string? Takenunknown { get; set; }
+    //[JsonPropertyName("takenunknown")] public string? Takenunknown { get; set; }
 
     [JsonPropertyName("lastupdate")] public string? Lastupdate { get; set; }
 }
@@ -128,7 +128,7 @@ public class Locality
 {
     [JsonPropertyName("_content")] public string? Content { get; set; }
 
-    [JsonPropertyName("woeid")] public string? Woeid { get; set; }
+    [JsonPropertyName("woeid")] public int? Woeid { get; set; }
 }
 
 public class Location
@@ -156,7 +156,7 @@ public class Neighbourhood
 {
     [JsonPropertyName("_content")] public string? Content { get; set; }
 
-    [JsonPropertyName("woeid")] public string? Woeid { get; set; }
+    [JsonPropertyName("woeid")] public int? Woeid { get; set; }
 }
 
 public class Notes
@@ -199,7 +199,7 @@ public class Region
 {
     [JsonPropertyName("_content")] public string? Content { get; set; }
 
-    [JsonPropertyName("woeid")] public string? Woeid { get; set; }
+    [JsonPropertyName("woeid")] public int? Woeid { get; set; }
 }
 
 public class Tag

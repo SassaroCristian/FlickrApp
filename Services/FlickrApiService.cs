@@ -43,14 +43,19 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
         return finalResponse != null ? [..finalResponse.Photos.List] : [];
     }
 
-    public async Task<List<FlickrPhoto>> SearchAsync(string text, string tags, int page = 1, int perPage = 10,
+    public async Task<List<FlickrPhoto>> SearchAsync(string? text = null, string? tags = null,
+        DateTime? minTakenDate = null, DateTime? maxTakenDate = null, string? licenseIds = null,
+        string? contentTypeIds = null, string? geoContextIds = null, int page = 1, int perPage = 10,
         string? sortOrder = null)
     {
         _searchMaxUploadDate = DateTime.UtcNow;
-        return await SearchMoreAsync(text, tags, page, perPage, sortOrder);
+        return await SearchMoreAsync(text, tags, minTakenDate, maxTakenDate, licenseIds, contentTypeIds, geoContextIds,
+            page, perPage, sortOrder);
     }
 
-    public async Task<List<FlickrPhoto>> SearchMoreAsync(string text, string tags, int page = 1, int perPage = 10,
+    public async Task<List<FlickrPhoto>> SearchMoreAsync(string? text = null, string? tags = null,
+        DateTime? minTakenDate = null, DateTime? maxTakenDate = null, string? licenseIds = null,
+        string? contentTypeIds = null, string? geoContextIds = null, int page = 1, int perPage = 10,
         string? sortOrder = null)
     {
         var queryParams = new Dictionary<string, string>
@@ -71,15 +76,15 @@ public class FlickrApiService(HttpClient httpClient) : IFlickrApiService
             queryParams.Add("tag_mode", "all");
         }
 
-        if (!string.IsNullOrEmpty(sortOrder))
-        {
-            queryParams.Add("sort", sortOrder);
-            Debug.WriteLine($"FlickrApiService.SearchMoreAsync: Using sortOrder: {sortOrder}");
-        }
-        else
-        {
-            Debug.WriteLine($"FlickrApiService.SearchMoreAsync: No sortOrder provided, using Flickr API default.");
-        }
+        if (minTakenDate != null)
+            queryParams.Add("min_taken_date", minTakenDate.Value.ToString(CultureInfo.InvariantCulture));
+        if (maxTakenDate != null)
+            queryParams.Add("max_taken_date", maxTakenDate.Value.ToString(CultureInfo.InvariantCulture));
+        if (!string.IsNullOrEmpty(licenseIds)) queryParams.Add("license", licenseIds);
+        if (!string.IsNullOrEmpty(contentTypeIds)) queryParams.Add("content_types", contentTypeIds);
+        if (!string.IsNullOrEmpty(geoContextIds)) queryParams.Add("geo_context", geoContextIds);
+        if (!string.IsNullOrEmpty(sortOrder)) queryParams.Add("sort", sortOrder);
+        
 
         var requestUrl = QueryHelpers.AddQueryString(baseUrl, queryParams);
         Debug.WriteLine(requestUrl);

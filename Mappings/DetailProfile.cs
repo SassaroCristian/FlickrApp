@@ -32,7 +32,7 @@ public class DetailProfile : Profile
             .ForMember(entity => entity.Farm, opt => opt.MapFrom(dto => dto.Farm))
             .ForMember(entity => entity.License, opt => opt.MapFrom(dto => dto.License))
             .ForMember(entity => entity.DateUploaded,
-                opt => opt.MapFrom(dto => dto.DateUploaded))
+                opt => opt.MapFrom(dto => DateTimeOffset.FromUnixTimeSeconds(long.Parse(dto.DateUploaded!))))
             .ForMember(entity => entity.Views, opt => opt.MapFrom(dto => dto.Views))
             .ForMember(entity => entity.Tags, opt => opt.MapFrom(dto =>
                 dto.Tags == null || dto.Tags.Tag == null || dto.Tags.Tag.Count == 0

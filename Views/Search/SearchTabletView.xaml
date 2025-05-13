@@ -32,7 +32,10 @@
                 Grid.Row="1">
                 <Label
                     Text="Sort by:" />
-                <Picker />
+                <Picker
+                    ItemsSource="{Binding SortCriteria}"
+                    ItemDisplayBinding="{Binding DisplayName}"
+                    SelectedItem="{Binding SelectedSortCriterion}" />
             </VerticalStackLayout>
 
             <!-- TAGS -->
@@ -41,11 +44,12 @@
                 <Label
                     Text="Tags:" />
                 <Entry
+                    Text="{Binding SearchTags}"
                     Placeholder="Tag1, Tag2, Tag3, ..." />
             </VerticalStackLayout>
 
 
-            <!-- UPLOAD DATE -->
+            <!-- TAKEN DATE -->
             <Grid
                 Grid.Row="3"
                 RowDefinitions="auto, auto"
@@ -53,11 +57,17 @@
                 <Label
                     Grid.Column="0" Grid.Row="0"
                     Text="Start date:" />
-                <DatePicker Grid.Column="0" Grid.Row="1" />
+                <DatePicker
+                    Grid.Column="0" Grid.Row="1"
+                    Date="{Binding StartDate}"
+                    MaximumDate="{Binding EndDate}" />
                 <Label
                     Grid.Column="1" Grid.Row="0"
                     Text="End date:" />
-                <DatePicker Grid.Column="1" Grid.Row="1" />
+                <DatePicker
+                    Grid.Column="1" Grid.Row="1"
+                    Date="{Binding EndDate}"
+                    MaximumDate="{Binding MaxDate}" />
             </Grid>
 
             <!-- LICENSE -->
@@ -68,21 +78,29 @@
                     ItemsSource="{Binding LicensePickerList}"
                     ItemDisplayBinding="{Binding Name}"
                     SelectedItem="{Binding SelectedLicense}"
-                    Title="Select a license" />
+                    Title="Select a License" />
             </VerticalStackLayout>
 
             <!-- CONTENT TYPES -->
             <VerticalStackLayout
                 Grid.Row="5">
                 <Label Text="Content Type:" />
-                <Picker />
+                <Picker
+                    ItemsSource="{Binding ContentTypePickerList}"
+                    ItemDisplayBinding="{Binding DisplayText}"
+                    SelectedItem="{Binding SelectedContentType}"
+                    Title="Select the Content Type" />
             </VerticalStackLayout>
 
             <!-- GEO CONTEXT -->
             <VerticalStackLayout
                 Grid.Row="6">
                 <Label Text="Geo Context:" />
-                <Picker />
+                <Picker
+                    ItemsSource="{Binding GeoContextPickerList}"
+                    ItemDisplayBinding="{Binding DisplayText}"
+                    SelectedItem="{Binding SelectedGeoContext}"
+                    Title="Select the Geo Context" />
             </VerticalStackLayout>
 
             <!-- CONTROLS -->
@@ -97,7 +115,8 @@
                 <Button
                     HeightRequest="20"
                     FontSize="20"
-                    Text="Search" />
+                    Text="Search"
+                    Command="{Binding SearchCommand}" />
             </HorizontalStackLayout>
 
         </Grid>
