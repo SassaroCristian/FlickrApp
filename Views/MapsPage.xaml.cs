@@ -9,7 +9,9 @@ namespace FlickrApp.Views;
 public partial class MapsPage : ContentPage
 {
     private readonly MapsViewModel? _vm;
-    
+
+    private bool _isSubscribed;
+
     public MapsPage(MapsViewModel vm)
     {
         InitializeComponent();
@@ -17,7 +19,7 @@ public partial class MapsPage : ContentPage
         _vm = BindingContext as MapsViewModel;
         if (_vm == null)
             return;
-        
+
         _vm.PropertyChanged += ViewModel_PropertyChanged;
     }
 
@@ -42,7 +44,7 @@ public partial class MapsPage : ContentPage
     }
 
 
-    private void SetMapLocation(Location location) 
+    private void SetMapLocation(Location location)
     {
         const double latitudeDegrees = 0.1;
         const double longitudeDegrees = 0.1;
@@ -50,7 +52,7 @@ public partial class MapsPage : ContentPage
         var span = new MapSpan(location, latitudeDegrees, longitudeDegrees);
 
         MyMap.Pins.Clear();
-        
+
         MyMap.MoveToRegion(span);
 
         Debug.WriteLine($"Mappa centrata su: {location.Latitude:F5}, Lon: {location.Longitude:F5}");
@@ -89,12 +91,25 @@ public partial class MapsPage : ContentPage
         }
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        if (_vm != null && !_isSubscribed)
+        {
+            _vm.PropertyChanged += ViewModel_PropertyChanged;
+            _isSubscribed = true;
+            if (_vm.SelectedWonder != null)
+                ViewModel_PropertyChanged(this, new PropertyChangedEventArgs(nameof(MapsViewModel.SelectedWonder)));
+        }
+    }
+
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        if (_vm != null)
+        if (_vm != null && _isSubscribed)
         {
             _vm.PropertyChanged -= ViewModel_PropertyChanged;
+            _isSubscribed = false;
         }
     }
 }
