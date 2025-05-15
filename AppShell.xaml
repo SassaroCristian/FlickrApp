@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:FlickrApp"
     Shell.FlyoutBehavior="Flyout"
     Title="FlickrApp">
-
+    
     <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
