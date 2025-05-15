@@ -4,19 +4,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:locators="clr-namespace:FlickrApp.Locators"
              xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
-
              BindingContext="{x:Static locators:ViewModelLocator.SearchResultViewModel}"
-
-             x:Class="FlickrApp.Views.Search.SearchResultPage">
-
-    <Grid
-        Style="{StaticResource GridFlickrAppContainer}">
-
+             x:Class="FlickrApp.Views.Search.SearchResultPage"
+             Title="Search Results">
+    <Grid Style="{StaticResource GridFlickrAppContainer}"
+          Padding="{OnPlatform WinUI='10', Default='10,10,10,0'}" RowSpacing="0">
         <shared:PhotoListView
             ItemsSource="{Binding Photos}"
             LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}"
-            ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" />
-
+            ItemTappedCommand="{Binding GoToPhotoDetailsCommand}"
+            VerticalOptions="FillAndExpand" />
     </Grid>
 
 </ContentPage>

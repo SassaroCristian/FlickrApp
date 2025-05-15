@@ -43,6 +43,7 @@
     <SolidColorBrush x:Key="Gray600Brush" Color="{StaticResource Gray600}" />
     <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}" />
     <SolidColorBrush x:Key="Gray950Brush" Color="{StaticResource Gray950}" />
+    <SolidColorBrush x:Key="OrangeAccentBrush" Color="#FF8200" />
 
     <!-- COLORS -->
     <Color x:Key="PrimaryBackgroundColor">White</Color>
