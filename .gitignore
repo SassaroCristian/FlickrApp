@@ -1,7 +1,32 @@
+# Ignore the entire .idea folder (Rider/IntelliJ project settings)
+.idea/
 
+# Exception: keep shared run configurations or code styles (optional)
+# Uncomment if you actually want to share these with your team
+# !.idea/runConfigurations/
+# !.idea/codeStyles/
+
+# Rider-specific files
+*.iml
+/modules.xml
+/.idea.FlickrApp/
+.projectSettingsUpdater.xml
+/workspace.xml
+/shelf/
+httpRequests/
+dataSources/
+dataSources.local.xml
+
+# .NET build artifacts
 bin/
 obj/
-/packages/
-riderModule.iml
-/_ReSharper.Caches/
-.idea/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+# macOS
+.DS_Store
