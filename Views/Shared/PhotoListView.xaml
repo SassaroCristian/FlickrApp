@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
+             xmlns:entities="clr-namespace:FlickrApp.Entities"
+             x:Class="FlickrApp.Views.Shared.PhotoListView"
+             Padding="5,5,5,0">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Key="PhotoItemTemplate" x:DataType="entities:PhotoEntity">
+                <Border Style="{StaticResource PhotoCardBorderStyle}"
+                        HeightRequest="220">
+                    <Border.Shadow>
+                        <Shadow Brush="{StaticResource Black}" Offset="4,4"
+                                Radius="8"
+                                Opacity="0.3" />
+                    </Border.Shadow>
+                    <ImageButton Style="{StaticResource PhotoCardImageButtonStyle}"
+                                 Source="{Binding DisplayMediumSource}"
+                                 Command="{Binding Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, Path=ItemTappedCommand}"
+                                 CommandParameter="{Binding .}" />
+                </Border>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <CollectionView
+        x:Name="PhotosCollectionView"
+        ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, Path=ItemsSource}"
+        ItemTemplate="{StaticResource PhotoItemTemplate}"
+        RemainingItemsThreshold="{OnIdiom Phone=3, Tablet=6}"
+        RemainingItemsThresholdReachedCommand="{Binding Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, Path=LoadMoreItemsCommand}"
+        SelectionMode="None">
+        <CollectionView.ItemsLayout>
+            <GridItemsLayout
+                Orientation="Vertical"
+                HorizontalItemSpacing="5"
+                VerticalItemSpacing="5">
+                <GridItemsLayout.Span>
+                    <OnIdiom Phone="1" Tablet="3" Default="3" />
+                </GridItemsLayout.Span>
+            </GridItemsLayout>
+        </CollectionView.ItemsLayout>
+        <CollectionView.EmptyView>
+            <Border StrokeThickness="0" HorizontalOptions="Center" VerticalOptions="Center">
+                <Image Source="photo_list_empty" Aspect="AspectFit" Margin="2" />
+            </Border>
+        </CollectionView.EmptyView>
+    </CollectionView>
+
+</ContentView>

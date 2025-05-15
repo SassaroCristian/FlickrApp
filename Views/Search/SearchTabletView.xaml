@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
+             xmlns:locators="clr-namespace:FlickrApp.Locators"
+             xmlns:viewmodels="clr-namespace:FlickrApp.ViewModels"
+             x:DataType="viewmodels:SearchViewModel"
+             BindingContext="{x:Static locators:ViewModelLocator.SearchViewModel}"
+             x:Class="FlickrApp.Views.Search.SearchTabletView">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <Grid ColumnDefinitions=".35*, .65*" Style="{StaticResource GridFlickrAppContainer}">
+        <ScrollView Grid.Column="0">
+            <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto" RowSpacing="15"
+                  Padding="0,0,10,0">
+
+                <Border Grid.Row="0" Style="{StaticResource InputFieldBorderStyle}">
+                    <SearchBar Style="{StaticResource SearchBarFlickrApp}"
+                               Placeholder="Search photos..."
+                               Text="{Binding SearchText}"
+                               VerticalOptions="Center" />
+                </Border>
+
+                <VerticalStackLayout Grid.Row="1" Spacing="5">
+                    <Label Text="Sort by:" FontAttributes="Bold" />
+                    <Border Style="{StaticResource InputFieldBorderStyle}">
+                        <Picker ItemsSource="{Binding SortCriteria}"
+                                ItemDisplayBinding="{Binding DisplayName}"
+                                SelectedItem="{Binding SelectedSortCriterion}"
+                                BackgroundColor="Transparent"
+                                VerticalOptions="Center" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Row="2" Spacing="5">
+                    <Label Text="Tags:" FontAttributes="Bold" />
+                    <Border Style="{StaticResource InputFieldBorderStyle}">
+                        <Entry Text="{Binding SearchTags}"
+                               Placeholder="Tag1, Tag2, Tag3, ..."
+                               BackgroundColor="Transparent"
+                               VerticalOptions="Center" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <Grid Grid.Row="3" ColumnDefinitions="*, *" ColumnSpacing="10">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Start date:" FontAttributes="Bold" />
+                        <Border Style="{StaticResource InputFieldBorderStyle}">
+                            <DatePicker Date="{Binding StartDate}"
+                                        MaximumDate="{Binding EndDate}"
+                                        BackgroundColor="Transparent"
+                                        VerticalOptions="Center" />
+                        </Border>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" Spacing="5">
+                        <Label Text="End date:" FontAttributes="Bold" />
+                        <Border Style="{StaticResource InputFieldBorderStyle}">
+                            <DatePicker Date="{Binding EndDate}"
+                                        MaximumDate="{Binding MaxDate}"
+                                        BackgroundColor="Transparent"
+                                        VerticalOptions="Center" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <VerticalStackLayout Grid.Row="4" Spacing="5">
+                    <Label Text="License:" FontAttributes="Bold" />
+                    <Border Style="{StaticResource InputFieldBorderStyle}">
+                        <Picker ItemsSource="{Binding LicensePickerList}"
+                                ItemDisplayBinding="{Binding Name}"
+                                SelectedItem="{Binding SelectedLicense}"
+                                Title="Select a License"
+                                BackgroundColor="Transparent"
+                                VerticalOptions="Center" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Row="5" Spacing="5">
+                    <Label Text="Content Type:" FontAttributes="Bold" />
+                    <Border Style="{StaticResource InputFieldBorderStyle}">
+                        <Picker ItemsSource="{Binding ContentTypePickerList}"
+                                ItemDisplayBinding="{Binding DisplayText}"
+                                SelectedItem="{Binding SelectedContentType}"
+                                Title="Select the Content Type"
+                                BackgroundColor="Transparent"
+                                VerticalOptions="Center" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Row="6" Spacing="5">
+                    <Label Text="Geo Context:" FontAttributes="Bold" />
+                    <Border Style="{StaticResource InputFieldBorderStyle}">
+                        <Picker ItemsSource="{Binding GeoContextPickerList}"
+                                ItemDisplayBinding="{Binding DisplayText}"
+                                SelectedItem="{Binding SelectedGeoContext}"
+                                Title="Select the Geo Context"
+                                BackgroundColor="Transparent"
+                                VerticalOptions="Center" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <HorizontalStackLayout Grid.Row="7"
+                                       Spacing="10"
+                                       HorizontalOptions="End"
+                                       Margin="0,10,0,0">
+                    <Button Text="Clear"
+                            Command="{Binding ClearCommand}"
+                            Style="{StaticResource SecondaryActionButtonStyle}" IsEnabled="{Binding IsNotBusy}" />
+                    <Button Text="Search"
+                            Command="{Binding SearchCommand}"
+                            Style="{StaticResource TagButtonStyle}" IsEnabled="{Binding IsNotBusy}" />
+                </HorizontalStackLayout>
+            </Grid>
+        </ScrollView>
+
+        <shared:PhotoListView Grid.Column="1"
+                              ItemsSource="{Binding Photos}"
+                              LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}"
+                              ItemTappedCommand="{Binding GoToPhotoDetailsCommand}"
+                              VerticalOptions="FillAndExpand" />
+    </Grid>
+</ContentView>

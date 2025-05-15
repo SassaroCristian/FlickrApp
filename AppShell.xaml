@@ -1,15 +1,121 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <Shell
     x:Class="FlickrApp.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:FlickrApp"
-    Shell.FlyoutBehavior="Flyout"
-    Title="FlickrApp">
     
+    xmlns:views="clr-namespace:FlickrApp.Views"
+    xmlns:locators="clr-namespace:FlickrApp.Locators"
+    xmlns:search="clr-namespace:FlickrApp.Views.Search"
+
+    BindingContext="{x:Static locators:ViewModelLocator.AppShellViewModel}"
+    
+    Shell.FlyoutBehavior="Flyout"
+    Shell.FlyoutIsPresented="{Binding IsFlyoutOpen, Mode=TwoWay}"
+    
+    Title="FlickrApp">
+
+    <Shell.FlyoutHeader>
+        <Grid
+            HeightRequest="150"
+            BackgroundColor="{DynamicResource SecondaryBackgroundColor}">
+            <Image
+                Source="{Binding HeaderBackgroundSource}"
+                Aspect="AspectFill"
+                Opacity=".6" />
+            <Label
+                Text="FlickrApp"
+                TextColor="{DynamicResource SecondaryTextColor}"
+                FontAttributes="Bold"
+                Style="{DynamicResource LabelFlickrAppTitle}"
+                HorizontalOptions="Center" />
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <Shell.FlyoutFooter>
+        <Grid
+            HeightRequest="100">
+            <VerticalStackLayout
+                Spacing="1">
+                <StackLayout
+                    HeightRequest="1"
+                    BackgroundColor="LightGray" />
+                <VerticalStackLayout
+                    HorizontalOptions="Center"
+                    Margin="0,10"
+                    Spacing="5">
+                    <Label
+                        Text="Powered by:"
+                        FontFamily="RobotoRegular"
+                        FontSize="12"
+                        HorizontalOptions="Center" />
+                    <Image
+                        Source="overit"
+                        HeightRequest="25"
+                        Aspect="AspectFit"
+                        HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </Grid>
+    </Shell.FlyoutFooter>
+
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid
+                ColumnDefinitions="0.2*,0.8*"
+                Padding="10, 15">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter
+                                        Property="BackgroundColor"
+                                        Value="Transparent" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Selected">
+                                <VisualState.Setters>
+                                    <Setter
+                                        Property="BackgroundColor"
+                                        Value="{DynamicResource SecondaryBackgroundColor}" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </VisualStateManager.VisualStateGroups>
+                <Image
+                    Grid.Column="0"
+                    Source="{Binding FlyoutIcon}"
+                    HeightRequest="25" />
+                <Label
+                    Grid.Column="1"
+                    Text="{Binding Title}"
+                    VerticalTextAlignment="Center"
+                    FontFamily="RobotoRegular" />
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+
     <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        Icon="world"
+        Title="Explore"
+        ContentTemplate="{DataTemplate views:DiscoverPage}" />
+
+    <ShellContent
+        Icon="issue_loupe"
+        Title="Search"
+        ContentTemplate="{DataTemplate search:SearchPage}" />
+
+    <ShellContent
+        Icon="heart"
+        Title="Liked Photos"
+        ContentTemplate="{DataTemplate views:LikedPhotosPage}" />
+
+    <ShellContent
+        Icon="land_layer_location"
+        Title="Map"
+        ContentTemplate="{DataTemplate views:MapsPage}" />
 
 </Shell>

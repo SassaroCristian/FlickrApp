@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
+             xmlns:locators="clr-namespace:FlickrApp.Locators"
+             BindingContext="{x:Static locators:ViewModelLocator.MapResultsViewModel}"
+             x:Class="FlickrApp.Views.MapResultsPage"
+             Title="Map Results">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid
+        RowDefinitions="Auto,*"
+        Style="{StaticResource GridFlickrAppContainer}" RowSpacing="10">
+
+        <Label
+            Grid.Row="0"
+            Text="Map Results:"
+            Style="{StaticResource PageContentTitleLabelStyle}"
+            Margin="0,0,0,5" />
+        <shared:PhotoListView
+            Grid.Row="1"
+            ItemsSource="{Binding Photos}"
+            LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}"
+            ItemTappedCommand="{Binding GoToPhotoDetailsCommand}"
+            VerticalOptions="FillAndExpand" />
+    </Grid>
+</ContentPage>

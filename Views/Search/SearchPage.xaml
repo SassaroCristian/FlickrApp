@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:locators="clr-namespace:FlickrApp.Locators"
+             xmlns:search="clr-namespace:FlickrApp.Views.Search"
+             BindingContext="{x:Static locators:ViewModelLocator.SearchViewModel}"
+             Title="Search"
+             x:Class="FlickrApp.Views.Search.SearchPage"
+             BackgroundColor="{StaticResource PrimaryBackgroundColor}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <OnIdiom x:TypeArguments="View">
+            <OnIdiom.Phone>
+                <search:SearchPhoneView BindingContext="{Binding .}" />
+            </OnIdiom.Phone>
+            <OnIdiom.Tablet>
+                <search:SearchTabletView BindingContext="{Binding .}" />
+            </OnIdiom.Tablet>
+        </OnIdiom>
+    </ContentPage.Content>
+
+</ContentPage>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:maps="http://schemas.microsoft.com/dotnet/2021/maui/maps"
+             xmlns:locators="clr-namespace:FlickrApp.Locators"
+             BindingContext="{x:Static locators:ViewModelLocator.MapsViewModel}"
+             x:Class="FlickrApp.Views.MapsPage"
+             Title="Map">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto, *" Style="{StaticResource GridFlickrAppContainer}">
+        <Picker Grid.Row="0" ItemsSource="{Binding Wonders}"
+                SelectedItem="{Binding SelectedWonder}"
+                Title="Choose a Wonder..."
+                Margin="0,0,0,10" />
+        <maps:Map Grid.Row="1" x:Name="MyMap"
+                  MapClicked="OnMapClicked" />
+
+        <Border Grid.Row="1" IsVisible="{Binding IsPinned}"
+                Style="{StaticResource FloatingInfoCardStyle}"
+                HeightRequest="75" WidthRequest="225" Margin="15"
+                VerticalOptions="End"
+                HorizontalOptions="End">
+            <Grid RowDefinitions=".2*,.8*" ColumnDefinitions=".8*,.2*">
+                <Label Grid.Row="0" Grid.Column="0"
+                       Text="{Binding Location}"
+                       VerticalTextAlignment="Center" />
+                <CollectionView Grid.Row="1" Grid.Column="0"
+                                ItemsSource="{Binding Photos}">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="5" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.EmptyView>
+                        <Border StrokeThickness="0" VerticalOptions="Center" HorizontalOptions="Center">
+                            <Label Text="No Results..."
+                                   Style="{StaticResource EmptyViewMessageLabelStyle}" />
+                        </Border>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource ThumbnailImageBorderStyle}">
+                                <Image Source="{Binding SmallUrl}" Aspect="AspectFill" />
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <Button Grid.Row="1" Grid.Column="1"
+                        Text="More..."
+                        Style="{StaticResource SmallLinkButtonStyle}"
+                        IsVisible="{Binding IsListFull}"
+                        Command="{Binding GoToMapResultsCommand}" />
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>
