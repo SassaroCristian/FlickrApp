@@ -1,8 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-
-    <!-- Base styles with explicit keys for referencing -->
+    
     <Style x:Key="BaseContentPageStyle" TargetType="ContentPage" ApplyToDerivedTypes="True">
         <Setter Property="Padding" Value="0" />
         <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
@@ -144,9 +143,9 @@
         </Setter>
     </Style>
 
-    <!-- ... other existing implicit styles unchanged ... -->
 
-    <!-- Derived FlickrApp-specific styles -->
+
+
     <Style TargetType="Grid" x:Key="GridFlickrAppContainer">
         <Setter Property="Padding" Value="10" />
     </Style>
@@ -408,6 +407,12 @@
         <Setter Property="MinimumHeightRequest" Value="48" />
         <Setter Property="VerticalOptions" Value="Center" />
     </Style>
+    
+    <Style x:Key="InfoBadgeBorderStyle" TargetType="Border" BasedOn="{StaticResource BaseBorderStyle}"> <Setter Property="StrokeShape" Value="RoundRectangle 8" />
+        <Setter Property="Stroke" Value="{StaticResource b}" /> <Setter Property="Padding" Value="8,4" />
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
+        <Setter Property="HorizontalOptions" Value="Start" />
+        <Setter Property="VerticalOptions" Value="Center" /> </Style>
     
     <Style TargetType="Shell" ApplyToDerivedTypes="True">
         <Setter Property="Shell.BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
