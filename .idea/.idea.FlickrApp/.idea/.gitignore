@@ -4,6 +4,7 @@
 # Rider ignored files
 /projectSettingsUpdater.xml
 /.idea.FlickrApp.iml
+/.idea.FlickrApp
 /modules.xml
 /contentModel.xml
 # Editor-based HTTP Client requests
