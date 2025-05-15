@@ -404,7 +404,7 @@
                 <RoundRectangle CornerRadius="8" />
             </Setter.Value>
         </Setter>
-        <Setter Property="MinimumHeightRequest" Value="48" />
+        <Setter Property="MinimumHeightRequest" Value="40" />
         <Setter Property="VerticalOptions" Value="Center" />
     </Style>
     
