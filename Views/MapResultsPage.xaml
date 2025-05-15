@@ -5,35 +5,30 @@
              xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
              xmlns:locators="clr-namespace:FlickrApp.Locators"
              BindingContext="{x:Static locators:ViewModelLocator.MapResultsViewModel}"
-             x:Class="FlickrApp.Views.MapResultsPage">
+             x:Class="FlickrApp.Views.MapResultsPage"
+             Title="Map Results">
     <ContentPage.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <Style x:Key="GridFlickrAppContainer" TargetType="Grid">
-                <Setter Property="Padding" Value="10" />
-                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
-            </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
     <Grid
-        RowDefinitions="auto,*"
-        Style="{StaticResource GridFlickrAppContainer}"
-        RowSpacing="10">
+        RowDefinitions="Auto,*"
+        Style="{StaticResource GridFlickrAppContainer}" RowSpacing="10">
 
         <Label
             Grid.Row="0"
-            FontSize="Large" FontAttributes="Bold"
             Text="Map Results:"
-            TextColor="{StaticResource PrimaryTextColor}"
-            Padding="0,0,0,5" />
+            Style="{StaticResource PageContentTitleLabelStyle}"
+            Margin="0,0,0,5" />
         <shared:PhotoListView
             Grid.Row="1"
             ItemsSource="{Binding Photos}"
             LoadMoreItemsCommand="{Binding LoadMoreItemsCommand}"
-            ItemTappedCommand="{Binding GoToPhotoDetailsCommand}" />
-
+            ItemTappedCommand="{Binding GoToPhotoDetailsCommand}"
+            VerticalOptions="FillAndExpand" />
     </Grid>
 </ContentPage>

@@ -5,8 +5,7 @@
              xmlns:shared="clr-namespace:FlickrApp.Views.Shared"
              xmlns:entities="clr-namespace:FlickrApp.Entities"
              x:Class="FlickrApp.Views.Shared.PhotoListView"
-             Padding="5">
-
+             Padding="5,5,5,0">
     <ContentView.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -14,23 +13,17 @@
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate x:Key="PhotoItemTemplate" x:DataType="entities:PhotoEntity">
-                <Border StrokeShape="RoundRectangle 20"
-                        StrokeThickness="0"
-                        HeightRequest="220"
-                        Padding="0"
-                        Margin="5">
+                <Border Style="{StaticResource PhotoCardBorderStyle}"
+                        HeightRequest="220">
                     <Border.Shadow>
-                        <Shadow Brush="Black" Offset="4,4" Radius="8" Opacity="0.3" />
+                        <Shadow Brush="{StaticResource Black}" Offset="4,4"
+                                Radius="8"
+                                Opacity="0.3" />
                     </Border.Shadow>
-                    <ImageButton Source="{Binding DisplayMediumSource}"
-                                 Aspect="AspectFill"
-                                 Command="{Binding 
-                                    Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, 
-                                    Path=ItemTappedCommand}"
-                                 CommandParameter="{Binding .}"
-                                 CornerRadius="20"
-                                 HorizontalOptions="FillAndExpand"
-                                 VerticalOptions="FillAndExpand" />
+                    <ImageButton Style="{StaticResource PhotoCardImageButtonStyle}"
+                                 Source="{Binding DisplayMediumSource}"
+                                 Command="{Binding Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, Path=ItemTappedCommand}"
+                                 CommandParameter="{Binding .}" />
                 </Border>
             </DataTemplate>
         </ResourceDictionary>
@@ -38,14 +31,10 @@
 
     <CollectionView
         x:Name="PhotosCollectionView"
-        ItemsSource="{Binding 
-            Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, 
-            Path=ItemsSource}"
+        ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, Path=ItemsSource}"
         ItemTemplate="{StaticResource PhotoItemTemplate}"
         RemainingItemsThreshold="{OnIdiom Phone=3, Tablet=6}"
-        RemainingItemsThresholdReachedCommand="{Binding 
-            Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, 
-            Path=LoadMoreItemsCommand}"
+        RemainingItemsThresholdReachedCommand="{Binding Source={RelativeSource AncestorType={x:Type shared:PhotoListView}}, Path=LoadMoreItemsCommand}"
         SelectionMode="None">
         <CollectionView.ItemsLayout>
             <GridItemsLayout
@@ -58,16 +47,10 @@
             </GridItemsLayout>
         </CollectionView.ItemsLayout>
         <CollectionView.EmptyView>
-            <Border
-                StrokeThickness="0"
-                HorizontalOptions="Center"
-                VerticalOptions="Center">
-                <Image
-                    Source="photo_list_empty"
-                    Aspect="AspectFit"
-                    Margin="2" />
+            <Border StrokeThickness="0" HorizontalOptions="Center" VerticalOptions="Center">
+                <Image Source="photo_list_empty" Aspect="AspectFit" Margin="2" />
             </Border>
         </CollectionView.EmptyView>
     </CollectionView>
-    
+
 </ContentView>

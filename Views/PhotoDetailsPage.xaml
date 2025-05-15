@@ -5,78 +5,19 @@
              xmlns:locators="clr-namespace:FlickrApp.Locators"
              xmlns:model="clr-namespace:FlickrApp.Models"
              xmlns:converters="clr-namespace:FlickrApp.Converters"
-
              BindingContext="{x:Static locators:ViewModelLocator.PhotoDetailsViewModel}"
-
              x:Class="FlickrApp.Views.PhotoDetailsPage"
              Title="{Binding Detail.Photo.Title, TargetNullValue='Photo Details'}"
              BackgroundColor="{StaticResource PrimaryBackgroundColor}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
             <converters:NullOrEmptyToNaConverter x:Key="NaConverter" />
 
-            <Style x:Key="TagBorderStyle" TargetType="Border">
-                <Setter Property="StrokeShape" Value="RoundRectangle 8" />
-                <Setter Property="StrokeThickness" Value="1" />
-                <Setter Property="Stroke" Value="{StaticResource PrimaryPlaceholderColor}" />
-                <Setter Property="Padding" Value="8,4" />
-                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
-                <Setter Property="HorizontalOptions" Value="Start" />
-            </Style>
-            <Style x:Key="CommentBorderStyle" TargetType="Border">
-                <Setter Property="StrokeShape" Value="RoundRectangle 15" />
-                <Setter Property="StrokeThickness" Value="0" />
-                <Setter Property="Padding" Value="10" />
-                <Setter Property="BackgroundColor" Value="{StaticResource Gray100}" />
-                <Setter Property="Margin" Value="0,0,0,8" />
-            </Style>
-            <Style x:Key="TitleLabelStyle" TargetType="Label">
-                <Setter Property="FontSize" Value="Large" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
-                <Setter Property="LineBreakMode" Value="WordWrap" />
-            </Style>
-            <Style x:Key="DetailLabelKeyStyle" TargetType="Label">
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="TextColor" Value="{StaticResource PrimaryPlaceholderColor}" />
-                <Setter Property="VerticalOptions" Value="Start" />
-                <Setter Property="Margin" Value="0,0,5,0" />
-            </Style>
-            <Style x:Key="DetailValueStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
-                <Setter Property="LineBreakMode" Value="WordWrap" />
-                <Setter Property="VerticalOptions" Value="Start" />
-            </Style>
-            <Style x:Key="CommentAuthorStyle" TargetType="Label">
-                <Setter Property="FontSize" Value="Small" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="TextColor" Value="{StaticResource Tertiary}" />
-            </Style>
-            <Style x:Key="CommentContentStyle" TargetType="Label">
-                <Setter Property="FontSize" Value="Small" />
-                <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
-                <Setter Property="LineBreakMode" Value="WordWrap" />
-            </Style>
-            <Style x:Key="ActionButtonContainerStyle" TargetType="Border">
-                <Setter Property="StrokeShape" Value="RoundRectangle 10" />
-                <Setter Property="StrokeThickness" Value="1" />
-                <Setter Property="Stroke" Value="{StaticResource Primary}" />
-                <Setter Property="Padding" Value="8" />
-                <Setter Property="BackgroundColor" Value="{StaticResource White}" />
-                <Setter Property="HeightRequest" Value="48" />
-                <Setter Property="WidthRequest" Value="48" />
-                <Setter Property="HorizontalOptions" Value="Center" />
-                <Setter Property="VerticalOptions" Value="Center" />
-            </Style>
-            <Style x:Key="ActionImageButtonStyle" TargetType="ImageButton">
-                <Setter Property="BackgroundColor" Value="Transparent" />
-                <Setter Property="HeightRequest" Value="24" />
-                <Setter Property="WidthRequest" Value="24" />
-                <Setter Property="VerticalOptions" Value="Center" />
-                <Setter Property="HorizontalOptions" Value="Center" />
-                <Setter Property="Aspect" Value="AspectFit" />
-            </Style>
             <Style x:Key="FavoriteButtonStyle" TargetType="ImageButton"
                    BasedOn="{StaticResource ActionImageButtonStyle}">
                 <Setter Property="Source" Value="heart" />
@@ -86,6 +27,7 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
+
             <Style x:Key="DownloadButtonStyle" TargetType="ImageButton"
                    BasedOn="{StaticResource ActionImageButtonStyle}">
                 <Setter Property="Source" Value="download" />
@@ -99,7 +41,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid x:Name="PageGrid" Padding="10"
+    <Grid x:Name="PageGrid" Style="{StaticResource GridFlickrAppContainer}"
           RowDefinitions="Auto, Auto, *">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="LayoutStates">
@@ -126,8 +68,7 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter TargetName="PhotoAndDetailsSection" Property="RowDefinitions" Value="Auto" />
-                        <Setter TargetName="PhotoAndDetailsSection" Property="ColumnDefinitions"
-                                Value="0.65*,0.35*" />
+                        <Setter TargetName="PhotoAndDetailsSection" Property="ColumnDefinitions" Value="0.65*,0.35*" />
                         <Setter TargetName="PhotoColumnContent" Property="Grid.Row" Value="0" />
                         <Setter TargetName="PhotoColumnContent" Property="Grid.Column" Value="0" />
                         <Setter TargetName="DetailsColumnContent" Property="Grid.Row" Value="0" />
@@ -154,7 +95,7 @@
                 </Border>
                 <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto" ColumnSpacing="10"
                       HorizontalOptions="FillAndExpand">
-                    <Border Grid.Column="0" Style="{StaticResource TagBorderStyle}" VerticalOptions="Center"
+                    <Border Grid.Column="0" Style="{StaticResource InfoBadgeBorderStyle}" VerticalOptions="Center"
                             HorizontalOptions="Start">
                         <Label Text="{Binding Detail.Views, StringFormat='Views: {0}', TargetNullValue='Views: N/A'}"
                                FontSize="Caption" TextColor="{StaticResource PrimaryPlaceholderColor}" />
@@ -176,26 +117,30 @@
             <ScrollView x:Name="DetailsColumnContent" VerticalOptions="Start">
                 <VerticalStackLayout Spacing="15">
                     <Label Text="{Binding Detail.Photo.Title, Converter={StaticResource NaConverter}}"
-                           Style="{StaticResource TitleLabelStyle}" />
+                           Style="{StaticResource PageContentTitleLabelStyle}" />
                     <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto, Auto, Auto" RowSpacing="8">
                         <Label Grid.Row="0" Grid.Column="0" Text="Author:" Style="{StaticResource DetailLabelKeyStyle}" />
                         <Label Grid.Row="0" Grid.Column="1"
                                Text="{Binding Detail.OwnerUsername, Converter={StaticResource NaConverter}}"
                                Style="{StaticResource DetailValueStyle}" />
+
                         <Label Grid.Row="1" Grid.Column="0" Text="Uploaded:"
                                Style="{StaticResource DetailLabelKeyStyle}" />
                         <Label Grid.Row="1" Grid.Column="1"
                                Text="{Binding Detail.DateUploaded, Converter={StaticResource NaConverter}}"
                                Style="{StaticResource DetailValueStyle}" />
+
                         <Label Grid.Row="2" Grid.Column="0" Text="Description:"
                                Style="{StaticResource DetailLabelKeyStyle}" />
                         <Label Grid.Row="2" Grid.Column="1"
                                Text="{Binding Detail.Description, Converter={StaticResource NaConverter}}"
                                Style="{StaticResource DetailValueStyle}" />
+
                         <Label Grid.Row="3" Grid.Column="0" Text="Tags:" Style="{StaticResource DetailLabelKeyStyle}" />
                         <Label Grid.Row="3" Grid.Column="1"
                                Text="{Binding Detail.Tags, Converter={StaticResource NaConverter}}"
                                Style="{StaticResource DetailValueStyle}" />
+
                         <Label Grid.Row="4" Grid.Column="0" Text="Licenses:"
                                Style="{StaticResource DetailLabelKeyStyle}" />
                         <Label Grid.Row="4" Grid.Column="1"
@@ -206,9 +151,8 @@
             </ScrollView>
         </Grid>
 
-        <Border x:Name="CommentsHeaderBorder" Grid.Row="1" Style="{StaticResource TagBorderStyle}"
-                BackgroundColor="{StaticResource Gray200}"
-                Padding="10,8" Margin="0,10,0,0">
+        <Border x:Name="CommentsHeaderBorder" Grid.Row="1" Style="{StaticResource InfoBadgeBorderStyle}"
+                BackgroundColor="{StaticResource Gray200}" Padding="10,8" Margin="0,10,0,0">
             <Label Text="{Binding CommentsHeaderTitle}" FontSize="Medium" FontAttributes="Bold"
                    TextColor="{StaticResource PrimaryTextColor}" />
         </Border>
