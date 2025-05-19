@@ -90,19 +90,19 @@
             <DependentUpon>SearchPage.xaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Remove="xUnitTestProject\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <MauiCss Remove="xUnitTestProject\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Remove="xUnitTestProject\**"/>
+        <Compile Remove="xUnitTestProject\**" />
     </ItemGroup>
 
     <ItemGroup>
         <None Remove="xUnitTestProject\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <MauiCss Remove="xUnitTestProject\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="xUnitTestProject\**" />
     </ItemGroup>
 
 </Project>
