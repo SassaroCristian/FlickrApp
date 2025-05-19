@@ -32,7 +32,7 @@ public abstract partial class PhotoListViewModelBase(INavigationService navigati
         });
     }
 
-    protected async Task InitializeAsync()
+    protected virtual async Task InitializeAsync()
     {
         var currentIdiom = device.Idiom;
         var perPage = currentIdiom == DeviceIdiom.Phone ? 10 :
