@@ -9,8 +9,12 @@ namespace FlickrApp.ViewModels;
 
 [QueryProperty(nameof(Latitude), nameof(Latitude))]
 [QueryProperty(nameof(Longitude), nameof(Longitude))]
-public partial class MapResultsViewModel(INavigationService navigation, IFlickrApiService flickr, IMapper mapper)
-    : PhotoListViewModelBase(navigation)
+public partial class MapResultsViewModel(
+    INavigationService navigation,
+    IDeviceService device,
+    IFlickrApiService flickr,
+    IMapper mapper)
+    : PhotoListViewModelBase(navigation, device)
 {
 
     private bool _isLatitudeSet;

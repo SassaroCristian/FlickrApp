@@ -7,7 +7,8 @@ using FlickrApp.Services;
 
 namespace FlickrApp.ViewModels.Base;
 
-public abstract partial class PhotoListViewModelBase(INavigationService navigation) : BaseViewModel
+public abstract partial class PhotoListViewModelBase(INavigationService navigation, IDeviceService device)
+    : BaseViewModel
 {
     private int _page = 1;
     private int _perPage = 20;
@@ -33,7 +34,7 @@ public abstract partial class PhotoListViewModelBase(INavigationService navigati
 
     protected async Task InitializeAsync()
     {
-        var currentIdiom = DeviceInfo.Idiom;
+        var currentIdiom = device.Idiom;
         var perPage = currentIdiom == DeviceIdiom.Phone ? 10 :
             currentIdiom == DeviceIdiom.Tablet ? 21 : 0;
         await InitializeAsync(perPage);
