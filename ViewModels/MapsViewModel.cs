@@ -1,11 +1,18 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlickrApp.Models;
 using FlickrApp.Services;
 using FlickrApp.ViewModels.Base;
 using Sensors = Microsoft.Maui.Devices.Sensors;
+using Microsoft.Maui.ApplicationModel.Communication; // Per Geocoding (se non già importato globalmente)
+using Microsoft.Maui.Devices.Sensors; // Per Geocoding (se non già importato globalmente)
+
 
 namespace FlickrApp.ViewModels;
 
@@ -50,15 +57,6 @@ public partial class MapsViewModel(INavigationService navigation, IFlickrApiServ
 
     private double _pinLongitude = 0;
     private double _pinLatitude = 0;
-
-    /*
-    partial void OnSelectedWonderChanged(WonderLocation? value)
-    {
-        if (value != null)
-        {
-        }
-    }
-    */
     
     public async Task AddPinToMap(double latitude, double longitude)
     {
@@ -70,8 +68,16 @@ public partial class MapsViewModel(INavigationService navigation, IFlickrApiServ
             _pinLatitude = latitude;
             _pinLongitude = longitude;
 
-            var locations = await Geocoding.GetPlacemarksAsync(latitude, longitude);
-            Location = locations.FirstOrDefault()?.CountryName;
+            try
+            {
+                var placemarks = await Geocoding.GetPlacemarksAsync(latitude, longitude);
+                Location = placemarks?.FirstOrDefault()?.CountryName ?? string.Empty;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Geocoding failed in AddPinToMap: {ex.Message}");
+                Location = string.Empty; 
+            }
 
             await LoadItemsAsync(latitude, longitude);
             if (Photos.Count > 0) IsListFull = true;

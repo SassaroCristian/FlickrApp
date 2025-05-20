@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using FlickrApp.Entities;
 using FlickrApp.Services;
 using FlickrApp.ViewModels.Base;
+using FlickrApp.Models;
 
 namespace FlickrApp.ViewModels;
 
@@ -26,16 +27,13 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
     private readonly IMapper _mapper;
 
     private string _currentTagFilter = string.Empty;
+    private bool _isProgrammaticChangeNesting = false;
 
     [ObservableProperty] private string _filterDisplayTitle = "Popular";
-
     [ObservableProperty] private FlickrSortOption _selectedSortOption;
-
     [ObservableProperty] private ObservableCollection<SortOptionDisplay> _availableSortOptions;
-
     [ObservableProperty] private SortOptionDisplay? _selectedSortOptionItem;
-
-    [ObservableProperty] private string _selectedSortOptionDisplayName = string.Empty;
+    [ObservableProperty] private string _selectedSortOptionDisplayName = "Most Interesting";
 
     public DiscoverViewModel(INavigationService navigation, IFlickrApiService flickr, IMapper mapper) : base(navigation)
     {
@@ -50,7 +48,15 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
             new(FlickrSortOption.DatePostedAsc, "Oldest First")
         };
 
+        _isProgrammaticChangeNesting = true;
         SelectedSortOption = FlickrSortOption.InterestingnessDesc;
+        if (SelectedSortOptionItem == null && SelectedSortOption == FlickrSortOption.InterestingnessDesc)
+        {
+            SelectedSortOptionItem =
+                _availableSortOptions.FirstOrDefault(o => o.SortEnumValue == FlickrSortOption.InterestingnessDesc);
+        }
+
+        _isProgrammaticChangeNesting = false;
 
         _ = InitializeAsync();
     }
@@ -74,10 +80,16 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
         if (newValue != null && (oldValue == null || oldValue.SortEnumValue != newValue.SortEnumValue))
         {
             Debug.WriteLine($"DiscoverViewModel: SelectedSortOptionItem (Picker) changed to: {newValue.DisplayName}");
+
+            bool oldNestingState = _isProgrammaticChangeNesting;
+            _isProgrammaticChangeNesting = true;
             SelectedSortOption = newValue.SortEnumValue;
-            if (oldValue?.SortEnumValue != newValue.SortEnumValue)
+            _isProgrammaticChangeNesting = oldNestingState;
+
+            if (!_isProgrammaticChangeNesting)
             {
-                await SetSortOrderAsync(newValue.SortEnumValue);
+                Debug.WriteLine($"DiscoverViewModel: SelectedSortOptionItem changed by UI. Refreshing photos.");
+                await InitializeAsync();
             }
         }
         else if (newValue == null && oldValue != null)
@@ -101,12 +113,16 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
     [RelayCommand]
     private async Task SetSortOrderAsync(FlickrSortOption newSortOption)
     {
+        _isProgrammaticChangeNesting = true;
         if (SelectedSortOption != newSortOption)
         {
             SelectedSortOption = newSortOption;
         }
 
-        Debug.WriteLine($"DiscoverViewModel: SetSortOrderAsync called with {SelectedSortOption}. Refreshing photos.");
+        _isProgrammaticChangeNesting = false;
+
+        Debug.WriteLine(
+            $"DiscoverViewModel: SetSortOrderAsync command executed with {newSortOption}. Refreshing photos.");
         await InitializeAsync();
     }
 
@@ -116,9 +132,20 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
         _currentTagFilter = tag ?? string.Empty;
         FilterDisplayTitle = string.IsNullOrWhiteSpace(tag) ? "Popular" : tag[..1].ToUpper() + tag[1..].ToLower();
 
-        SelectedSortOption = FlickrSortOption.InterestingnessDesc;
+        _isProgrammaticChangeNesting = true;
+        if (SelectedSortOption != FlickrSortOption.InterestingnessDesc)
+        {
+            SelectedSortOption = FlickrSortOption.InterestingnessDesc;
+        }
+
+        _isProgrammaticChangeNesting = false;
 
         await InitializeAsync();
+    }
+
+    private bool IsInitialized()
+    {
+        return Photos.Any();
     }
 
     protected override async Task<ICollection<PhotoEntity>> FetchItemsAsync(int page, int perPage)
@@ -126,7 +153,6 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
         return await ExecuteSafelyAsync(async () =>
         {
             var apiSortOrder = GetSortOrderApiString(SelectedSortOption);
-
             var effectiveTags = !string.IsNullOrEmpty(_currentTagFilter)
                 ? string.Concat(_currentTagFilter, ",", excludedTags)
                 : excludedTags;
@@ -145,7 +171,6 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
         return await ExecuteSafelyAsync(async () =>
         {
             var apiSortOrder = GetSortOrderApiString(SelectedSortOption);
-
             var effectiveTags = !string.IsNullOrEmpty(_currentTagFilter)
                 ? string.Concat(_currentTagFilter, ",", excludedTags)
                 : excludedTags;
