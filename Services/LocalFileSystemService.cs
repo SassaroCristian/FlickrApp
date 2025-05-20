@@ -2,77 +2,97 @@ using Debug = System.Diagnostics.Debug;
 
 namespace FlickrApp.Services
 {
-    public class LocalFileSystemService(HttpClient httpClient) : ILocalFileSystemService
+    public class LocalFileSystemService : ILocalFileSystemService
     {
-        private readonly string _appDataDirectory = FileSystem.AppDataDirectory;
+        private readonly HttpClient _httpClient;
+        private readonly IFileSystemOperations _fileSystem;
+        private readonly string _appDataDirectory;
+
+        public LocalFileSystemService(HttpClient httpClient, IFileSystemOperations fileSystem)
+        {
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            _appDataDirectory = _fileSystem.GetAppDataDirectory();
+        }
 
         public string GetAppSpecificPhotosDirectory()
         {
-            var photosDirectory = Path.Combine(_appDataDirectory, "DownloadedPhotos");
-            Directory.CreateDirectory(photosDirectory);
+            var photosDirectory = _fileSystem.Combine(_appDataDirectory, "DownloadedPhotos");
+            _fileSystem.CreateDirectory(photosDirectory);
             return photosDirectory;
         }
 
         public string GetAppSpecificDownloadsDirectory()
         {
-            var downloadsDirectory = Path.Combine(_appDataDirectory, "GeneralDownloads");
-            Directory.CreateDirectory(downloadsDirectory);
+            var downloadsDirectory = _fileSystem.Combine(_appDataDirectory, "GeneralDownloads");
+            _fileSystem.CreateDirectory(downloadsDirectory);
             return downloadsDirectory;
         }
 
         public async Task<string?> SaveImageAsync(string imageUrl, string photoId, string targetDirectory)
         {
-            if (string.IsNullOrEmpty(imageUrl) || string.IsNullOrEmpty(targetDirectory))
+            if (string.IsNullOrEmpty(imageUrl) || string.IsNullOrEmpty(targetDirectory) ||
+                string.IsNullOrEmpty(photoId))
             {
-                Debug.WriteLine("SaveImageAsync: imageUrl or targetDirectory is null/empty.");
+                Debug.WriteLine("SaveImageAsync: imageUrl, photoId, or targetDirectory is null/empty.");
                 return null;
             }
 
             try
             {
-                // TODO: Determinare l'estensione corretta dall'URL se possibile
-                var fileName = $"{photoId}.jpg";
-                var filePath = Path.Combine(targetDirectory, fileName);
-
-                if (File.Exists(filePath))
+                var fileExtension = ".jpg";
+                try
                 {
-                     Debug.WriteLine($"File already exists at: {filePath}. Skipping download.");
-                     return filePath; 
+                    var uri = new Uri(imageUrl);
+                    var ext = Path.GetExtension(uri.LocalPath);
+                    if (!string.IsNullOrEmpty(ext) && (ext.Equals(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                                                       ext.Equals(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+                                                       ext.Equals(".png", StringComparison.OrdinalIgnoreCase)))
+                        fileExtension = ext;
+                }
+                catch
+                {
                 }
 
-                var imageBytes = await httpClient.GetByteArrayAsync(imageUrl);
-                await File.WriteAllBytesAsync(filePath, imageBytes);
+                var fileName = $"{photoId}{fileExtension}";
+                var filePath = _fileSystem.Combine(targetDirectory, fileName);
+
+                if (_fileSystem.FileExists(filePath))
+                {
+                     Debug.WriteLine($"File already exists at: {filePath}. Skipping download.");
+                     return filePath;
+                }
+
+                var imageBytes = await _httpClient.GetByteArrayAsync(imageUrl);
+                await _fileSystem.WriteAllBytesAsync(filePath, imageBytes);
 
                 Debug.WriteLine($"Image saved locally to: {filePath}");
-                return filePath; 
+                return filePath;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"### ERROR saving image from URL {imageUrl} to {targetDirectory}: {ex.Message}");
-                return null; 
+                return null;
             }
         }
 
         public async Task DeleteFileAsync(string localFilePath)
         {
-            if (string.IsNullOrEmpty(localFilePath) || !File.Exists(localFilePath))
+            if (string.IsNullOrEmpty(localFilePath) || !_fileSystem.FileExists(localFilePath))
             {
-                Debug.WriteLine("DeleteFileAsync: File path is null/empty or file does not exist.");
+                Debug.WriteLine($"DeleteFileAsync: File path is null/empty or file does not exist: '{localFilePath}'");
                 return;
             }
 
             try
             {
-                await Task.Run(() => File.Delete(localFilePath));
+                await _fileSystem.DeleteFileAsync(localFilePath);
                 Debug.WriteLine($"File deleted: {localFilePath}");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"### ERROR deleting file {localFilePath}: {ex.Message}");
-                // TODO: Gestire l'errore di cancellazione
             }
         }
-
-        // TODO: Aggiungere un metodo per salvare in directory pubbliche se necessario per il download button
     }
 }

@@ -53,6 +53,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<INavigationService, NavigationService>();
         builder.Services.AddSingleton<IFlickrApiService, FlickrApiService>();
         builder.Services.AddSingleton<IDeviceService, DeviceService>();
+        builder.Services.AddSingleton<IFileSystemOperations, FileSystemOperations>();
+        builder.Services.AddSingleton<IShellNavigation, ShellNavigation>();
 
         // SQLITE CONNECTIONC
         builder.Services.AddSingleton<SQLiteAsyncConnection>(sp =>
