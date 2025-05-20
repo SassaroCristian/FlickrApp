@@ -16,7 +16,6 @@ public partial class MapResultsViewModel(
     IMapper mapper)
     : PhotoListViewModelBase(navigation, device)
 {
-
     private bool _isLatitudeSet;
     private bool _isLongitudeSet;
 
@@ -39,7 +38,7 @@ public partial class MapResultsViewModel(
     {
         Debug.WriteLine(" ---> try loading data");
         if (_isLatitudeSet && _isLongitudeSet)
-            Task.Run(FillDataAsync);
+            _ = FillDataAsync();
     }
 
     private async Task FillDataAsync()
