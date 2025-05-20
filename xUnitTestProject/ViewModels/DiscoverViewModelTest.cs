@@ -1,20 +1,17 @@
-using Xunit;
-using Moq;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using AutoMapper;
 using FlickrApp.Entities;
+using FlickrApp.Models;
 using FlickrApp.Services;
 using FlickrApp.ViewModels;
-using FlickrApp.ViewModels.Base;
-using FlickrApp.Models;
+using Moq;
+
+namespace xUnitTestProject.ViewModels;
 
 public class DiscoverViewModelTest
 {
     private readonly Mock<INavigationService> _mockNavigationService;
     private readonly Mock<IFlickrApiService> _mockFlickrApiService;
+    private readonly Mock<IDeviceService> _mockDeviceService;
     private readonly Mock<IMapper> _mockMapper;
     private readonly DiscoverViewModel _viewModel;
 
@@ -26,6 +23,7 @@ public class DiscoverViewModelTest
 
     public DiscoverViewModelTest()
     {
+        _mockDeviceService = new Mock<IDeviceService>();
         _mockNavigationService = new Mock<INavigationService>();
         _mockFlickrApiService = new Mock<IFlickrApiService>();
         _mockMapper = new Mock<IMapper>();
@@ -64,6 +62,7 @@ public class DiscoverViewModelTest
 
         _viewModel = new DiscoverViewModel(
             _mockNavigationService.Object,
+            _mockDeviceService.Object,
             _mockFlickrApiService.Object,
             _mockMapper.Object);
     }
@@ -120,6 +119,7 @@ public class DiscoverViewModelTest
 
         var localViewModel = new DiscoverViewModel(
             _mockNavigationService.Object,
+            _mockDeviceService.Object,
             localFlickrMock.Object,
             localMapperMock.Object);
 

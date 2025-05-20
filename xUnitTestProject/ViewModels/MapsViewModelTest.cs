@@ -1,15 +1,10 @@
-using Xunit;
-using Moq;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.Globalization;
 using FlickrApp.Models;
 using FlickrApp.Services;
 using FlickrApp.ViewModels;
-using FlickrApp.ViewModels.Base;
-using Sensors = Microsoft.Maui.Devices.Sensors;
+using Moq;
+
+namespace xUnitTestProject.ViewModels;
 
 public class MapsViewModelTest
 {

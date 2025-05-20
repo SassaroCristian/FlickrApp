@@ -1,18 +1,13 @@
-using Xunit;
-using Moq;
-using Moq.Protected;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
-using System.Net.Http;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Linq;
 using FlickrApp.Models;
 using FlickrApp.Services;
 using Microsoft.AspNetCore.WebUtilities;
+using Moq;
+using Moq.Protected;
+
+namespace xUnitTestProject.Services;
 
 public class FlickrApiServiceTest 
 {
@@ -225,7 +220,7 @@ public class FlickrApiServiceTest
     {
         var photoId = "pid123";
         var fakeDetails = new FlickrDetails
-            { Id = photoId, Title = new FlickrApp.Models.Title { Content = "Photo Details Test" } };
+            { Id = photoId, Title = new Title { Content = "Photo Details Test" } };
         var mockJsonResponse = CreateFlickrDetailsResponseJson(fakeDetails);
         _mockHttpMessageHandler.Protected()
             .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(),
