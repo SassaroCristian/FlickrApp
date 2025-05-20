@@ -9,8 +9,12 @@ using FlickrApp.ViewModels.Base;
 namespace FlickrApp.ViewModels;
 
 [QueryProperty(nameof(SearchParameters), nameof(SearchParameters))]
-public partial class SearchResultViewModel(INavigationService navigation, IFlickrApiService flickr, IMapper mapper)
-    : PhotoListViewModelBase(navigation)
+public partial class SearchResultViewModel(
+    INavigationService navigation,
+    IDeviceService device,
+    IFlickrApiService flickr,
+    IMapper mapper)
+    : PhotoListViewModelBase(navigation, device)
 {
     private readonly INavigationService _navigation = navigation;
 

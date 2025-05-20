@@ -12,8 +12,9 @@ public class LikedPhotosViewModel : PhotoListViewModelBase
 
     public LikedPhotosViewModel(
         IPhotoRepository photoRepository,
+        IDeviceService device,
         ILocalFileSystemService fileSystem,
-        INavigationService navigation) : base(navigation)
+        INavigationService navigation) : base(navigation, device)
     {
         _photoRepository = photoRepository;
         _fileSystem = fileSystem;

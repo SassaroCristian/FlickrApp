@@ -15,9 +15,8 @@ public record PickerItem(int Value, string DisplayText);
 
 public partial class SearchViewModel : PhotoListViewModelBase
 {
-    private static readonly DeviceIdiom CurrentIdiom = DeviceInfo.Idiom; 
-
-    private INavigationService _navigation;
+    private readonly INavigationService _navigation;
+    private readonly IDeviceService _device;
     private readonly IFlickrApiService _flickr;
     private readonly IMapper _mapper;
 
@@ -51,11 +50,13 @@ public partial class SearchViewModel : PhotoListViewModelBase
 
     [ObservableProperty] private bool _isFilterChanged;
 
-    public SearchViewModel(INavigationService navigation, IFlickrApiService flickr, IMapper mapper) : base(navigation)
+    public SearchViewModel(INavigationService navigation, IDeviceService device, IFlickrApiService flickr,
+        IMapper mapper) : base(navigation, device)
     {
         Debug.WriteLine("---> starting search viewmodel");
         
         _navigation = navigation;
+        _device = device;
         _flickr = flickr;
         _mapper = mapper;
 
@@ -95,14 +96,14 @@ public partial class SearchViewModel : PhotoListViewModelBase
     [RelayCommand]
     private async Task SearchAsync()
     {
-        if (CurrentIdiom == DeviceIdiom.Tablet)
+        if (_device.Idiom == DeviceIdiom.Tablet)
         {
             if (!IsFilterChanged) return;
             Photos.Clear();
             await InitializeAsync();
             IsFilterChanged = false;
         }
-        else if (CurrentIdiom == DeviceIdiom.Phone)
+        else if (_device.Idiom == DeviceIdiom.Phone)
         {
             var searchParams = new SearchNavigationParams
             {

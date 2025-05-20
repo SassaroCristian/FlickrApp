@@ -35,7 +35,8 @@ public partial class DiscoverViewModel : PhotoListViewModelBase
     [ObservableProperty] private SortOptionDisplay? _selectedSortOptionItem;
     [ObservableProperty] private string _selectedSortOptionDisplayName = "Most Interesting";
 
-    public DiscoverViewModel(INavigationService navigation, IFlickrApiService flickr, IMapper mapper) : base(navigation)
+    public DiscoverViewModel(INavigationService navigation, IDeviceService device, IFlickrApiService flickr,
+        IMapper mapper) : base(navigation, device)
     {
         _flickr = flickr;
         _mapper = mapper;
