@@ -8,7 +8,7 @@ namespace FlickrApp.ViewModels;
 public partial class AppShellViewModel : BaseViewModel
 {
     private readonly IFlickrApiService? _flickr;
-    [ObservableProperty] private string _headerBackgroundSource = "flyout_header.jpg";
+    [ObservableProperty] private string? _headerBackgroundSource = "flyout_header.jpg";
 
     [ObservableProperty] private bool _isFlyoutOpen;
 
@@ -39,7 +39,7 @@ public partial class AppShellViewModel : BaseViewModel
             var index = Random.Shared.Next(0, _photos.Count);
             while (_lastIndex == index)
                 index = Random.Shared.Next(0, _photos.Count);
-
+            
             HeaderBackgroundSource = _photos[index].MediumUrl;
             _lastIndex = index;
         });
