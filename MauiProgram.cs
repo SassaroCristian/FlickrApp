@@ -51,7 +51,6 @@ public static class MauiProgram
         // SINGLETON
         builder.Services.AddSingleton<HttpClient>();
         builder.Services.AddSingleton<INavigationService, NavigationService>();
-        builder.Services.AddSingleton<ITokenService, TokenService>();
         builder.Services.AddSingleton<IFlickrApiService, FlickrApiService>();
         builder.Services.AddSingleton<IDeviceService, DeviceService>();
 
